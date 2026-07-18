@@ -1,5 +1,4 @@
 "use client";
-import { SACCO_CONFIG } from "@/lib/sacco-config";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +14,7 @@ import { Eye, EyeOff, Lock, User } from "lucide-react";
 import { getSession, signIn } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { SACCO_CONFIG } from "@/lib/sacco-config";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -23,7 +23,6 @@ function LoginForm() {
   const [member_no, setMemberNo] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -47,21 +46,12 @@ function LoginForm() {
           router.push("/superuser/dashboard");
         } else if (session?.user?.is_staff === true) {
           router.push("/superuser/dashboard");
-        } else if (session?.user?.is_system_admin === true) {
-          router.push("/sacco-admin/dashboard");
-        } else if (session?.user?.is_treasurer === true) {
-          router.push("/sacco-admin/dashboard");
-        } else if (session?.user?.is_bookkeeper === true) {
-          router.push("/sacco-admin/dashboard");
-        } else if (session?.user?.is_sacco_staff === true) {
-          router.push("/sacco-admin/dashboard");
         } else if (session?.user?.is_sacco_admin === true) {
           router.push("/sacco-admin/dashboard");
         } else if (session?.user?.is_member === true) {
-          // disabled for now until full migration
-          router.push("/");
+          router.push("/member/dashboard");
         } else {
-          router.push("/");
+          router.push("/member/dashboard");
         }
       }
     } catch (error) {
