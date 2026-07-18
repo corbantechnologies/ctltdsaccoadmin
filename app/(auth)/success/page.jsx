@@ -1,5 +1,5 @@
-import { SACCO_CONFIG } from "@/lib/sacco-config";
 "use client";
+import { SACCO_CONFIG } from "@/lib/sacco-config";
 
 import React from "react";
 import { Button } from "@/components/ui/button";

@@ -1,5 +1,5 @@
-import { SACCO_CONFIG } from "@/lib/sacco-config";
 "use client";
+import { SACCO_CONFIG } from "@/lib/sacco-config";
 
 import { Button } from "@/components/ui/button";
 import { Menu as MenuIcon, X as XIcon, ChevronDown, ChevronRight } from "lucide-react";

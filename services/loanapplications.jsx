@@ -1,3 +1,4 @@
+"use client"
 // Flow
 
 // Member applies for loan: In Progress. Here they can update the loan application.
@@ -15,7 +16,6 @@
 //      1. Member accepting or cancelling amendment.
 //      2. Admin approving or declining loan application.
 
-"use client"
 import { apiActions, apiMultipartActions } from "@/tools/axios"
 
 export const createLoanApplication = async (values, token) => {
