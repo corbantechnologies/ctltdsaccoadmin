@@ -183,21 +183,17 @@ function BulkMemberCreate({ closeModal, openModal }) {
                                             >
                                                 Employer
                                             </Label>
-                                            <select
+                                            <Input
+                                                type="text"
                                                 id={`members-${index}-employer`}
+                                                placeholder="Enter employer name"
                                                 value={member.employer}
                                                 onChange={(e) => handleInputChange(index, "employer", e.target.value)}
-                                                className="w-full border border-black rounded px-3 py-2 text-base focus:ring-2 transition-colors bg-white h-10"
-                                            >
-                                                <option value="">Select Employer</option>
-                                                <option value="Tamarind Management Limited">
-                                                    Tamarind Management Limited
-                                                </option>
-                                                <option value="Other">Other</option>
-                                            </select>
+                                                className="border-black rounded text-base py-2"
+                                            />
                                         </div>
 
-                                        {member.employer === "Tamarind Management Limited" && (
+                                        {Boolean(member.employer && member.employer.trim() !== "") && (
                                             <div className="space-y-2">
                                                 <Label
                                                     htmlFor={`members-${index}-payroll_no`}

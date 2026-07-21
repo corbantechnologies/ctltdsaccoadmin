@@ -143,18 +143,16 @@ function CreateMember({ closeModal, openModal }) {
                     Employer
                   </Label>
                   <Field
-                    as="select"
+                    as={Input}
+                    type="text"
                     name="employer"
                     id="employer"
-                    className="w-full border border-black rounded px-3 py-2 text-base focus:ring-2   transition-colors"
-                  >
-                    <option value="">Select Employer</option>
-                    <option value="Tamarind Management Limited">Tamarind Management Limited</option>
-                    <option value="Other">Other</option>
-                  </Field>
+                    placeholder="Enter employer name"
+                    className="border-black rounded text-base py-2"
+                  />
                 </div>
 
-                {values.employer === "Tamarind Management Limited" && (
+                {Boolean(values.employer && values.employer.trim() !== "") && (
                   <div className="space-y-2">
                     <Label
                       htmlFor="payroll_no"
@@ -168,7 +166,7 @@ function CreateMember({ closeModal, openModal }) {
                       name="payroll_no"
                       id="payroll_no"
                       placeholder="e.g. 12345"
-                      className="border-black   rounded text-base py-2"
+                      className="border-black rounded text-base py-2"
                     />
                   </div>
                 )}
