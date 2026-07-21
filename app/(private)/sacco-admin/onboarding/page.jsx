@@ -39,8 +39,9 @@ export default function MigrationHub() {
             steps: [
                 { title: "General Ledger", icon: Building2, href: "/sacco-admin/setup/gl-accounts", desc: "Define your Chart of Accounts." },
                 { title: "Payment Accounts", icon: Wallet, href: "/sacco-admin/setup/payment-accounts", desc: "Link Bank & M-Pesa accounts." },
+                { title: "Member Fields", icon: Users, href: "/sacco-admin/setup/member-fields", desc: "Configure dynamic onboarding attributes (Payroll No, Route Code, etc)." },
                 { title: "Fee Types", icon: BadgePercent, href: "/sacco-admin/setup/feetypes", desc: "Registration & service charges." },
-                { title: "Loan Products", icon: HandCoins, href: "/sacco-admin/setup/loan-products", desc: "Lending rules & interest methods." },
+                { title: "Loan Products", icon: HandCoins, href: "/sacco-admin/setup/loan-products", desc: "Lending rules, savings multipliers, and first-time loan limits." },
                 { title: "Saving Products", icon: PiggyBank, href: "/sacco-admin/setup/saving-types", desc: "Deposit schemes & collateral rules." },
             ]
         },
