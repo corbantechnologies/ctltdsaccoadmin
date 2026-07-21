@@ -6,6 +6,16 @@ import { Theme } from "@radix-ui/themes";
 import { Analytics } from "@vercel/analytics/next";
 import { SACCO_CONFIG } from "@/lib/sacco-config";
 
+export const metadata = {
+  title: SACCO_CONFIG.name,
+  description: SACCO_CONFIG.tagline,
+  icons: {
+    icon: SACCO_CONFIG.logoSmallUrl || SACCO_CONFIG.logoUrl,
+    shortcut: SACCO_CONFIG.logoSmallUrl || SACCO_CONFIG.logoUrl,
+    apple: SACCO_CONFIG.logoSmallUrl || SACCO_CONFIG.logoUrl,
+  },
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" style={{
@@ -22,9 +32,11 @@ export default function RootLayout({ children }) {
       <head>
         <title>{SACCO_CONFIG.name}</title>
         <meta name="description" content={SACCO_CONFIG.tagline} />
+        <link rel="icon" href={SACCO_CONFIG.logoSmallUrl || SACCO_CONFIG.logoUrl} />
+        <link rel="shortcut icon" href={SACCO_CONFIG.logoSmallUrl || SACCO_CONFIG.logoUrl} />
+        <link rel="apple-touch-icon" href={SACCO_CONFIG.logoSmallUrl || SACCO_CONFIG.logoUrl} />
         <link rel="manifest" href="/manifest.webmanifest" />
         <meta name="theme-color" content={SACCO_CONFIG.primaryColor} />
-        <link rel="apple-touch-icon" href={SACCO_CONFIG.logoUrl} />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content={SACCO_CONFIG.shortName} />
