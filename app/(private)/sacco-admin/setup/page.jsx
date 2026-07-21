@@ -138,6 +138,13 @@ const SetupSkeleton = () => (
             href: "/sacco-admin/setup/loan-products",
             disabled: !mandatorySetupDone,
         },
+        {
+            title: "Member Fields",
+            description: "Custom Attributes",
+            icon: Settings2,
+            done: true,
+            href: "/sacco-admin/setup/member-fields",
+        },
     ];
 
     return (
