@@ -71,7 +71,7 @@ function SuccessPage() {
                   className="object-contain"
                 />
                 <span className="font-semibold text-sm text-gray-400">
-                  Sprout Capital SACCO
+                  {SACCO_CONFIG.name}
                 </span>
               </div>
             </div>

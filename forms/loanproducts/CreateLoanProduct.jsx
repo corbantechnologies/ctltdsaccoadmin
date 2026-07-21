@@ -308,6 +308,150 @@ function CreateLoanProduct({ isOpen, onClose, refetchLoanTypes }) {
                 </Select>
               </div>
 
+              {/* Product Rules & Limits Configuration */}
+              <div className="space-y-4 pt-3 border-t">
+                <h4 className="text-sm font-semibold text-slate-800">
+                  Product Rules & Limits (Optional)
+                </h4>
+
+                {/* Principal Bounds */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label htmlFor="min_principal_amount" className="text-xs text-slate-700">
+                      Min Principal (KES)
+                    </Label>
+                    <Field
+                      as={Input}
+                      type="number"
+                      id="min_principal_amount"
+                      name="min_principal_amount"
+                      placeholder="e.g. 1000"
+                      className="border-black text-sm"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="max_principal_amount" className="text-xs text-slate-700">
+                      Max Principal (KES)
+                    </Label>
+                    <Field
+                      as={Input}
+                      type="number"
+                      id="max_principal_amount"
+                      name="max_principal_amount"
+                      placeholder="e.g. 50000"
+                      className="border-black text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* Term Bounds */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label htmlFor="min_term_months" className="text-xs text-slate-700">
+                      Min Term (Months)
+                    </Label>
+                    <Field
+                      as={Input}
+                      type="number"
+                      id="min_term_months"
+                      name="min_term_months"
+                      placeholder="e.g. 1"
+                      className="border-black text-sm"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="max_term_months" className="text-xs text-slate-700">
+                      Max Term (Months)
+                    </Label>
+                    <Field
+                      as={Input}
+                      type="number"
+                      id="max_term_months"
+                      name="max_term_months"
+                      placeholder="e.g. 36"
+                      className="border-black text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* Savings Multiplier Rule */}
+                <div className="space-y-2 p-3 bg-slate-50 border rounded">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="rule_savings_multiplier_enabled"
+                      checked={values.rule_savings_multiplier_enabled}
+                      onChange={(e) => setFieldValue("rule_savings_multiplier_enabled", e.target.checked)}
+                      className="h-4 w-4"
+                    />
+                    <Label htmlFor="rule_savings_multiplier_enabled" className="text-xs font-semibold text-slate-800 cursor-pointer">
+                      Enable Savings Multiplier Rule
+                    </Label>
+                  </div>
+                  {values.rule_savings_multiplier_enabled && (
+                    <div className="space-y-1 pt-1">
+                      <Label htmlFor="max_savings_multiplier" className="text-xs text-slate-600">
+                        Max Multiplier against Savings (e.g. 3.0 = 3x savings)
+                      </Label>
+                      <Field
+                        as={Input}
+                        type="number"
+                        step="0.1"
+                        id="max_savings_multiplier"
+                        name="max_savings_multiplier"
+                        className="border-black text-sm"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* First-Time Applicant Rule */}
+                <div className="space-y-2 p-3 bg-slate-50 border rounded">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="rule_first_time_applicant_enabled"
+                      checked={values.rule_first_time_applicant_enabled}
+                      onChange={(e) => setFieldValue("rule_first_time_applicant_enabled", e.target.checked)}
+                      className="h-4 w-4"
+                    />
+                    <Label htmlFor="rule_first_time_applicant_enabled" className="text-xs font-semibold text-slate-800 cursor-pointer">
+                      Enable First-Time Applicant Rule
+                    </Label>
+                  </div>
+                  {values.rule_first_time_applicant_enabled && (
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <div className="space-y-1">
+                        <Label htmlFor="first_time_max_savings_percent" className="text-xs text-slate-600">
+                          Max Savings % (e.g. 80.0%)
+                        </Label>
+                        <Field
+                          as={Input}
+                          type="number"
+                          step="1"
+                          id="first_time_max_savings_percent"
+                          name="first_time_max_savings_percent"
+                          className="border-black text-sm"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label htmlFor="first_time_max_principal" className="text-xs text-slate-600">
+                          Max Principal Cap (KES)
+                        </Label>
+                        <Field
+                          as={Input}
+                          type="number"
+                          id="first_time_max_principal"
+                          name="first_time_max_principal"
+                          placeholder="e.g. 20000"
+                          className="border-black text-sm"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <DialogFooter>
                 <Button
                   type="button"

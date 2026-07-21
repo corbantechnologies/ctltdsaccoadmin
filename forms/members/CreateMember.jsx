@@ -16,6 +16,7 @@ import { Field, Form, Formik } from "formik";
 import { useRouter, usePathname } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import DynamicAttributeFields from "@/components/members/DynamicAttributeFields";
 
 function CreateMember({ closeModal, openModal }) {
   const [loading, setLoading] = useState(false);
@@ -204,6 +205,7 @@ function CreateMember({ closeModal, openModal }) {
                     className="border-black   rounded text-base py-2"
                   />
                 </div>
+                <DynamicAttributeFields values={values} setFieldValue={setFieldValue} />
               </div>
               <DialogFooter className="flex flex-col sm:flex-row gap-3 mt-6">
                 <Button

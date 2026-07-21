@@ -100,7 +100,7 @@ export default function MigrationHub() {
                     System Migration Hub
                 </h1>
                 <p className="text-slate-600 text-lg max-w-2xl">
-                    Follow this structured path to move your SACCO from manual records or old software to Sprout.
+                    Follow this structured path to move your SACCO from manual records or old software to our platform.
                 </p>
             </div>
 
