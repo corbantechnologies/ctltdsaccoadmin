@@ -25,6 +25,13 @@ function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
+  const redirectExternal = (baseUrl, defaultPath = "/login") => {
+    if (baseUrl && baseUrl !== "undefined") {
+      const cleanUrl = baseUrl.replace(/\/+$/, "");
+      window.location.href = `${cleanUrl}${defaultPath}`;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -35,22 +42,20 @@ function LoginForm() {
         password,
       });
 
-
       const session = await getSession();
       if (response?.error) {
         toast?.error("Invalid member number or password");
         setLoading(false);
       } else {
-        if (session?.user?.is_superuser === true) {
-          router.push(`${process.env.NEXT_PUBLIC_SUPERUSER_URL}/superuser/dashboard`);
-        } else if (session?.user?.is_staff === true) {
-          router.push(`${process.env.NEXT_PUBLIC_SUPERUSER_URL}/superuser/dashboard`);
+        if (session?.user?.is_superuser === true || session?.user?.is_staff === true) {
+          toast?.error("Superuser account. Redirecting to Superuser Portal...");
+          redirectExternal(process.env.NEXT_PUBLIC_SUPERUSER_URL, "/login");
         } else if (session?.user?.is_sacco_admin === true) {
-          router.push(`${process.env.NEXT_PUBLIC_ADMIN_URL}/sacco-admin/dashboard`);
-        } else if (session?.user?.is_member === true) {
-          router.push(`${process.env.NEXT_PUBLIC_MEMBER_URL}/member/dashboard`);
+          toast?.success("Login successful! Redirecting...");
+          router.push("/sacco-admin/dashboard");
         } else {
-          router.push(`${process.env.NEXT_PUBLIC_MEMBER_URL}/member/dashboard`);
+          toast?.error("Member account. Redirecting to Member Portal...");
+          redirectExternal(process.env.NEXT_PUBLIC_MEMBER_URL, "/login");
         }
       }
     } catch (error) {
