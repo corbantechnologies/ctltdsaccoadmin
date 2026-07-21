@@ -17,6 +17,8 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { CheckCircle, Clock, Search } from "lucide-react";
 import Link from "next/link";
+import apiActions from "@/tools/axios";
+import toast from "react-hot-toast";
 
 const getPageNumbers = (currentPage, totalPages) => {
   return [currentPage];
@@ -160,7 +162,7 @@ function SaccoMembersTable({ members }) {
                           {member?.is_approved ? "Approved" : "Pending"}
                         </Badge>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="space-x-2">
                         <Button
                           size="sm"
                           onClick={() => {
@@ -172,6 +174,26 @@ function SaccoMembersTable({ members }) {
                         >
                           Manage
                         </Button>
+                        {member?.email && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={async () => {
+                              try {
+                                const toastId = toast.loading("Sending activation link...");
+                                await apiActions.post("/api/v1/auth/resend-activation/", {
+                                  member_no: member?.member_no,
+                                });
+                                toast.success(`Activation link sent to ${member?.email}`, { id: toastId });
+                              } catch (err) {
+                                toast.error("Failed to resend activation link.");
+                              }
+                            }}
+                            className="border-slate-300 text-slate-700 hover:bg-slate-50"
+                          >
+                            Resend Link
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
