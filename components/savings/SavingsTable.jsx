@@ -27,7 +27,7 @@ const getPageNumbers = (currentPage, totalPages) => {
 };;;
 
 
-function SavingsTable({ savings, isLoading, route }) {
+function SavingsTable({ savings, isLoading, route = "sacco-admin" }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [filterType, setFilterType] = useState("All");
   const itemsPerPage = 5;
@@ -164,7 +164,7 @@ function SavingsTable({ savings, isLoading, route }) {
                     </TableCell>
                     <TableCell className="text-sm text-gray-700">
                       <Link
-                        href={`/${route}/savings/${saving.identity}`}
+                        href={`/${route || "sacco-admin"}/saving-accounts/${saving?.reference || saving?.account_number || saving?.identity}`}
                         className="text-primary hover:underline cursor-pointer"
                       >
                         View
@@ -192,7 +192,10 @@ function SavingsTable({ savings, isLoading, route }) {
               >
                 Previous
               </Button>
-              {getPageNumbers(currentPage, totalPages).map((page, index) => page === "..." ? <span key={`ellipsis-${index}`} className="px-2 py-1 text-slate-400 text-sm select-none">...</span> : (((page) => (
+              {getPageNumbers(currentPage, totalPages).map((page, index) =>
+                page === "..." ? (
+                  <span key={`ellipsis-${index}`} className="px-2 py-1 text-slate-400 text-sm select-none">...</span>
+                ) : (
                   <Button
                     key={page}
                     onClick={() => handlePageChange(page)}
@@ -205,7 +208,8 @@ function SavingsTable({ savings, isLoading, route }) {
                   >
                     {page}
                   </Button>
-                ),)(page)))}
+                )
+              )}
               <Button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}

@@ -177,7 +177,7 @@ function LoansTable({ loans, isLoading, route }) {
                     </TableCell>
                     <TableCell className="text-sm text-gray-700">
                       <Link
-                        href={`/${route}/loans/${loan.identity}`}
+                        href={`/sacco-admin/members/${typeof loan.member === "string" ? loan.member : loan.member?.member_no}/${loan?.reference || loan?.account_number}`}
                         className="text-[#045e32] hover:underline cursor-pointer"
                       >
                         View
@@ -205,7 +205,10 @@ function LoansTable({ loans, isLoading, route }) {
               >
                 Previous
               </Button>
-              {getPageNumbers(currentPage, totalPages).map((page, index) => page === "..." ? <span key={`ellipsis-${index}`} className="px-2 py-1 text-slate-400 text-sm select-none">...</span> : (((page) => (
+              {getPageNumbers(currentPage, totalPages).map((page, index) =>
+                page === "..." ? (
+                  <span key={`ellipsis-${index}`} className="px-2 py-1 text-slate-400 text-sm select-none">...</span>
+                ) : (
                   <Button
                     key={page}
                     onClick={() => handlePageChange(page)}
@@ -218,7 +221,8 @@ function LoansTable({ loans, isLoading, route }) {
                   >
                     {page}
                   </Button>
-                ),)(page)))}
+                )
+              )}
               <Button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}

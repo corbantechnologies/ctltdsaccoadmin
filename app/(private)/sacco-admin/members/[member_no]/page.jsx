@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import LoadingSpinner from "@/components/general/LoadingSpinner";
 import { useFetchMemberDetail } from "@/hooks/members/actions";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
@@ -88,6 +89,18 @@ function MemberDetail() {
   } = useFetchMemberSummary(member_no);
 
   const { data: loanProducts } = useFetchLoanProducts();
+  const queryClient = useQueryClient();
+
+  const handleRefreshAll = () => {
+    refetchMember();
+    refetchSummary();
+    queryClient.invalidateQueries({ queryKey: ["member", member_no] });
+    queryClient.invalidateQueries({ queryKey: ["memberSummary", member_no] });
+    queryClient.invalidateQueries({ queryKey: ["members"] });
+    queryClient.invalidateQueries({ queryKey: ["saccoSummary"] });
+    queryClient.invalidateQueries({ queryKey: ["savingsDeposits"] });
+    queryClient.invalidateQueries({ queryKey: ["loans"] });
+  };
 
   const [isApproving, setIsApproving] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -854,14 +867,14 @@ function MemberDetail() {
         <CreateDepositAdmin
           isOpen={depositModal}
           onClose={() => setDepositModal(false)}
-          refetchMember={refetchMember}
+          refetchMember={handleRefreshAll}
           accounts={member?.savings}
         />
 
         <CreateLoanAccountAdmin
           isOpen={loanModal}
           onClose={() => setLoanModal(false)}
-          refetchMember={refetchMember}
+          refetchMember={handleRefreshAll}
           loanProducts={loanProducts}
           member={member}
         />
@@ -869,21 +882,21 @@ function MemberDetail() {
         <CreateFeePayment
           isOpen={feePaymentModal}
           onClose={() => setFeePaymentModal(false)}
-          refetchMember={refetchMember}
+          refetchMember={handleRefreshAll}
           accounts={member?.fee_accounts}
         />
 
         <UpdateMemberRole
           isOpen={roleModal}
           onClose={() => setRoleModal(false)}
-          refetchMember={refetchMember}
+          refetchMember={handleRefreshAll}
           member={member}
         />
 
         <UpdateMemberDetails
           isOpen={detailsModal}
           onClose={() => setDetailsModal(false)}
-          refetchMember={refetchMember}
+          refetchMember={handleRefreshAll}
           member={member}
         />
       </div>

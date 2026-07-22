@@ -1,5 +1,4 @@
-"use client";
-
+import { useQueryClient } from "@tanstack/react-query";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -43,6 +42,7 @@ function CreateDepositAdmin({ isOpen, onClose, refetchMember, accounts }) {
   const [loading, setLoading] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const token = useAxiosAuth();
+  const queryClient = useQueryClient();
   const { data: paymentAccounts, isLoading: isLoadingPayment } = useFetchPaymentAccounts();
 
   return (
@@ -71,8 +71,9 @@ function CreateDepositAdmin({ isOpen, onClose, refetchMember, accounts }) {
               await createSavingsDeposit(values, token);
               toast?.success("Deposit created successfully!");
               onClose();
-              refetchMember();
-              window.location.reload();
+              if (refetchMember) refetchMember();
+              queryClient.invalidateQueries({ queryKey: ["savingsDeposits"] });
+              queryClient.invalidateQueries({ queryKey: ["saccoSummary"] });
             } catch (error) {
               toast?.error("Failed to create deposit!");
             } finally {
