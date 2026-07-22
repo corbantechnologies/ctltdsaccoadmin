@@ -48,6 +48,7 @@ import CreateDepositAdmin from "@/forms/savingsdeposits/CreateDepositAdmin";
 import CreateLoanAccountAdmin from "@/forms/loans/CreateLoanAdmin";
 import CreateFeePayment from "@/forms/feepayments/CreateFeePayment";
 import UpdateMemberRole from "@/forms/members/UpdateMemberRole";
+import UpdateMemberDetails from "@/forms/members/UpdateMemberDetails";
 import { useFetchLoanProducts } from "@/hooks/loanproducts/actions";
 import { useFetchMemberSummary } from "@/hooks/summary/actions";
 import MemberFinancialSummary from "@/components/members/dashboard/MemberFinancialSummary";
@@ -95,6 +96,7 @@ function MemberDetail() {
   const [loanModal, setLoanModal] = useState(false);
   const [feePaymentModal, setFeePaymentModal] = useState(false);
   const [roleModal, setRoleModal] = useState(false);
+  const [detailsModal, setDetailsModal] = useState(false);
 
   // Pagination states
   const ITEMS_PER_PAGE = 3;
@@ -376,6 +378,15 @@ function MemberDetail() {
 
                       <Button
                         variant="ghost"
+                        onClick={() => setDetailsModal(true)}
+                        className="justify-start font-normal h-9 w-full flex items-center gap-2"
+                      >
+                        <User className="h-4 w-4" />
+                        Edit Profile
+                      </Button>
+
+                      <Button
+                        variant="ghost"
                         onClick={handleToggleActiveStatus}
                         disabled={isTogglingStatus}
                         className={`justify-start font-normal h-9 w-full flex items-center gap-2 ${member?.is_active
@@ -593,6 +604,27 @@ function MemberDetail() {
                 />
               </CardContent>
             </Card>
+
+            {member?.custom_attributes && Object.keys(member.custom_attributes).length > 0 && (
+              <Card className="shadow-md">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-xl">
+                    <Settings className="h-6 w-6 text-primary" />
+                    Custom SACCO Fields
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="grid md:grid-cols-2 gap-4">
+                  {Object.entries(member.custom_attributes).map(([key, val]) => (
+                    <InfoField
+                      key={key}
+                      icon={Settings}
+                      label={key.replace(/_/g, " ").toUpperCase()}
+                      value={typeof val === "boolean" ? (val ? "Yes" : "No") : String(val)}
+                    />
+                  ))}
+                </CardContent>
+              </Card>
+            )}
 
             {hasEmploymentData && (
               <Card className="shadow-md">
@@ -844,6 +876,13 @@ function MemberDetail() {
         <UpdateMemberRole
           isOpen={roleModal}
           onClose={() => setRoleModal(false)}
+          refetchMember={refetchMember}
+          member={member}
+        />
+
+        <UpdateMemberDetails
+          isOpen={detailsModal}
+          onClose={() => setDetailsModal(false)}
           refetchMember={refetchMember}
           member={member}
         />
