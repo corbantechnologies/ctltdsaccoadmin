@@ -74,7 +74,8 @@ function CreateLoanProduct({ isOpen, onClose, refetchLoanTypes }) {
               onClose();
               refetchLoanTypes();
             } catch (error) {
-              toast?.error("Failed to create loan product!");
+              console.log(error)
+              // toast?.error("Failed to create loan product!");
             } finally {
               setLoading(false);
             }
