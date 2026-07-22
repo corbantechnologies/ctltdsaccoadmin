@@ -4,6 +4,9 @@ import Link from "next/link";
 import React, { use, useState } from "react";
 import { format } from "date-fns";
 import { useFetchLoanDetail, useFetchLoanPayOffAmount } from "@/hooks/loans/actions";
+import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import { retryLoanPaymentAccounting } from "@/services/loanrepayments";
+import toast from "react-hot-toast";
 import LoadingSpinner from "@/components/general/LoadingSpinner";
 import { Button } from "@/components/ui/button";
 import {
@@ -100,6 +103,23 @@ export default function LoanAccountDetail({ params }) {
   const [isPenaltyModalOpen, setIsPenaltyModalOpen] = useState(false);
   const [isUpdatePenaltyModalOpen, setIsUpdatePenaltyModalOpen] = useState(false);
   const [selectedPenalty, setSelectedPenalty] = useState(null);
+
+  const token = useAxiosAuth();
+  const [retryingPayments, setRetryingPayments] = useState({});
+
+  const handleRetryGL = async (paymentRef) => {
+    setRetryingPayments((prev) => ({ ...prev, [paymentRef]: true }));
+    try {
+      await retryLoanPaymentAccounting(paymentRef, token);
+      toast.success("GL posting processed successfully!");
+      refetchAll();
+    } catch (err) {
+      console.error(err);
+      toast.error(err?.response?.data?.error || "Failed to retry GL posting");
+    } finally {
+      setRetryingPayments((prev) => ({ ...prev, [paymentRef]: false }));
+    }
+  };
 
   const refetchAll = () => {
     refetch();
@@ -323,9 +343,38 @@ export default function LoanAccountDetail({ params }) {
                             </TableCell>
                             <TableCell>{payment.payment_method}</TableCell>
                             <TableCell>
-                              <Badge variant="outline" className="text-[10px] py-0">
-                                {payment.repayment_type}
-                              </Badge>
+                              <div className="flex flex-col gap-1">
+                                <Badge variant="outline" className="text-[10px] py-0 w-fit">
+                                  {payment.repayment_type}
+                                </Badge>
+                                {payment.transaction_status === "Completed" && (
+                                  payment.posted_to_gl ? (
+                                    <span className="text-[10px] text-green-600 flex items-center gap-0.5 font-medium">
+                                      <CheckCircle2 className="h-3.5 w-3.5 shrink-0" /> Posted to GL
+                                    </span>
+                                  ) : (
+                                    <div className="flex flex-col gap-1 mt-0.5">
+                                      <span className="text-[10px] text-amber-600 flex items-center gap-0.5 font-medium">
+                                        <AlertTriangle className="h-3.5 w-3.5 shrink-0" /> GL Pending
+                                      </span>
+                                      {payment.accounting_error && (
+                                        <span className="text-[9px] text-red-500 max-w-[150px] truncate block" title={payment.accounting_error}>
+                                          {payment.accounting_error}
+                                        </span>
+                                      )}
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() => handleRetryGL(payment.reference)}
+                                        disabled={!!retryingPayments[payment.reference]}
+                                        className="h-6 text-[10px] py-0.5 px-2 w-fit bg-amber-50 hover:bg-amber-100 text-amber-700 border-amber-200"
+                                      >
+                                        {retryingPayments[payment.reference] ? "Retrying..." : "Retry GL"}
+                                      </Button>
+                                    </div>
+                                  )
+                                )}
+                              </div>
                             </TableCell>
                             <TableCell className="text-right font-semibold">
                               {formatCurrency(payment.amount)}

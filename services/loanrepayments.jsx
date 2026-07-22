@@ -50,3 +50,13 @@ export const getMpesaLoanPayment = async (reference, token) => {
   );
   return response?.data;
 };
+
+// Admin GL Retry
+export const retryLoanPaymentAccounting = async (reference, token) => {
+  const response = await apiActions?.post(
+    `/api/v1/loanpayments/${reference}/accounting/retry/`,
+    {},
+    token
+  );
+  return response?.data;
+};
