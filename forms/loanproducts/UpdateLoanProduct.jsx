@@ -70,7 +70,22 @@ function UpdateLoanProduct({ isOpen, onClose, refetchLoanTypes, loanProduct }) {
           onSubmit={async (values) => {
             try {
               setLoading(true);
-              await updateLoanProduct(loanProduct?.reference, values, token);
+              const payload = { ...values };
+              const optionalNumeric = [
+                "min_principal_amount",
+                "max_principal_amount",
+                "min_term_months",
+                "max_term_months",
+                "first_time_max_principal",
+              ];
+              optionalNumeric.forEach((field) => {
+                if (payload[field] === "" || payload[field] === undefined) {
+                  payload[field] = null;
+                } else if (payload[field] !== null) {
+                  payload[field] = Number(payload[field]);
+                }
+              });
+              await updateLoanProduct(loanProduct?.reference, payload, token);
               toast?.success("Loan product updated successfully!");
               onClose();
               refetchLoanTypes();

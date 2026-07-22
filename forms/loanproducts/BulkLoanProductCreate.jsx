@@ -90,7 +90,26 @@ function BulkLoanProductCreate({ onBatchSuccess }) {
                 return;
             }
 
-            await bulkCreateLoanProducts({ loan_products: products }, token);
+            const optionalNumeric = [
+                "min_principal_amount",
+                "max_principal_amount",
+                "min_term_months",
+                "max_term_months",
+                "first_time_max_principal",
+            ];
+            const sanitizedProducts = products.map(p => {
+                const item = { ...p };
+                optionalNumeric.forEach(field => {
+                    if (item[field] === "" || item[field] === undefined) {
+                        item[field] = null;
+                    } else if (item[field] !== null) {
+                        item[field] = Number(item[field]);
+                    }
+                });
+                return item;
+            });
+
+            await bulkCreateLoanProducts({ loan_products: sanitizedProducts }, token);
             toast.success("Loan Products created successfully!");
 
             // Reset state
