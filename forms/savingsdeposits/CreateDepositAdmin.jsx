@@ -72,6 +72,7 @@ function CreateDepositAdmin({ isOpen, onClose, refetchMember, accounts }) {
               toast?.success("Deposit created successfully!");
               onClose();
               refetchMember();
+              window.location.reload();
             } catch (error) {
               toast?.error("Failed to create deposit!");
             } finally {
