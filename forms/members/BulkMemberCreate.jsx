@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { X, Plus, Trash2 } from "lucide-react";
+import { X, Plus, Trash2, CheckCircle2, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
@@ -24,9 +24,11 @@ function BulkMemberCreate({ closeModal, openModal }) {
         payroll_no: "",
         phone: "",
         gender: "",
+        password: "",
     };
 
     const [members, setMembers] = useState([{ ...emptyMember }]);
+    const [createdMembers, setCreatedMembers] = useState(null);
 
     const handleInputChange = (index, field, value) => {
         const newMembers = [...members];
@@ -44,17 +46,50 @@ function BulkMemberCreate({ closeModal, openModal }) {
         setMembers(members.filter((_, index) => index !== indexToRemove));
     };
 
+    const handleDownloadCSV = () => {
+        if (!createdMembers || createdMembers.length === 0) return;
+        const headers = ["Member No", "Name", "Email", "Phone", "Temporary Password"];
+        const rows = createdMembers.map(m => [
+            m.member_no,
+            `${m.first_name} ${m.last_name}`,
+            m.email || "",
+            m.phone || "",
+            m.temporary_password || ""
+        ]);
+        const csvContent = "data:text/csv;charset=utf-8," 
+            + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `bulk_members_credentials.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast.success("Credentials downloaded!");
+    };
+
+    const handleDone = () => {
+        setCreatedMembers(null);
+        setMembers([{ ...emptyMember }]);
+        closeModal();
+        router.refresh();
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             setLoading(true);
-            console.log("Sending this payload:", JSON.stringify({ members }, null, 2));
             const response = await createBulkMembers({ members }, token);
             toast?.success("Members created successfully!");
-            closeModal();
-            // Reset state
-            setMembers([{ ...emptyMember }]);
-            router.refresh();
+            
+            const created = response?.data?.members;
+            if (created && created.length > 0) {
+                setCreatedMembers(created);
+            } else {
+                closeModal();
+                setMembers([{ ...emptyMember }]);
+                router.refresh();
+            }
         } catch (error) {
             console.error("Bulk upload error: ", error.response?.data || error.message);
             toast?.error(error.response?.data?.message || "Failed to create members!");
@@ -64,6 +99,67 @@ function BulkMemberCreate({ closeModal, openModal }) {
     };
 
     if (!openModal) return null;
+
+    if (createdMembers) {
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 sm:p-6 backdrop-blur-sm">
+                <div className="w-full max-w-2xl bg-white rounded shadow-xl flex flex-col overflow-hidden max-h-[90vh] p-6">
+                    <div className="text-center flex flex-col items-center mb-4">
+                        <div className="h-12 w-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2">
+                            <CheckCircle2 className="h-6 w-6" />
+                        </div>
+                        <h2 className="text-2xl font-bold text-slate-900">
+                            Bulk Onboarding Complete!
+                        </h2>
+                    </div>
+
+                    <div className="space-y-4 my-4 flex-1 overflow-y-auto">
+                        <p className="text-sm text-gray-500 text-center">
+                            Successfully onboarded <strong>{createdMembers.length}</strong> members. Below are their generated credentials. Please download the CSV file to preserve them.
+                        </p>
+
+                        <div className="border rounded-lg overflow-hidden max-h-[40vh] overflow-y-auto">
+                            <table className="w-full border-collapse text-left text-sm">
+                                <thead className="bg-slate-50 border-b">
+                                    <tr>
+                                        <th className="px-4 py-2 text-slate-500 font-medium">Member No</th>
+                                        <th className="px-4 py-2 text-slate-500 font-medium">Name</th>
+                                        <th className="px-4 py-2 text-slate-500 font-medium">Temporary Password</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {createdMembers.map((member, idx) => (
+                                        <tr key={idx} className="border-b last:border-0 hover:bg-slate-50">
+                                            <td className="px-4 py-3 font-mono text-xs text-slate-700">{member.member_no}</td>
+                                            <td className="px-4 py-3 font-medium text-slate-900">{member.first_name} {member.last_name}</td>
+                                            <td className="px-4 py-3 font-mono text-xs font-semibold text-emerald-700">{member.temporary_password || "(Manual Password)"}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
+                        <Button
+                            type="button"
+                            onClick={handleDownloadCSV}
+                            variant="outline"
+                            className="border-slate-300 hover:bg-slate-50 text-slate-700 w-full sm:w-auto text-base py-2 px-4"
+                        >
+                            <Download className="w-4 h-4 mr-2" /> Download CSV
+                        </Button>
+                        <Button
+                            onClick={handleDone}
+                            className="bg-[#ea1315] hover:bg-[#c71012] text-white w-full sm:w-auto text-base py-2 px-4 ml-auto"
+                        >
+                            Done
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 sm:p-6 backdrop-blur-sm transition-opacity">
@@ -242,6 +338,23 @@ function BulkMemberCreate({ closeModal, openModal }) {
                                                 placeholder="jdoe@example.com"
                                                 value={member.email}
                                                 onChange={(e) => handleInputChange(index, "email", e.target.value)}
+                                                className="border-black rounded text-base py-2"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label
+                                                htmlFor={`members-${index}-password`}
+                                                className="text-base text-black font-medium"
+                                            >
+                                                Password (Optional)
+                                            </Label>
+                                            <Input
+                                                type="password"
+                                                id={`members-${index}-password`}
+                                                placeholder="Set login password immediately"
+                                                value={member.password}
+                                                onChange={(e) => handleInputChange(index, "password", e.target.value)}
                                                 className="border-black rounded text-base py-2"
                                             />
                                         </div>

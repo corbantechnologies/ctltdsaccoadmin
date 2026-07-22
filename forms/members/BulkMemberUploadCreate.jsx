@@ -11,14 +11,23 @@ import {
 import { Input } from "@/components/ui/input";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { createBulkMembersUpload } from "@/services/members";
-import { FileUp, X } from "lucide-react";
+import { FileUp, X, CheckCircle2, Download } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState, useRef } from "react";
 import toast from "react-hot-toast";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 function BulkMemberUploadCreate({ closeModal, openModal }) {
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState(null);
+    const [createdMembers, setCreatedMembers] = useState(null);
     const fileInputRef = useRef(null);
     const token = useAxiosAuth();
     const router = useRouter();
@@ -26,7 +35,6 @@ function BulkMemberUploadCreate({ closeModal, openModal }) {
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
             const selectedFile = e.target.files[0];
-            // Optional: Check if it's a valid CSV file
             if (selectedFile.type === "text/csv" || selectedFile.name.endsWith(".csv")) {
                 setFile(selectedFile);
             } else {
@@ -43,6 +51,35 @@ function BulkMemberUploadCreate({ closeModal, openModal }) {
         }
     };
 
+    const handleDownloadCSV = () => {
+        if (!createdMembers || createdMembers.length === 0) return;
+        const headers = ["Member No", "Name", "Email", "Phone", "Temporary Password"];
+        const rows = createdMembers.map(m => [
+            m.member_no,
+            m.name,
+            m.email || "",
+            m.phone || "",
+            m.temporary_password || ""
+        ]);
+        const csvContent = "data:text/csv;charset=utf-8," 
+            + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `bulk_members_credentials.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast.success("Credentials downloaded!");
+    };
+
+    const handleDone = () => {
+        setCreatedMembers(null);
+        clearFile();
+        closeModal();
+        router.refresh();
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!file) {
@@ -55,18 +92,85 @@ function BulkMemberUploadCreate({ closeModal, openModal }) {
             const formData = new FormData();
             formData.append("csv_file", file);
 
-            await createBulkMembersUpload(formData, token);
+            const response = await createBulkMembersUpload(formData, token);
             toast.success("Members uploaded successfully!");
-            closeModal();
-            router.refresh();
-            clearFile();
+            
+            const members = response?.data?.created_members;
+            if (members && members.length > 0) {
+                setCreatedMembers(members);
+            } else {
+                closeModal();
+                router.refresh();
+                clearFile();
+            }
         } catch (error) {
-            console.log(error)
+            console.log(error);
             toast.error(error?.response?.data?.message || "Failed to upload members.");
         } finally {
             setLoading(false);
         }
     };
+
+    if (createdMembers) {
+        return (
+            <Dialog open={openModal} onOpenChange={handleDone}>
+                <DialogContent className="w-full sm:max-w-2xl h-auto p-4 sm:p-6 bg-white overflow-y-auto max-h-[90vh]">
+                    <DialogHeader className="text-center flex flex-col items-center">
+                        <div className="h-12 w-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2">
+                            <CheckCircle2 className="h-6 w-6" />
+                        </div>
+                        <DialogTitle className="text-2xl font-bold text-slate-900">
+                            Bulk Import Complete!
+                        </DialogTitle>
+                    </DialogHeader>
+
+                    <div className="space-y-4 my-4">
+                        <p className="text-sm text-gray-500 text-center">
+                            Successfully onboarded <strong>{createdMembers.length}</strong> members. Below are their generated credentials. Please download the CSV file to preserve them.
+                        </p>
+
+                        <div className="border rounded-lg overflow-hidden max-h-[40vh] overflow-y-auto">
+                            <Table>
+                                <TableHeader className="bg-slate-50">
+                                    <TableRow>
+                                        <TableHead>Member No</TableHead>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Temporary Password</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {createdMembers.map((member, idx) => (
+                                        <TableRow key={idx}>
+                                            <TableCell className="font-mono text-xs">{member.member_no}</TableCell>
+                                            <TableCell className="font-medium text-sm">{member.name}</TableCell>
+                                            <TableCell className="font-mono text-xs font-semibold text-emerald-700">{member.temporary_password}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </div>
+
+                    <DialogFooter className="flex flex-col sm:flex-row gap-3">
+                        <Button
+                            type="button"
+                            onClick={handleDownloadCSV}
+                            variant="outline"
+                            className="border-slate-300 hover:bg-slate-50 text-slate-700 w-full sm:w-auto text-base py-2 px-4"
+                        >
+                            <Download className="w-4 h-4 mr-2" /> Download CSV
+                        </Button>
+                        <Button
+                            onClick={handleDone}
+                            className="bg-[#ea1315] hover:bg-[#c71012] text-white w-full sm:w-auto text-base py-2 px-4"
+                        >
+                            Done
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        );
+    }
 
     return (
         <Dialog open={openModal} onOpenChange={closeModal}>
