@@ -10,7 +10,9 @@ const SummaryCard = ({ title, amount, count, icon: Icon, color }) => (
             <Icon className={`h-5 w-5 ${color}`} />
         </CardHeader>
         <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(amount || 0)}</div>
+            <div className="text-xl sm:text-2xl font-bold truncate" title={formatCurrency(amount || 0)}>
+                {formatCurrency(amount || 0)}
+            </div>
             {count !== undefined && (
                 <p className="text-xs text-muted-foreground mt-1">{count} transactions</p>
             )}
@@ -22,7 +24,7 @@ export default function SaccoSummaryOverview({ summary }) {
     if (!summary) return null;
 
     return (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             <SummaryCard
                 title="Total Savings"
                 amount={summary?.totals?.savings_deposits}
@@ -57,10 +59,12 @@ export default function SaccoSummaryOverview({ summary }) {
                     <Users className="h-5 w-5 text-orange-600" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{summary?.totals?.total_new_members || 0}</div>
-                    <p className="text-xs text-muted-foreground">Joined this year</p>
+                    <div className="text-xl sm:text-2xl font-bold truncate" title={String(summary?.totals?.total_new_members || 0)}>
+                        {summary?.totals?.total_new_members || 0}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">Joined this year</p>
                 </CardContent>
             </Card>
         </div>
     );
-}
+}
