@@ -10,9 +10,16 @@ import React, { useState, useRef } from "react";
 import toast from "react-hot-toast";
 
 function BulkSavingDepositUpload({ onBatchSuccess }) {
+    const getLastDayOfCurrentMonth = () => {
+        const today = new Date();
+        const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        return lastDay.toISOString().split("T")[0];
+    };
+
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState(null);
     const [selectedSavingType, setSelectedSavingType] = useState("");
+    const [targetDate, setTargetDate] = useState(getLastDayOfCurrentMonth());
     const fileInputRef = useRef(null);
     const token = useAxiosAuth();
     const { data: savingTypes } = useFetchSavingsTypes();
@@ -38,7 +45,7 @@ function BulkSavingDepositUpload({ onBatchSuccess }) {
 
     const handleDownloadTemplate = async () => {
         try {
-            await downloadSavingsDepositsTemplate(token, selectedSavingType);
+            await downloadSavingsDepositsTemplate(token, selectedSavingType, targetDate);
             toast.success("Template downloaded successfully!");
         } catch (error) {
             toast.error("Failed to download template.");
@@ -88,27 +95,41 @@ function BulkSavingDepositUpload({ onBatchSuccess }) {
                         <p className="text-[11px] text-slate-500 font-medium italic">Pre-filled template with member account details.</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-2 w-full md:w-auto">
-                    <select
-                        value={selectedSavingType}
-                        onChange={(e) => setSelectedSavingType(e.target.value)}
-                        className="border border-emerald-200 rounded px-3 py-1.5 text-xs transition-colors bg-white h-8 focus:outline-none"
-                    >
-                        <option value="">-- All Saving Types --</option>
-                        {savingTypes?.map((st) => (
-                            <option key={st.id || st.reference} value={st.name}>
-                                {st.name}
-                            </option>
-                        ))}
-                    </select>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleDownloadTemplate}
-                        className="border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white font-bold px-6 h-10 transition-all rounded whitespace-nowrap"
-                    >
-                        Get Template
-                    </Button>
+                <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                    <div className="flex flex-col gap-1">
+                        <span className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">Transaction Date</span>
+                        <Input
+                            type="date"
+                            value={targetDate}
+                            onChange={(e) => setTargetDate(e.target.value)}
+                            className="h-8 text-xs border border-emerald-200 w-36 focus-visible:ring-0 bg-white"
+                        />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <span className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">Saving Type</span>
+                        <select
+                            value={selectedSavingType}
+                            onChange={(e) => setSelectedSavingType(e.target.value)}
+                            className="border border-emerald-200 rounded px-3 py-1.5 text-xs transition-colors bg-white h-8 focus:outline-none w-44"
+                        >
+                            <option value="">-- All Saving Types --</option>
+                            {savingTypes?.map((st) => (
+                                <option key={st.id || st.reference} value={st.name}>
+                                    {st.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="flex items-end h-14">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleDownloadTemplate}
+                            className="border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white font-bold px-6 h-10 transition-all rounded whitespace-nowrap"
+                        >
+                            Get Template
+                        </Button>
+                    </div>
                 </div>
             </div>
 

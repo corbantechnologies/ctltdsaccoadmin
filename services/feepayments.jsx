@@ -29,11 +29,18 @@ export const bulkUploadFeePayments = async (values, token) => {
     await apiMultipartActions?.post("/api/v1/feepayments/bulk/upload/", values, token);
 };
 
-export const downloadFeePaymentsTemplate = async (token, feeType = "") => {
+export const downloadFeePaymentsTemplate = async (token, feeType = "", transactionDate = "") => {
     const config = { ...token, responseType: "blob" };
-    const url_path = feeType
-        ? `/api/v1/feepayments/bulk/template/?fee_type=${encodeURIComponent(feeType)}`
+    
+    const params = new URLSearchParams();
+    if (feeType) params.append("fee_type", feeType);
+    if (transactionDate) params.append("transaction_date", transactionDate);
+    
+    const queryString = params.toString();
+    const url_path = queryString 
+        ? `/api/v1/feepayments/bulk/template/?${queryString}`
         : "/api/v1/feepayments/bulk/template/";
+        
     const response = await apiActions?.get(url_path, config);
 
     // Create blob link to download

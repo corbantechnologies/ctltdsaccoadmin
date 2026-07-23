@@ -51,14 +51,21 @@ export const bulkUploadSavingsDeposits = async (values, token) => {
   await apiMultipartActions?.post("/api/v1/savingsdeposits/bulk/upload/", values, token);
 };
 
-export const downloadSavingsDepositsTemplate = async (token, savingType = "") => {
+export const downloadSavingsDepositsTemplate = async (token, savingType = "", transactionDate = "") => {
   const config = {
     headers: { Authorization: `Bearer ${token}` },
     responseType: "blob",
   };
-  const url = savingType 
-    ? `/api/v1/savingsdeposits/bulk/template/?saving_type=${encodeURIComponent(savingType)}`
+  
+  const params = new URLSearchParams();
+  if (savingType) params.append("saving_type", savingType);
+  if (transactionDate) params.append("transaction_date", transactionDate);
+  
+  const queryString = params.toString();
+  const url = queryString 
+    ? `/api/v1/savingsdeposits/bulk/template/?${queryString}`
     : "/api/v1/savingsdeposits/bulk/template/";
+    
   const response = await apiActions?.get(url, config);
   
   // Create blob link to download
