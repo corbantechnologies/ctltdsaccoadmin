@@ -30,6 +30,17 @@ function CreateFeePayment({ isOpen, onClose, refetchMember, accounts }) {
   const token = useAxiosAuth();
   const { data: paymentAccounts, isLoading: isLoadingPayment } = useFetchPaymentAccounts();
 
+  const filteredAccounts = React.useMemo(() => {
+    return accounts?.filter(account => {
+      const balance = parseFloat(account.outstanding_balance) || 0;
+      const canExceed = account.can_exceed_limit === true || account.fee_type_details?.can_exceed_limit === true;
+      const isCleared = balance <= 0 || account.is_paid;
+      return !isCleared || canExceed;
+    }) || [];
+  }, [accounts]);
+
+  const defaultFeeAccount = filteredAccounts.length === 1 ? filteredAccounts[0] : null;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
@@ -41,8 +52,8 @@ function CreateFeePayment({ isOpen, onClose, refetchMember, accounts }) {
 
         <Formik
           initialValues={{
-            fee_account: "",
-            amount: 0,
+            fee_account: defaultFeeAccount ? defaultFeeAccount.account_number : "",
+            amount: defaultFeeAccount ? parseFloat(defaultFeeAccount.outstanding_balance) : 0,
             payment_method: "",
             transaction_status: "Completed",
             transaction_date: new Date().toISOString().split('T')[0],
@@ -87,11 +98,7 @@ function CreateFeePayment({ isOpen, onClose, refetchMember, accounts }) {
                     <SelectValue placeholder="Select fee account" />
                   </SelectTrigger>
                   <SelectContent>
-                    {accounts?.filter(account => {
-                      const balance = parseFloat(account.outstanding_balance) || 0;
-                      const canExceed = account.can_exceed_limit || account.fee_type_details?.can_exceed_limit;
-                      return balance > 0 || canExceed;
-                    }).map((account) => (
+                    {filteredAccounts.map((account) => (
                       <SelectItem
                         key={account.id || account.reference}
                         value={account.account_number}

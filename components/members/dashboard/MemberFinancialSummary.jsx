@@ -48,7 +48,7 @@ export default function MemberFinancialSummary({ summary, memberNo, summaryYear,
     if (!memberNo) return;
     setIsDownloading(true);
     try {
-      const blob = await downloadMemberSummary(memberNo, token);
+      const blob = await downloadMemberSummary(memberNo, summary.year, token);
       const url = window.URL.createObjectURL(new Blob([blob]));
       const link = document.createElement("a");
       link.href = url;

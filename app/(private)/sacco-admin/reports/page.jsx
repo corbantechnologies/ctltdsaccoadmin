@@ -31,7 +31,7 @@ export default function SaccoAdminReports() {
   const [isDownloading, setIsDownloading] = useState(false);
 
   const token = useAxiosAuth();
-  const { data: summary, isLoading, error } = useFetchSaccoSummary();
+  const { data: summary, isLoading, error } = useFetchSaccoSummary(selectedYear);
 
   const years = Array.from({ length: 5 }, (_, i) => (currentYear - i).toString());
 
