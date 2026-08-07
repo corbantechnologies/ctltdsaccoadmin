@@ -336,7 +336,7 @@ export default function LoanAccountDetail({ params }) {
                         loan.loan_payments.map((payment, i) => (
                           <TableRow key={i}>
                             <TableCell className="font-medium">
-                              {format(new Date(payment.created_at), "MMM dd, yyyy")}
+                              {payment.transaction_date}
                             </TableCell>
                             <TableCell className="font-mono text-xs">
                               {payment.transaction_code || payment.reference}
