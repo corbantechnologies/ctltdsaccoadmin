@@ -610,7 +610,7 @@ export default function LoanAccountDetail({ params }) {
                       {loan.disbursements?.map((d, i) => (
                         <TableRow key={i}>
                           <TableCell>
-                            {format(new Date(d.created_at), "MMM dd, yyyy")}
+                            {d.transaction_date}
                           </TableCell>
                           <TableCell>{d.payment_method}</TableCell>
                           <TableCell>{d.disbursement_type}</TableCell>
