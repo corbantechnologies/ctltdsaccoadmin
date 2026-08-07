@@ -16,13 +16,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatCurrency } from "@/lib/utils";
 import {
@@ -48,7 +43,7 @@ export default function MemberFinancialSummary({ summary, memberNo, summaryYear,
     if (!memberNo) return;
     setIsDownloading(true);
     try {
-      const blob = await downloadMemberSummary(memberNo, token);
+      const blob = await downloadMemberSummary(memberNo, summary.year, token);
       const url = window.URL.createObjectURL(new Blob([blob]));
       const link = document.createElement("a");
       link.href = url;
@@ -169,7 +164,36 @@ export default function MemberFinancialSummary({ summary, memberNo, summaryYear,
 }
 
 function SummaryTabContent({ data, type, emptyMessage }) {
-  const [selectedAccountIndex, setSelectedAccountIndex] = useState(0);
+  const getDefaultIndex = () => {
+    if (!data || data.length <= 1) return 0;
+    
+    let bestIdx = 0;
+    let maxVal = -1;
+    
+    data.forEach((acc, idx) => {
+      let balance = 0;
+      if (type === "savings") {
+        balance = parseFloat(acc.monthly_summary?.[11]?.closing_balance || 0);
+      } else if (type === "loans") {
+        balance = parseFloat(acc.monthly_summary?.[11]?.closing_balance || 0);
+      } else if (type === "fees") {
+        balance = parseFloat(acc.totals?.balance_remaining || 0);
+      }
+      
+      if (balance > maxVal) {
+        maxVal = balance;
+        bestIdx = idx;
+      }
+    });
+    
+    return bestIdx;
+  };
+
+  const [selectedAccountIndex, setSelectedAccountIndex] = useState(getDefaultIndex());
+
+  useEffect(() => {
+    setSelectedAccountIndex(getDefaultIndex());
+  }, [data]);
 
   if (!data || data.length === 0) {
     return (
@@ -179,13 +203,7 @@ function SummaryTabContent({ data, type, emptyMessage }) {
     );
   }
 
-  const selectedAccount = data[selectedAccountIndex];
-
-  useEffect(() => {
-    if (selectedAccountIndex >= data.length) {
-      setSelectedAccountIndex(0);
-    }
-  }, [data, selectedAccountIndex]);
+  const selectedAccount = data[selectedAccountIndex] || data[0];
 
   const getAccountLabel = (account) => {
     if (type === "savings")
@@ -199,27 +217,30 @@ function SummaryTabContent({ data, type, emptyMessage }) {
 
   return (
     <div className="space-y-6">
-      {/* Account Selector */}
+      {/* Account Selector - Horizontal Toggle Pills */}
       {data.length > 1 && (
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-          <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">
-            Select Account:
+        <div className="flex flex-col gap-2 border-b pb-4 border-secondary/30">
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Select Account
           </span>
-          <Select
-            value={selectedAccountIndex.toString()}
-            onValueChange={(val) => setSelectedAccountIndex(parseInt(val))}
-          >
-            <SelectTrigger className="w-full sm:w-[320px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {data.map((acc, idx) => (
-                <SelectItem key={idx} value={idx.toString()}>
+          <div className="flex flex-wrap gap-2">
+            {data.map((acc, idx) => {
+              const isActive = idx === selectedAccountIndex;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => setSelectedAccountIndex(idx)}
+                  className={`px-4 py-2 rounded text-xs font-medium border transition-all ${
+                    isActive
+                      ? "bg-primary text-primary-foreground border-primary font-bold shadow-sm"
+                      : "bg-background hover:bg-muted text-muted-foreground border-input"
+                  }`}
+                >
                   {getAccountLabel(acc)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
 

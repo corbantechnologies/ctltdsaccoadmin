@@ -82,11 +82,14 @@ function MemberDetail() {
   } = useFetchMemberDetail(member_no);
 
 
+  const currentYear = new Date().getFullYear();
+  const [summaryYear, setSummaryYear] = useState(currentYear);
+
   const {
     isLoading: isLoadingSummary,
     data: summary,
     refetch: refetchSummary,
-  } = useFetchMemberSummary(member_no);
+  } = useFetchMemberSummary(member_no, summaryYear);
 
   const { data: loanProducts } = useFetchLoanProducts();
   const queryClient = useQueryClient();
@@ -179,13 +182,13 @@ function MemberDetail() {
     if (!member_no) return;
     setIsDownloading(true);
     try {
-      const blob = await downloadMemberSummary(member_no, token);
+      const blob = await downloadMemberSummary(member_no, summaryYear, token);
       const url = window.URL.createObjectURL(new Blob([blob]));
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute(
         "download",
-        `Financial_Summary_${new Date().getFullYear()}.pdf`
+        `Financial_Summary_${summaryYear}.pdf`
       );
       document.body.appendChild(link);
       link.click();
@@ -424,7 +427,12 @@ function MemberDetail() {
 
         {/* Financial Summary */}
         <div className="mt-8">
-          <MemberFinancialSummary summary={summary} memberNo={member_no} />
+          <MemberFinancialSummary
+            summary={summary}
+            memberNo={member_no}
+            summaryYear={summaryYear}
+            setSummaryYear={setSummaryYear}
+          />
         </div>
 
         {/* Quick Action Cards */}

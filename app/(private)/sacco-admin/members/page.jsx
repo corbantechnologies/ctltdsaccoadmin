@@ -191,6 +191,46 @@ function Members() {
                   >
                     <FileDown className="mr-2 h-4 w-4" /> Download Accounts List
                   </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start font-normal"
+                    onClick={() => {
+                      const activeMembers = members?.filter((m) => m.is_active) || [];
+                      if (activeMembers.length === 0) {
+                        toast.error("No active members found!");
+                        setPopoverOpen(false);
+                        return;
+                      }
+
+                      // Create CSV content
+                      const csvRows = [
+                        ["Member Name", "Member Number", "Email"],
+                        ...activeMembers.map((m) => [
+                          `${m.first_name} ${m.middle_name || ""} ${m.last_name}`.replace(/\s+/g, " ").trim(),
+                          m.member_no || "",
+                          m.email || "",
+                        ])
+                      ];
+
+                      const csvContent = csvRows
+                        .map((row) => row.map((val) => `"${String(val).replace(/"/g, '""')}"`).join(","))
+                        .join("\n");
+
+                      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+                      const url = window.URL.createObjectURL(blob);
+                      const link = document.createElement("a");
+                      link.href = url;
+                      link.setAttribute("download", "active_members_list.csv");
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      window.URL.revokeObjectURL(url);
+                      setPopoverOpen(false);
+                      toast.success("Active members list downloaded!");
+                    }}
+                  >
+                    <FileDown className="mr-2 h-4 w-4" /> Download Active Members
+                  </Button>
                 </div>
               </PopoverContent>
             </Popover>

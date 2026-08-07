@@ -4,15 +4,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { bulkUploadFeePayments, downloadFeePaymentsTemplate } from "@/services/feepayments";
+import { useFetchFeeTypes } from "@/hooks/feetypes/actions";
 import { FileUp, X, Download, FileCheck } from "lucide-react";
 import React, { useState, useRef } from "react";
 import toast from "react-hot-toast";
 
 function BulkFeePaymentUpload({ onBatchSuccess }) {
+    const getLastDayOfCurrentMonth = () => {
+        const today = new Date();
+        const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        return lastDay.toISOString().split("T")[0];
+    };
+
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState(null);
+    const [selectedFeeType, setSelectedFeeType] = useState("");
+    const [targetDate, setTargetDate] = useState(getLastDayOfCurrentMonth());
     const fileInputRef = useRef(null);
     const token = useAxiosAuth();
+    const { data: feeTypes } = useFetchFeeTypes();
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
@@ -35,7 +45,7 @@ function BulkFeePaymentUpload({ onBatchSuccess }) {
 
     const handleDownloadTemplate = async () => {
         try {
-            await downloadFeePaymentsTemplate(token);
+            await downloadFeePaymentsTemplate(token, selectedFeeType, targetDate);
             toast.success("Template downloaded successfully!");
         } catch (error) {
             toast.error("Failed to download template.");
@@ -76,7 +86,7 @@ function BulkFeePaymentUpload({ onBatchSuccess }) {
             </div>
 
             <div className="bg-slate-50 rounded p-6 border border-slate-100 space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
                         <div className="bg-white p-2 rounded shadow-sm">
                             <Download className="w-5 h-5 text-[var(--accent)]" />
@@ -86,14 +96,42 @@ function BulkFeePaymentUpload({ onBatchSuccess }) {
                             <p className="text-xs text-slate-500">Download the required structure before uploading.</p>
                         </div>
                     </div>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleDownloadTemplate}
-                        className="border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white"
-                    >
-                        Download Template
-                    </Button>
+                    <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                        <div className="flex flex-col gap-1">
+                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Transaction Date</span>
+                            <Input
+                                type="date"
+                                value={targetDate}
+                                onChange={(e) => setTargetDate(e.target.value)}
+                                className="h-8 text-xs border border-slate-200 w-36 focus-visible:ring-0 bg-white"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Fee Type</span>
+                            <select
+                                value={selectedFeeType}
+                                onChange={(e) => setSelectedFeeType(e.target.value)}
+                                className="border border-slate-200 rounded px-3 py-1.5 text-xs transition-colors bg-white h-8 focus:outline-none w-44"
+                            >
+                                <option value="">-- All Fee Types --</option>
+                                {feeTypes?.map((ft) => (
+                                    <option key={ft.id || ft.reference} value={ft.name}>
+                                        {ft.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="flex items-end h-14">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={handleDownloadTemplate}
+                                className="border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white whitespace-nowrap h-8"
+                            >
+                                Download Template
+                            </Button>
+                        </div>
+                    </div>
                 </div>
             </div>
 

@@ -51,18 +51,28 @@ export const bulkUploadSavingsDeposits = async (values, token) => {
   await apiMultipartActions?.post("/api/v1/savingsdeposits/bulk/upload/", values, token);
 };
 
-export const downloadSavingsDepositsTemplate = async (token) => {
+export const downloadSavingsDepositsTemplate = async (token, savingType = "", transactionDate = "") => {
   const config = {
     headers: { Authorization: `Bearer ${token}` },
     responseType: "blob",
   };
-  const response = await apiActions?.get("/api/v1/savingsdeposits/bulk/template/", config);
+  
+  const params = new URLSearchParams();
+  if (savingType) params.append("saving_type", savingType);
+  if (transactionDate) params.append("transaction_date", transactionDate);
+  
+  const queryString = params.toString();
+  const url = queryString 
+    ? `/api/v1/savingsdeposits/bulk/template/?${queryString}`
+    : "/api/v1/savingsdeposits/bulk/template/";
+    
+  const response = await apiActions?.get(url, config);
   
   // Create blob link to download
-  const url = window.URL.createObjectURL(new Blob([response.data]));
+  const downloadUrl = window.URL.createObjectURL(new Blob([response.data]));
   const link = document.createElement("a");
-  link.href = url;
-  link.setAttribute("download", "savings_deposits_bulk_template.csv");
+  link.href = downloadUrl;
+  link.setAttribute("download", savingType ? `savings_deposits_${savingType.replace(/\s+/g, "_").toLowerCase()}_template.csv` : "savings_deposits_bulk_template.csv");
   document.body.appendChild(link);
   link.click();
   link.remove();

@@ -56,13 +56,13 @@ function CreateDepositAdmin({ isOpen, onClose, refetchMember, accounts }) {
 
         <Formik
           initialValues={{
-            savings_account: accounts?.savings_account || "",
+            savings_account: (accounts && accounts.length === 1) ? accounts[0].account_number : (accounts?.savings_account || ""),
             amount: 0,
             description: "",
             payment_method: "",
             deposit_type: "",
             transaction_status: "Completed",
-            transaction_date: "",
+            transaction_date: new Date().toISOString().split('T')[0],
             is_active: true,
           }}
           onSubmit={async (values) => {

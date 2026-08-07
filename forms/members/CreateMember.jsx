@@ -105,6 +105,7 @@ function CreateMember({ closeModal, openModal }) {
         <Formik
           initialValues={{
             first_name: "",
+            middle_name: "",
             last_name: "",
             email: "",
             employer: "", // a select field with options: Tamarind Management Limited, and others. If Tamarind Management Limited, payroll_no is a must
@@ -173,6 +174,23 @@ function CreateMember({ closeModal, openModal }) {
                     name="first_name"
                     id="first_name"
                     placeholder="John"
+                    className="border-black rounded text-base py-2"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="middle_name"
+                    className="text-base text-black font-medium"
+                  >
+                    Middle Name (Optional)
+                  </Label>
+                  <Field
+                    as={Input}
+                    type="text"
+                    name="middle_name"
+                    id="middle_name"
+                    placeholder="Paul"
                     className="border-black rounded text-base py-2"
                   />
                 </div>

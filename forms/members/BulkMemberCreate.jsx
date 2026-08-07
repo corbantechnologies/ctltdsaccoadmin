@@ -18,6 +18,7 @@ function BulkMemberCreate({ closeModal, openModal }) {
     const emptyMember = {
         member_no: "",
         first_name: "",
+        middle_name: "",
         last_name: "",
         email: "",
         employer: "",
@@ -51,7 +52,7 @@ function BulkMemberCreate({ closeModal, openModal }) {
         const headers = ["Member No", "Name", "Email", "Phone", "Temporary Password"];
         const rows = createdMembers.map(m => [
             m.member_no,
-            `${m.first_name} ${m.last_name}`,
+            `${m.first_name} ${m.middle_name ? m.middle_name + " " : ""}${m.last_name}`,
             m.email || "",
             m.phone || "",
             m.temporary_password || ""
@@ -232,6 +233,23 @@ function BulkMemberCreate({ closeModal, openModal }) {
                                                 placeholder="John"
                                                 value={member.first_name}
                                                 onChange={(e) => handleInputChange(index, "first_name", e.target.value)}
+                                                className="border-black rounded text-base py-2"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label
+                                                htmlFor={`members-${index}-middle_name`}
+                                                className="text-base text-black font-medium"
+                                            >
+                                                Middle Name (Optional)
+                                            </Label>
+                                            <Input
+                                                type="text"
+                                                id={`members-${index}-middle_name`}
+                                                placeholder="Paul"
+                                                value={member.middle_name}
+                                                onChange={(e) => handleInputChange(index, "middle_name", e.target.value)}
                                                 className="border-black rounded text-base py-2"
                                             />
                                         </div>

@@ -31,7 +31,7 @@ export default function SaccoAdminReports() {
   const [isDownloading, setIsDownloading] = useState(false);
 
   const token = useAxiosAuth();
-  const { data: summary, isLoading, error } = useFetchSaccoSummary();
+  const { data: summary, isLoading, error } = useFetchSaccoSummary(selectedYear);
 
   const years = Array.from({ length: 5 }, (_, i) => (currentYear - i).toString());
 
@@ -63,13 +63,14 @@ const SaccoReportsSkeleton = () => (
       </div>
       <div className="h-10 w-48 bg-slate-200 rounded" />
     </div>
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div className="h-24 bg-slate-200 rounded-lg" />
-      <div className="h-24 bg-slate-200 rounded-lg" />
-      <div className="h-24 bg-slate-200 rounded-lg" />
-      <div className="h-24 bg-slate-200 rounded-lg" />
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="h-24 bg-slate-200 rounded" />
+      <div className="h-24 bg-slate-200 rounded" />
+      <div className="h-24 bg-slate-200 rounded" />
+      <div className="h-24 bg-slate-200 rounded" />
+      <div className="h-24 bg-slate-200 rounded" />
     </div>
-    <div className="h-96 bg-slate-200 rounded-lg" />
+    <div className="h-96 bg-slate-200 rounded" />
   </div>
 );
 

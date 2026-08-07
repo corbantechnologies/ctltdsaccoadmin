@@ -184,7 +184,7 @@ function BulkMemberUploadCreate({ closeModal, openModal }) {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-4">
                         <p className="text-sm text-gray-500">
-                            Upload a CSV file containing member data. Ensure it has the correct headers: salutation, first_name, last_name, gender, email, employer, payroll_no, phone.
+                            Upload a CSV file containing member data. Ensure it has the correct headers: first_name, middle_name, last_name, member_no, email, gender, phone, payroll_number, employer.
                         </p>
 
                         <div
