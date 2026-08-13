@@ -115,13 +115,26 @@ function CreateLoanPayment({ isOpen, onClose, refetchLoan, loan_account, maxAmou
                       // Prefer exact server-calculated figure; fall back to model estimate
                       const fillAmount = exactClearanceAmount ?? parseFloat(loanData?.total_clearance_amount ?? 0);
                       if (fillAmount > 0) setFieldValue("amount", fillAmount);
-                    } else if (value === "Regular Repayment") {
+                                        } else if (value === "Regular Repayment") {
                       if (loanData?.projection_snapshot?.schedule?.length > 0) {
                         const nextUnpaid = loanData.projection_snapshot.schedule.find(item => !item.is_paid);
                         const targetItem = nextUnpaid || loanData.projection_snapshot.schedule[0];
                         if (targetItem) {
                           setFieldValue("amount", parseFloat(targetItem.total_due));
                         }
+                      }
+                    } else if (value === "Processing Fee Payment") {
+                      if (loanData?.processing_fees && loanData.processing_fees.length > 0) {
+                        const totalFee = loanData.processing_fees
+                          .filter(f => f.status === 'Pending')
+                          .reduce((acc, f) => acc + (parseFloat(f.amount) || 0) - (parseFloat(f.amount_paid) || 0), 0);
+                        if (totalFee > 0) {
+                          setFieldValue("amount", totalFee);
+                        } else {
+                          setFieldValue("amount", "");
+                        }
+                      } else {
+                        setFieldValue("amount", "");
                       }
                     }
                   }}
@@ -226,3 +239,5 @@ function CreateLoanPayment({ isOpen, onClose, refetchLoan, loan_account, maxAmou
 }
 
 export default CreateLoanPayment;
+
+
