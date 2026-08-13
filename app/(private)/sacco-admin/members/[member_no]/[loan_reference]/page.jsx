@@ -260,7 +260,7 @@ export default function LoanAccountDetail({ params }) {
                 </CardContent>
               </Card>
 
-              <Card className="bg-white border-l-4 border-l-indigo-500">
+                            <Card className="bg-white border-l-4 border-l-indigo-500">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                     Processing Fee
@@ -269,6 +269,19 @@ export default function LoanAccountDetail({ params }) {
                 <CardContent>
                   <p className="text-xl font-semibold text-slate-900">
                     {formatCurrency(loan.processing_fee)}
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-white border-l-4 border-l-red-500">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    Pending Fees
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xl font-semibold text-red-600">
+                    {formatCurrency((loan?.processing_fees || []).filter(f => f.status === 'Pending').reduce((acc, f) => acc + (parseFloat(f.amount) || 0) - (parseFloat(f.amount_paid) || 0), 0))}
                   </p>
                 </CardContent>
               </Card>
@@ -771,6 +784,7 @@ export default function LoanAccountDetail({ params }) {
     </div>
   );
 }
+
 
 
 
