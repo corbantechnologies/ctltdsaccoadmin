@@ -181,7 +181,7 @@ const PersonalLoanDetailSkeleton = () => (
                     {activeTab === 'overview' && (
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                             {/* Summary Cards */}
-                            <div className="lg:col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div className="lg:col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                                 <Card className="border-l-4 border-l-[var(--accent)]">
                                     <CardHeader className="pb-2"><CardTitle className="text-xs uppercase tracking-wider text-slate-500">Outstanding Balance</CardTitle></CardHeader>
                                     <CardContent><p className="text-xl font-semibold text-[var(--accent)]">{formatCurrency(loan.outstanding_balance)}</p></CardContent>
@@ -194,9 +194,17 @@ const PersonalLoanDetailSkeleton = () => (
                                     <CardHeader className="pb-2"><CardTitle className="text-xs uppercase tracking-wider text-slate-500">Interest Accrued</CardTitle></CardHeader>
                                     <CardContent><p className="text-xl font-semibold">{formatCurrency(loan.total_interest_accrued)}</p></CardContent>
                                 </Card>
-                                <Card className="border-l-4 border-l-[#045e32]">
+                                                                <Card className="border-l-4 border-l-[#045e32]">
                                     <CardHeader className="pb-2"><CardTitle className="text-xs uppercase tracking-wider text-slate-500">Total Loan Amount</CardTitle></CardHeader>
                                     <CardContent><p className="text-xl font-semibold text-[#045e32]">{formatCurrency(loan.total_loan_amount)}</p></CardContent>
+                                </Card>
+                                <Card className="border-l-4 border-l-red-500">
+                                    <CardHeader className="pb-2"><CardTitle className="text-xs uppercase tracking-wider text-slate-500">Pending Fees</CardTitle></CardHeader>
+                                    <CardContent>
+                                        <p className="text-xl font-semibold text-red-600">
+                                            {formatCurrency((loan?.processing_fees || []).filter(f => f.status === 'Pending').reduce((acc, f) => acc + (parseFloat(f.amount) || 0) - (parseFloat(f.amount_paid) || 0), 0))}
+                                        </p>
+                                    </CardContent>
                                 </Card>
                             </div>
 
@@ -332,8 +340,8 @@ const PersonalLoanDetailSkeleton = () => (
                                             <TableRow key={i}>
                                                 <TableCell>{formatDate(t.date)}</TableCell>
                                                 <TableCell>
-                                                    <Badge variant={t.type === 'Disbursement' ? "default" : "secondary"}>
-                                                        {t.type}
+                                                                                                        <Badge variant={t.type === 'Disbursement' ? "default" : "secondary"}>
+                                                        {t.type === 'Repayment' ? (t.repayment_type || 'Repayment') : t.type}
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell className="font-semibold">{formatCurrency(t.amount)}</TableCell>
@@ -368,4 +376,5 @@ const PersonalLoanDetailSkeleton = () => (
 }
 
 export default LoanDetail;
+
 
