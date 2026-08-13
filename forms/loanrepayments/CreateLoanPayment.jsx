@@ -29,6 +29,7 @@ const REPAYMENT_TYPE_CHOICES = [
   { value: "Regular Repayment", label: "Regular Repayment" }, //initialize so it picks the amount to be paid that month in the schedule
   { value: "Partial Payment", label: "Partial Payment" },
   { value: "Loan Clearance", label: "Loan Clearance" },
+  { value: "Processing Fee Payment", label: "Processing Fee Payment" },
 ];
 
 function CreateLoanPayment({ isOpen, onClose, refetchLoan, loan_account, maxAmount, loanData, exactClearanceAmount }) {

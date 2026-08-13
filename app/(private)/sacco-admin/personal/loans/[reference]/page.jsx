@@ -267,11 +267,9 @@ const PersonalLoanDetailSkeleton = () => (
                                             <TableHead>Due Date</TableHead>
                                             <TableHead>Principal</TableHead>
                                             <TableHead>{loan.product_details?.interest_method === "Flat" ? "Interest (Flat)" : "Interest (Reducing)"}</TableHead>
-                                            <TableHead>Processing Fee</TableHead>
                                             <TableHead>Total Due</TableHead>
                                             <TableHead>Principal Paid</TableHead>
                                             <TableHead>Interest Paid</TableHead>
-                                            <TableHead>Fees Paid</TableHead>
                                             <TableHead>Total Paid</TableHead>
                                             <TableHead>Uncleared</TableHead>
                                             <TableHead>Status</TableHead>
@@ -285,11 +283,10 @@ const PersonalLoanDetailSkeleton = () => (
                                                 <TableCell>{formatDate(item.due_date)}</TableCell>
                                                 <TableCell>{formatCurrency(item.principal_due)}</TableCell>
                                                 <TableCell>{formatCurrency(item.interest_due)}</TableCell>
-                                                <TableCell>{formatCurrency(item.fee_due)}</TableCell>
+                                                
                                                 <TableCell className="font-semibold text-[#045e32]">{formatCurrency(item.total_due)}</TableCell>
                                                 <TableCell>{formatCurrency(item.principal_paid || 0)}</TableCell>
                                                 <TableCell>{formatCurrency(item.interest_paid || 0)}</TableCell>
-                                                <TableCell>{formatCurrency(item.fee_paid || 0)}</TableCell>
                                                 <TableCell className="font-medium">{formatCurrency(item.amount_paid || 0)}</TableCell>
                                                 <TableCell className="font-medium text-amber-700">{formatCurrency((item.total_due || 0) - (item.amount_paid || 0))}</TableCell>
                                                 <TableCell>
@@ -371,3 +368,4 @@ const PersonalLoanDetailSkeleton = () => (
 }
 
 export default LoanDetail;
+

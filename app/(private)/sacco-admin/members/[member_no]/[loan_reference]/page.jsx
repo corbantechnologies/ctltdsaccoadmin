@@ -416,11 +416,9 @@ export default function LoanAccountDetail({ params }) {
                         <TableHead>Due Date</TableHead>
                         <TableHead>Principal</TableHead>
                         <TableHead>{loan.product_details?.interest_method === "Flat" ? "Interest (Flat)" : "Interest (Reducing)"}</TableHead>
-                        <TableHead>Processing Fee</TableHead>
                         <TableHead>Total Due</TableHead>
                         <TableHead>Principal Paid</TableHead>
                         <TableHead>Interest Paid</TableHead>
-                        <TableHead>Fees Paid</TableHead>
                         <TableHead>Total Paid</TableHead>
                         <TableHead>Total Uncleared</TableHead>
                         <TableHead>Status</TableHead>
@@ -443,9 +441,6 @@ export default function LoanAccountDetail({ params }) {
                             <TableCell>
                               {formatCurrency(item.interest_due)}
                             </TableCell>
-                            <TableCell>
-                              {formatCurrency(item.fee_due)}
-                            </TableCell>
                             <TableCell className="font-semibold text-primary">
                               {formatCurrency(item.total_due)}
                             </TableCell>
@@ -455,9 +450,7 @@ export default function LoanAccountDetail({ params }) {
                             <TableCell>
                               {formatCurrency(item.interest_paid)}
                             </TableCell>
-                            <TableCell>
-                              {formatCurrency(item.fee_paid)}
-                            </TableCell>
+                            
                             <TableCell>
                               {formatCurrency(item.amount_paid)}
                             </TableCell>
@@ -778,3 +771,5 @@ export default function LoanAccountDetail({ params }) {
     </div>
   );
 }
+
+
