@@ -147,7 +147,7 @@ function NextOfKinFormDialog({
               <Button
                 type="submit"
                 className="bg-[#045e32] hover:bg-[#022007] text-white w-full sm:w-auto"
-                disabled={loading || !auth.isEnabled}
+                disabled={loading}
               >
                 {loading ? "Saving..." : isEdit ? "Update" : "Add"}
               </Button>
@@ -160,3 +160,4 @@ function NextOfKinFormDialog({
 }
 
 export default NextOfKinFormDialog;
+

@@ -48,6 +48,7 @@ import {
 import { MemberUpdateLoanApplication } from "@/forms/loanapplications/MemberUpdateLoanApplication";
 import { AdminUpdateLoanApplication } from "@/forms/loanapplications/AdminUpdateLoanApplication";
 import { AdminFinalizeAmendment } from "@/forms/loanapplications/AdminFinalizeAmendment";
+import { AdminEditApprovedApplication } from "@/forms/loanapplications/AdminEditApprovedApplication";
 import {
   submitForAmendment,
   approveLoanApplication,
@@ -80,6 +81,7 @@ export default function AdminLoanApplicationDetail({ params }) {
   const token = useAxiosAuth();
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isAmendModalOpen, setIsAmendModalOpen] = useState(false);
+  const [isAdminEditApprovedModalOpen, setIsAdminEditApprovedModalOpen] = useState(false);
   const [isUpdateAdminModalOpen, setIsUpdateAdminModalOpen] = useState(false);
   const [isGuarantorModalOpen, setIsGuarantorModalOpen] = useState(false);
   const [isDisburseModalOpen, setIsDisburseModalOpen] = useState(false);
@@ -618,7 +620,6 @@ const LoanApplicationDetailSkeleton = () => (
                         <TableHead>Due Date</TableHead>
                         <TableHead>Principal</TableHead>
                         <TableHead>{application.product_details?.interest_method === "Flat" ? "Interest (Flat)" : "Interest (Reducing)"}</TableHead>
-                        <TableHead>Processing Fee</TableHead>
                         <TableHead>Total Due</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className="text-right">{application.product_details?.interest_method === "Flat" ? "Remaining Balance (Total)" : "Remaining Principal"}</TableHead>
@@ -635,9 +636,6 @@ const LoanApplicationDetailSkeleton = () => (
                           </TableCell>
                           <TableCell>
                             {formatCurrency(row.interest_due)}
-                          </TableCell>
-                          <TableCell>
-                            {formatCurrency(row.fee_due)}
                           </TableCell>
                           <TableCell className="font-semibold text-[#045e32]">
                             {formatCurrency(row.total_due)}
@@ -859,6 +857,35 @@ const LoanApplicationDetailSkeleton = () => (
           </div>
         )}
 
+        {/* Admin Edit Approved Application Modal */}
+        {isAdminEditApprovedModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div className="bg-white rounded shadow-xl w-full max-w-md">
+              <div className="flex items-center justify-between p-6 border-b">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Edit Approved Application
+                </h2>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsAdminEditApprovedModalOpen(false)}
+                  className="h-8 w-8 rounded"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="p-6">
+                <AdminEditApprovedApplication
+                  closeModal={() => setIsAdminEditApprovedModalOpen(false)}
+                  reference={reference}
+                  loanApplication={application}
+                  onSuccess={refetch}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Admin Finalize Amendment Modal */}
         {isAmendModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
@@ -923,3 +950,6 @@ const LoanApplicationDetailSkeleton = () => (
     </div>
   );
 }
+
+
+
