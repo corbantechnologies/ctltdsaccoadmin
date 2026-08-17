@@ -14,11 +14,46 @@ import {
 import { Label } from "@/components/ui/label";
 import { Field, Form, Formik } from "formik";
 import { reverseLoanPayment, reverseSavingsDeposit, reverseFeePayment } from "@/services/reversals";
+import { getLoanRepayment } from "@/services/loanrepayments";
+import { getSavingsDepositDetail } from "@/services/savingsdeposits";
+import { getFeePayment } from "@/services/feepayments";
 import toast from "react-hot-toast";
 
 export default function ReversePaymentModal({ isOpen, onClose, refetch, paymentRef, type }) {
   const [loading, setLoading] = useState(false);
+  const [amount, setAmount] = useState(null);
+  const [fetching, setFetching] = useState(false);
   const token = useAxiosAuth();
+
+  React.useEffect(() => {
+    if (!isOpen || !paymentRef) {
+      setAmount(null);
+      return;
+    }
+    
+    const fetchTransactionDetails = async () => {
+      setFetching(true);
+      try {
+        let res;
+        if (type === "SavingsDeposit") {
+          res = await getSavingsDepositDetail(paymentRef, token);
+        } else if (type === "FeePayment") {
+          res = await getFeePayment(paymentRef, token);
+        } else {
+          res = await getLoanRepayment(paymentRef, token);
+        }
+        if (res && res.amount) {
+          setAmount(parseFloat(res.amount));
+        }
+      } catch (error) {
+        console.error("Failed to fetch transaction details:", error);
+      } finally {
+        setFetching(false);
+      }
+    };
+    
+    fetchTransactionDetails();
+  }, [isOpen, paymentRef, type, token]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -26,7 +61,14 @@ export default function ReversePaymentModal({ isOpen, onClose, refetch, paymentR
         <DialogHeader>
           <DialogTitle className="text-red-600">Reverse Transaction</DialogTitle>
           <DialogDescription>
-            This will post mirror contra-entries to the general ledger to reverse the transaction {paymentRef}. This action is permanent.
+            This will post mirror contra-entries to the general ledger to reverse the transaction{" "}
+            <span className="font-semibold text-slate-800 font-mono">{paymentRef}</span>
+            {amount !== null && (
+              <>
+                {" "}of amount <span className="font-semibold text-red-600 font-mono">{amount.toLocaleString()} KES</span>
+              </>
+            )}
+            . This action is permanent.
           </DialogDescription>
         </DialogHeader>
 
