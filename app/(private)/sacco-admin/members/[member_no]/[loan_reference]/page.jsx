@@ -47,7 +47,7 @@ import {
   Calendar,
   User,
   AlertTriangle,
-  Pencil,
+  Pencil, Plus,
 } from "lucide-react";
 import CreateLoanPayment from "@/forms/loanrepayments/CreateLoanPayment";
 import { useFetchLoanPenaltiesByLoanAccountReference } from "@/hooks/loanpenalties/actions";

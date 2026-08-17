@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Field, Form, Formik } from "formik";
-import { reverseLoanPayment, reverseSavingsDeposit } from "@/services/reversals";
+import { reverseLoanPayment, reverseSavingsDeposit, reverseFeePayment } from "@/services/reversals";
 import toast from "react-hot-toast";
 
 export default function ReversePaymentModal({ isOpen, onClose, refetch, paymentRef, type }) {
@@ -43,6 +43,8 @@ export default function ReversePaymentModal({ isOpen, onClose, refetch, paymentR
             try {
               if (type === "SavingsDeposit") {
                 await reverseSavingsDeposit(paymentRef, { reason: values.reason }, token);
+              } else if (type === "FeePayment") {
+                await reverseFeePayment(paymentRef, { reason: values.reason }, token);
               } else {
                 await reverseLoanPayment(paymentRef, { reason: values.reason }, token);
               }
