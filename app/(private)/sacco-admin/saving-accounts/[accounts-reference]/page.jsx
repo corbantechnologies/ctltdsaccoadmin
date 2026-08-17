@@ -24,6 +24,7 @@ import {
     Edit
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import ReversePaymentModal from "@/forms/loans/ReversePaymentModal";
 import { Label } from "@/components/ui/label";
 import {
     Table,
@@ -44,6 +45,8 @@ export default function SavingAccountReferencePage() {
     const updateDepositMutation = useUpdateSavingsDeposit();
 
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [isReverseDialogOpen, setIsReverseDialogOpen] = useState(false);
+    const [selectedDepositForReversal, setSelectedDepositForReversal] = useState(null);
     const [selectedDeposit, setSelectedDeposit] = useState(null);
     const [newDate, setNewDate] = useState("");
 
@@ -261,15 +264,36 @@ const SavingAccountDetailSkeleton = () => (
                                                 </span>
                                             </TableCell>
                                             <TableCell className="text-right pr-6 py-4">
-                                                <Button 
-                                                    variant="ghost" 
-                                                    size="sm" 
-                                                    onClick={() => handleEditClick(dep)}
-                                                    className="text-[var(--accent)] hover:text-[var(--accent)]/80 hover:bg-[var(--accent)]/10"
-                                                >
-                                                    <Edit className="h-4 w-4 mr-2" />
-                                                    Edit Date
-                                                </Button>
+                                                {dep.transaction_status === "Reversed" ? (
+                                                    <span className="bg-red-50 text-red-700 px-2 py-0.5 rounded text-[10px] font-semibold uppercase border border-red-200">
+                                                        Reversed
+                                                    </span>
+                                                ) : (
+                                                    <div className="flex gap-2 justify-end">
+                                                        <Button 
+                                                            variant="ghost" 
+                                                            size="sm" 
+                                                            onClick={() => handleEditClick(dep)}
+                                                            className="text-[var(--accent)] hover:text-[var(--accent)]/80 hover:bg-[var(--accent)]/10 text-xs h-8"
+                                                        >
+                                                            <Edit className="h-3.5 w-3.5 mr-1" />
+                                                            Edit Date
+                                                        </Button>
+                                                        {dep.transaction_status === "Completed" && (
+                                                            <Button 
+                                                                variant="ghost" 
+                                                                size="sm" 
+                                                                onClick={() => {
+                                                                    setSelectedDepositForReversal(dep.reference);
+                                                                    setIsReverseDialogOpen(true);
+                                                                }}
+                                                                className="text-red-600 hover:text-red-700 hover:bg-red-50 text-xs h-8"
+                                                            >
+                                                                Reverse
+                                                            </Button>
+                                                        )}
+                                                    </div>
+                                                )}
                                             </TableCell>
                                         </TableRow>
                                     ))
@@ -287,6 +311,14 @@ const SavingAccountDetailSkeleton = () => (
             </Card>
 
 
+
+            <ReversePaymentModal
+                isOpen={isReverseDialogOpen}
+                onClose={() => setIsReverseDialogOpen(false)}
+                refetch={() => queryClient.invalidateQueries({ queryKey: ["savingDetail", reference] })}
+                paymentRef={selectedDepositForReversal}
+                type="SavingsDeposit"
+            />
 
             {/* Edit Date Modal */}
             <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>

@@ -47,12 +47,15 @@ import {
   Calendar,
   User,
   AlertTriangle,
-  Pencil,
+  Pencil, Plus,
 } from "lucide-react";
 import CreateLoanPayment from "@/forms/loanrepayments/CreateLoanPayment";
 import { useFetchLoanPenaltiesByLoanAccountReference } from "@/hooks/loanpenalties/actions";
 import CreateLoanPenalty from "@/forms/loanpenalties/CreateLoanPenalty";
 import UpdateLoanPenalty from "@/forms/loanpenalties/UpdateLoanPenalty";
+import AdjustScheduleModal from "@/forms/loans/AdjustScheduleModal";
+import CreateTopUpModal from "@/forms/loans/CreateTopUpModal";
+import ReversePaymentModal from "@/forms/loans/ReversePaymentModal";
 
 const LoanDetailSkeleton = () => (
   <div className="mx-auto p-4 sm:p-6 space-y-6 animate-pulse">
@@ -102,6 +105,10 @@ export default function LoanAccountDetail({ params }) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isPenaltyModalOpen, setIsPenaltyModalOpen] = useState(false);
   const [isUpdatePenaltyModalOpen, setIsUpdatePenaltyModalOpen] = useState(false);
+  const [isAdjustScheduleModalOpen, setIsAdjustScheduleModalOpen] = useState(false);
+  const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false);
+  const [isReverseModalOpen, setIsReverseModalOpen] = useState(false);
+  const [selectedPaymentForReversal, setSelectedPaymentForReversal] = useState(null);
   const [selectedPenalty, setSelectedPenalty] = useState(null);
 
   const token = useAxiosAuth();
@@ -204,6 +211,26 @@ export default function LoanAccountDetail({ params }) {
           </div>
 
           <div className="flex gap-2 w-full md:w-auto">
+            {loan.status !== "Closed" && (
+              <>
+                <Button
+                  onClick={() => setIsAdjustScheduleModalOpen(true)}
+                  variant="outline"
+                  className="border-primary/20 text-primary hover:bg-primary/5 flex-1 md:flex-none"
+                >
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Adjust Schedule
+                </Button>
+                <Button
+                  onClick={() => setIsTopUpModalOpen(true)}
+                  variant="outline"
+                  className="border-primary/20 text-primary hover:bg-primary/5 flex-1 md:flex-none"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Top Up Loan
+                </Button>
+              </>
+            )}
             {parseFloat(loan.outstanding_balance) > 0 && (
               <Button
                 onClick={() => setIsPaymentModalOpen(true)}
@@ -360,7 +387,11 @@ export default function LoanAccountDetail({ params }) {
                                 <Badge variant="outline" className="text-[10px] py-0 w-fit">
                                   {payment.repayment_type}
                                 </Badge>
-                                {payment.transaction_status === "Completed" && (
+                                {payment.transaction_status === "Reversed" ? (
+                                  <Badge variant="destructive" className="text-[10px] py-0 w-fit bg-red-100 text-red-700 border-red-200">
+                                    Reversed
+                                  </Badge>
+                                ) : payment.transaction_status === "Completed" && (
                                   payment.posted_to_gl ? (
                                     <span className="text-[10px] text-green-600 flex items-center gap-0.5 font-medium">
                                       <CheckCircle2 className="h-3.5 w-3.5 shrink-0" /> Posted to GL
@@ -386,6 +417,19 @@ export default function LoanAccountDetail({ params }) {
                                       </Button>
                                     </div>
                                   )
+                                )}
+                                {payment.transaction_status === "Completed" && (
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => {
+                                      setSelectedPaymentForReversal(payment.reference);
+                                      setIsReverseModalOpen(true);
+                                    }}
+                                    className="h-6 text-[10px] py-0.5 px-2 w-fit text-red-600 hover:text-red-700 hover:bg-red-50 mt-1"
+                                  >
+                                    Reverse
+                                  </Button>
                                 )}
                               </div>
                             </TableCell>
@@ -779,6 +823,25 @@ export default function LoanAccountDetail({ params }) {
           onClose={() => setIsUpdatePenaltyModalOpen(false)}
           refetchLoan={refetchAll}
           penalty={selectedPenalty}
+        />
+        <AdjustScheduleModal
+          isOpen={isAdjustScheduleModalOpen}
+          onClose={() => setIsAdjustScheduleModalOpen(false)}
+          refetchLoan={refetchAll}
+          loan={loan}
+        />
+        <CreateTopUpModal
+          isOpen={isTopUpModalOpen}
+          onClose={() => setIsTopUpModalOpen(false)}
+          refetchLoan={refetchAll}
+          loan={loan}
+        />
+        <ReversePaymentModal
+          isOpen={isReverseModalOpen}
+          onClose={() => setIsReverseModalOpen(false)}
+          refetch={refetchAll}
+          paymentRef={selectedPaymentForReversal}
+          type="LoanPayment"
         />
       </div>
     </div>

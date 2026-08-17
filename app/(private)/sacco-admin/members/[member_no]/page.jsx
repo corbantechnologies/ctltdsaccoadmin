@@ -48,6 +48,8 @@ import { apiActions } from "@/tools/axios";
 import CreateDepositAdmin from "@/forms/savingsdeposits/CreateDepositAdmin";
 import CreateLoanAccountAdmin from "@/forms/loans/CreateLoanAdmin";
 import CreateFeePayment from "@/forms/feepayments/CreateFeePayment";
+import ReversePaymentModal from "@/forms/loans/ReversePaymentModal";
+import { Receipt } from "lucide-react";
 import UpdateMemberRole from "@/forms/members/UpdateMemberRole";
 import UpdateMemberDetails from "@/forms/members/UpdateMemberDetails";
 import { useFetchLoanProducts } from "@/hooks/loanproducts/actions";
@@ -105,6 +107,15 @@ function MemberDetail() {
     queryClient.invalidateQueries({ queryKey: ["loans"] });
   };
 
+  const allFeePayments = React.useMemo(() => {
+    return member?.fee_accounts?.flatMap(acc => 
+      (acc.fee_payments || []).map(p => ({
+        ...p,
+        fee_type: acc.fee_type
+      }))
+    ).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) || [];
+  }, [member]);
+
   const [isApproving, setIsApproving] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isTogglingStatus, setIsTogglingStatus] = useState(false);
@@ -113,6 +124,8 @@ function MemberDetail() {
   const [feePaymentModal, setFeePaymentModal] = useState(false);
   const [roleModal, setRoleModal] = useState(false);
   const [detailsModal, setDetailsModal] = useState(false);
+  const [isReverseModalOpen, setIsReverseModalOpen] = useState(false);
+  const [selectedFeePaymentForReversal, setSelectedFeePaymentForReversal] = useState(null);
 
   // Pagination states
   const ITEMS_PER_PAGE = 3;
@@ -626,6 +639,88 @@ function MemberDetail() {
               </CardContent>
             </Card>
 
+            <Card className="shadow-md">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <Receipt className="h-6 w-6 text-primary" />
+                  Fee Payment History
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0 sm:p-6">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-gray-50/50">
+                        <TableHead>Date</TableHead>
+                        <TableHead>Fee Type</TableHead>
+                        <TableHead>Reference</TableHead>
+                        <TableHead>Method</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Amount</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {allFeePayments.length > 0 ? (
+                        allFeePayments.map((payment, i) => (
+                          <TableRow key={i}>
+                            <TableCell className="font-medium text-xs">
+                              {payment.transaction_date || (payment.created_at ? payment.created_at.split('T')[0] : 'N/A')}
+                            </TableCell>
+                            <TableCell className="text-xs">
+                              {payment.fee_type}
+                            </TableCell>
+                            <TableCell className="font-mono text-xs">
+                              {payment.code || payment.reference}
+                            </TableCell>
+                            <TableCell className="text-xs">
+                              {payment.payment_method || 'N/A'}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex flex-col gap-1">
+                                {payment.transaction_status === "Reversed" ? (
+                                  <Badge variant="destructive" className="text-[10px] py-0 w-fit bg-red-100 text-red-700 border-red-200">
+                                    Reversed
+                                  </Badge>
+                                ) : (
+                                  <>
+                                    <Badge variant="outline" className="text-[10px] py-0 w-fit text-green-700 border-green-200 bg-green-50">
+                                      Completed
+                                    </Badge>
+                                    {payment.transaction_status === "Completed" && (
+                                      <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        onClick={() => {
+                                          setSelectedFeePaymentForReversal(payment.reference);
+                                          setIsReverseModalOpen(true);
+                                        }}
+                                        className="h-6 text-[10px] py-0.5 px-2 w-fit text-red-600 hover:text-red-700 hover:bg-red-50 mt-1"
+                                      >
+                                        Reverse
+                                      </Button>
+                                    )}
+                                  </>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-right font-semibold text-xs">
+                              {payment.amount.toLocaleString()} KES
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={6} className="text-center h-24 text-muted-foreground text-xs">
+                            No fee payments recorded yet.
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+
             {member?.custom_attributes && Object.keys(member.custom_attributes).length > 0 && (
               <Card className="shadow-md">
                 <CardHeader>
@@ -906,6 +1001,13 @@ function MemberDetail() {
           onClose={() => setDetailsModal(false)}
           refetchMember={handleRefreshAll}
           member={member}
+        />
+        <ReversePaymentModal
+          isOpen={isReverseModalOpen}
+          onClose={() => setIsReverseModalOpen(false)}
+          refetch={handleRefreshAll}
+          paymentRef={selectedFeePaymentForReversal}
+          type="FeePayment"
         />
       </div>
     </div>
