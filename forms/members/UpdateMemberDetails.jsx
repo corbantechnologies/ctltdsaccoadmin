@@ -194,7 +194,6 @@ function UpdateMemberDetails({ member, isOpen, onClose, refetchMember }) {
                         type="tel"
                         name="phone"
                         id="phone"
-                        required
                         className="h-9 border-slate-300 bg-white"
                       />
                     </div>
