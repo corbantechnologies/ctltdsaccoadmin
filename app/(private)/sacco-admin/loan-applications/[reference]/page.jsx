@@ -87,11 +87,7 @@ export default function AdminLoanApplicationDetail({ params }) {
   const [isDisburseModalOpen, setIsDisburseModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  console.log(application);
-
-  // TODO: Verify how to identify "My Application" (e.g., check created_by vs current user)
-  // For now, assuming false to show Admin actions by default, or true if status requires member action
-  // In a real scenario, this should be: const isOwnApplication = application?.created_by === currentUser.id;
+  // isOwnApplication: admin portal always shows admin view
   const isOwnApplication = false;
 
   const handleSubmitForAmendment = async () => {
@@ -379,7 +375,7 @@ const LoanApplicationDetailSkeleton = () => (
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+          <div className="flex flex-wrap gap-2 w-full md:w-auto">
             <Badge
               className={getStatusColor(application.status)}
               variant="outline"
@@ -612,9 +608,9 @@ const LoanApplicationDetailSkeleton = () => (
                     : "Reducing balance: interest is charged on the remaining principal each period. The balance column shows remaining principal after each payment."}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="p-0 sm:p-6">
-                <div className="overflow-x-auto">
-                  <Table>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto w-full">
+                  <Table className="min-w-[600px]">
                     <TableHeader>
                       <TableRow className="bg-gray-50/50">
                         <TableHead>Due Date</TableHead>
