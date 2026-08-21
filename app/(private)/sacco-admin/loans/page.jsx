@@ -190,8 +190,8 @@ export default function LoansManagementPage() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="overflow-x-auto">
-                                <Table>
+                            <div className="overflow-x-auto w-full">
+                                <Table className="min-w-[800px]">
                                     <TableHeader>
                                         <TableRow>
                                             <TableHead>Member</TableHead>

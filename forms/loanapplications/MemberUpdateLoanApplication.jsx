@@ -107,6 +107,9 @@ export function MemberUpdateLoanApplication({
                   const isFlatRate =
                     loanApplication?.product_details?.interest_method === "Flat" ||
                     loanApplication?.interest_method === "Flat";
+                  const isReducing =
+                    loanApplication?.product_details?.interest_method === "Reducing" ||
+                    loanApplication?.interest_method === "Reducing";
 
                   return (
                     <div>
@@ -126,13 +129,18 @@ export function MemberUpdateLoanApplication({
                       >
                         <option value="">Select mode</option>
                         <option value="fixed_term">Fixed Term</option>
-                        <option value="fixed_payment" disabled={isFlatRate}>
-                          Fixed Payment {isFlatRate && "(Not available for Flat Rate)"}
+                        <option value="fixed_payment" disabled={isFlatRate || isReducing}>
+                          Fixed Payment {isFlatRate ? "(Not available for Flat Rate)" : isReducing ? "(Not available for Reducing Balance)" : ""}
                         </option>
                       </select>
                       {isFlatRate && (
                         <p className="text-xs text-muted-foreground mt-1">
                           Flat-rate loans require a fixed term.
+                        </p>
+                      )}
+                      {isReducing && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Reducing balance loans require a fixed term.
                         </p>
                       )}
                     </div>

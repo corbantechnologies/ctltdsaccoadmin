@@ -2,19 +2,58 @@
 import { SACCO_CONFIG } from "@/lib/sacco-config";
 
 import { Button } from "@/components/ui/button";
-import { Menu as MenuIcon, X as XIcon, ChevronDown, ChevronRight } from "lucide-react";
+import {
+  Menu as MenuIcon,
+  X as XIcon,
+  ChevronDown,
+  ChevronRight,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Moon,
+  Sun,
+} from "lucide-react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
-import React, { useState } from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
+import { useTheme } from "next-themes";
 
+// ─── Sidebar Context ──────────────────────────────────────────────────────────
+export const SidebarContext = createContext({ isCollapsed: false, toggle: () => {} });
+export const useSidebar = () => useContext(SidebarContext);
+
+export function SidebarProvider({ children }) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  // Restore preference from localStorage on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("sacco-admin-sidebar-collapsed");
+      if (stored !== null) setIsCollapsed(JSON.parse(stored));
+    } catch {}
+  }, []);
+
+  const toggle = () => {
+    setIsCollapsed((prev) => {
+      const next = !prev;
+      try { localStorage.setItem("sacco-admin-sidebar-collapsed", JSON.stringify(next)); } catch {}
+      return next;
+    });
+  };
+
+  return (
+    <SidebarContext.Provider value={{ isCollapsed, toggle }}>
+      {children}
+    </SidebarContext.Provider>
+  );
+}
+
+// ─── Menu Links ───────────────────────────────────────────────────────────────
 const MENU_LINKS = [
   { label: "Dashboard", href: "/sacco-admin/dashboard" },
-  // Members
   {
     label: "Members",
     href: "/sacco-admin/members",
   },
-  // Products
   {
     label: "Savings & Deposits",
     href: "/sacco-admin/saving-accounts",
@@ -41,7 +80,6 @@ const MENU_LINKS = [
       { label: "Loan Products", href: "/sacco-admin/setup/loan-products" },
     ],
   },
-  // Accounting & Reports
   {
     label: "Accounting & Financials",
     href: "/sacco-admin/accounting",
@@ -53,17 +91,14 @@ const MENU_LINKS = [
       { label: "Accounts & Transactions", href: "/sacco-admin/transactions" },
     ],
   },
-  // Setup
   {
     label: "Setup & Configuration",
     href: "/sacco-admin/setup",
     children: [
       { label: "Onboarding", href: "/sacco-admin/onboarding" },
       { label: "Platform Setup", href: "/sacco-admin/setup" },
-
     ],
   },
-  // Personal
   {
     label: "Personal",
     href: "/sacco-admin/personal",
@@ -72,16 +107,15 @@ const MENU_LINKS = [
       { label: "General Settings", href: "/sacco-admin/settings" },
       { label: "Guarantor Profile", href: "/sacco-admin/personal/guarantorprofile" },
     ],
-  }
+  },
 ];
 
+// ─── Nav Item ─────────────────────────────────────────────────────────────────
 const NavItem = ({ link, setIsMenuOpen }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleClick = () => {
-    if (setIsMenuOpen) {
-      setIsMenuOpen(false);
-    }
+    if (setIsMenuOpen) setIsMenuOpen(false);
   };
 
   if (link.children) {
@@ -89,9 +123,9 @@ const NavItem = ({ link, setIsMenuOpen }) => {
       <div className="flex flex-col">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-between w-full px-4 py-2.5 text-[14px] font-semibold hover:bg-slate-50 rounded transition-colors text-left group"
+          className="flex items-center justify-between w-full px-4 py-2.5 text-[14px] font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 rounded transition-colors text-left group"
         >
-          <span className="group-hover:text-[var(--accent)]">{link.label}</span>
+          <span className="group-hover:text-[var(--accent)] dark:text-slate-200 dark:group-hover:text-[var(--accent)]">{link.label}</span>
           {isOpen ? (
             <ChevronDown className="w-4 h-4 text-slate-400" />
           ) : (
@@ -100,12 +134,12 @@ const NavItem = ({ link, setIsMenuOpen }) => {
         </button>
 
         {isOpen && (
-          <div className="ml-4 mt-1 mb-2 flex flex-col border-l border-slate-100 pl-3 space-y-1">
+          <div className="ml-4 mt-1 mb-2 flex flex-col border-l border-slate-100 dark:border-slate-700 pl-3 space-y-1">
             {link.children.map((child) => (
               <Link
                 key={child.href}
                 href={child.href}
-                className="px-3 py-1.5 text-[13px] text-slate-600 hover:text-[var(--accent)] hover:bg-slate-50 rounded transition-colors"
+                className="px-3 py-1.5 text-[13px] text-slate-600 dark:text-slate-400 hover:text-[var(--accent)] hover:bg-slate-50 dark:hover:bg-slate-800 rounded transition-colors"
                 onClick={handleClick}
               >
                 {child.label}
@@ -120,7 +154,7 @@ const NavItem = ({ link, setIsMenuOpen }) => {
   return (
     <Link
       href={link.href}
-      className="block px-4 py-2.5 text-[14px] font-semibold hover:bg-slate-50 hover:text-[var(--accent)] rounded transition-colors"
+      className="block px-4 py-2.5 text-[14px] font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-[var(--accent)] rounded transition-colors dark:text-slate-200"
       onClick={handleClick}
     >
       {link.label}
@@ -128,12 +162,33 @@ const NavItem = ({ link, setIsMenuOpen }) => {
   );
 };
 
+// ─── Dark Mode Toggle ─────────────────────────────────────────────────────────
+function DarkModeToggle({ className = "" }) {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return <div className={`w-9 h-9 ${className}`} />;
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      className={`text-white hover:bg-white/10 ${className}`}
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      aria-label="Toggle dark mode"
+    >
+      {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+    </Button>
+  );
+}
+
+// ─── Main Navbar ──────────────────────────────────────────────────────────────
 export default function SaccoAdminNavbar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const { isCollapsed, toggle } = useSidebar();
 
   const sidebarContent = (setIsMenuOpen) => (
-    <div className="h-full flex flex-col bg-white">
-      <div className="p-6 border-b flex items-center justify-between">
+    <div className="h-full flex flex-col bg-white dark:bg-slate-900">
+      <div className="p-6 border-b dark:border-slate-700 flex items-center justify-between">
         <Link
           href="/sacco-admin/dashboard"
           className="flex items-center gap-2"
@@ -144,6 +199,7 @@ export default function SaccoAdminNavbar() {
             <span className="text-[10px] font-normal uppercase tracking-[2px] opacity-75 ml-1.5 block">ADMIN</span>
           </span>
         </Link>
+        {/* Mobile close button */}
         {setIsMenuOpen && (
           <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(false)} className="md:hidden">
             <XIcon className="h-5 w-5" />
@@ -157,10 +213,10 @@ export default function SaccoAdminNavbar() {
         ))}
       </nav>
 
-      <div className="p-4 border-t">
+      <div className="p-4 border-t dark:border-slate-700">
         <Button
           variant="outline"
-          className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 rounded font-semibold"
+          className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 rounded font-semibold dark:border-red-900 dark:text-red-400 dark:hover:bg-red-900/20"
           onClick={() => {
             if (setIsMenuOpen) setIsMenuOpen(false);
             signOut({ callbackUrl: "/login" });
@@ -175,35 +231,57 @@ export default function SaccoAdminNavbar() {
   return (
     <>
       {/* Top Navbar */}
-      <header className="bg-[var(--accent)] text-white sticky top-0 z-30 shadow h-16 flex items-center justify-between px-4 md:px-6 md:ml-64">
+      <header
+        className="bg-[var(--accent)] text-white sticky top-0 z-30 shadow h-16 flex items-center justify-between px-4 md:px-6 transition-all duration-300"
+        style={{ marginLeft: isCollapsed ? 0 : undefined }}
+        // On desktop we use inline style to match sidebar; on mobile ml-0 always
+      >
         <div className="flex items-center gap-2">
+          {/* Mobile hamburger */}
           <Button
             variant="ghost"
             size="icon"
             className="text-white hover:bg-white/10 mr-1 md:hidden"
             onClick={() => setIsMobileOpen(true)}
+            aria-label="Open navigation menu"
           >
             <MenuIcon className="h-6 w-6" />
+          </Button>
+          {/* Desktop sidebar toggle */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-white hover:bg-white/10 mr-1 hidden md:flex"
+            onClick={toggle}
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {isCollapsed ? <PanelLeftOpen className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
           </Button>
           <Link href="/sacco-admin/dashboard" className="flex items-center gap-2">
             <span className="text-xl font-semibold tracking-tight">
               {SACCO_CONFIG.name}
-              <span className="text-[10px] font-normal uppercase tracking-[2px] opacity-75 ml-1.5">ADMIN</span>
+              <span className="text-[10px] font-normal uppercase tracking-[2px] opacity-75 ml-1.5 hidden sm:inline-block">ADMIN</span>
             </span>
           </Link>
         </div>
+        <DarkModeToggle />
       </header>
 
       {/* Mobile Sidebar (Slides in from Left) */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r shadow-2xl flex flex-col transition-transform duration-300 md:hidden ${isMobileOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-slate-900 border-r dark:border-slate-700 shadow-2xl flex flex-col transition-transform duration-300 md:hidden ${
+          isMobileOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         {sidebarContent(setIsMobileOpen)}
       </div>
 
-      {/* Desktop Sidebar (Persistent on the Left) */}
-      <aside className="hidden md:flex flex-col w-64 fixed inset-y-0 left-0 z-40 bg-white border-r shadow-sm">
+      {/* Desktop Sidebar */}
+      <aside
+        className={`hidden md:flex flex-col fixed inset-y-0 left-0 z-40 bg-white dark:bg-slate-900 border-r dark:border-slate-700 shadow-sm transition-all duration-300 overflow-hidden ${
+          isCollapsed ? "w-0 border-r-0" : "w-64"
+        }`}
+      >
         {sidebarContent(null)}
       </aside>
 

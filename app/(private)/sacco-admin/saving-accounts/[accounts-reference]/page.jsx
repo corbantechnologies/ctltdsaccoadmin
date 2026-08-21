@@ -215,8 +215,8 @@ const SavingAccountDetailSkeleton = () => (
                     </div>
                 </CardHeader>
                 <CardContent className="p-0">
-                    <div className="overflow-x-auto">
-                        <Table>
+                    <div className="overflow-x-auto w-full">
+                        <Table className="min-w-[800px]">
                             <TableHeader>
                                 <TableRow className="bg-slate-50/50">
                                     <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 pl-6 py-3">Reference</TableHead>

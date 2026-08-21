@@ -159,6 +159,7 @@ export function CreateLoanApplication({ onSuccess, memberPath }) {
                     (p) => p.name === values.product
                   );
                   const isFlatRate = selectedProd?.interest_method === "Flat";
+                  const isReducing = selectedProd?.interest_method === "Reducing";
 
                   return (
                     <div>
@@ -178,13 +179,18 @@ export function CreateLoanApplication({ onSuccess, memberPath }) {
                       >
                         <option value="">Select mode</option>
                         <option value="fixed_term">Fixed Term</option>
-                        <option value="fixed_payment" disabled={isFlatRate}>
-                          Fixed Payment {isFlatRate && "(Not available for Flat Rate)"}
+                        <option value="fixed_payment" disabled={isFlatRate || isReducing}>
+                          Fixed Payment {isFlatRate ? "(Not available for Flat Rate)" : isReducing ? "(Not available for Reducing Balance)" : ""}
                         </option>
                       </select>
                       {isFlatRate && (
                         <p className="text-xs text-muted-foreground mt-1">
                           Flat-rate loans require a fixed term.
+                        </p>
+                      )}
+                      {isReducing && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Reducing balance loans require a fixed term.
                         </p>
                       )}
                     </div>

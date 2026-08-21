@@ -1,6 +1,7 @@
 import "./globals.css";
 import TanstackQueryProvider from "@/providers/TanstackQueryProvider";
 import NextAuthProvider from "@/providers/NextAuthProvider";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import { Toaster } from "react-hot-toast";
 import { Theme } from "@radix-ui/themes";
 import { Analytics } from "@vercel/analytics/next";
@@ -18,7 +19,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" style={{
+    <html lang="en" suppressHydrationWarning style={{
       '--primary': SACCO_CONFIG.primaryColor,
       '--primary-hover': SACCO_CONFIG.primaryHoverColor,
       '--accent': SACCO_CONFIG.accentColor,
@@ -32,6 +33,7 @@ export default function RootLayout({ children }) {
       <head>
         <title>{SACCO_CONFIG.name}</title>
         <meta name="description" content={SACCO_CONFIG.tagline} />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <link rel="icon" href={SACCO_CONFIG.logoSmallUrl || SACCO_CONFIG.logoUrl} />
         <link rel="shortcut icon" href={SACCO_CONFIG.logoSmallUrl || SACCO_CONFIG.logoUrl} />
         <link rel="apple-touch-icon" href={SACCO_CONFIG.logoSmallUrl || SACCO_CONFIG.logoUrl} />
@@ -42,13 +44,15 @@ export default function RootLayout({ children }) {
         <meta name="apple-mobile-web-app-title" content={SACCO_CONFIG.shortName} />
       </head>
       <body>
-        <Toaster position="top-center" />
-        <Analytics />
-        <NextAuthProvider>
-          <TanstackQueryProvider>
-            <Theme>{children}</Theme>
-          </TanstackQueryProvider>
-        </NextAuthProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
+          <Toaster position="top-center" />
+          <Analytics />
+          <NextAuthProvider>
+            <TanstackQueryProvider>
+              <Theme>{children}</Theme>
+            </TanstackQueryProvider>
+          </NextAuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

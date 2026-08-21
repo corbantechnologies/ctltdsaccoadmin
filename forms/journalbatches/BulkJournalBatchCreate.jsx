@@ -4,13 +4,13 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Trash2, Save, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Plus, Trash2, Save, AlertCircle, CheckCircle2, X } from "lucide-react";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { bulkCreateJournalBatches } from "@/services/journalbatches";
 import { useFetchGLAccounts } from "@/hooks/glaccounts/actions";
 import toast from "react-hot-toast";
 
-function BulkJournalBatchCreate({ onBatchSuccess }) {
+function BulkJournalBatchCreate({ onBatchSuccess, preselectedAccount }) {
   const [loading, setLoading] = useState(false);
   const token = useAxiosAuth();
   const { data: glAccounts, isLoading: isLoadingGL } = useFetchGLAccounts();
@@ -21,19 +21,30 @@ function BulkJournalBatchCreate({ onBatchSuccess }) {
     credit: "0.00",
   };
 
-  const emptyBatch = {
+  const makeBatch = (withPreselected = false) => ({
     description: "",
     posting_date: new Date().toISOString().split("T")[0],
     reference: "",
-    entries: [{ ...emptyEntry }, { ...emptyEntry }],
-  };
+    entries: [
+      { account: withPreselected && preselectedAccount ? preselectedAccount.name : "", debit: "0.00", credit: "0.00" },
+      { ...emptyEntry },
+    ],
+  });
 
-  const [batches, setBatches] = useState([{ ...emptyBatch }]);
+  const [batches, setBatches] = useState([makeBatch(true)]);
+
+  // Re-initialise if preselectedAccount changes after mount
+  useEffect(() => {
+    if (preselectedAccount) {
+      setBatches([makeBatch(true)]);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preselectedAccount?.reference]);
 
   // Batch handlers
   const addBatch = () => {
     if (batches.length < 5) {
-      setBatches([...batches, { ...emptyBatch }]);
+      setBatches([...batches, makeBatch(false)]);
     }
   };
 
@@ -101,7 +112,7 @@ function BulkJournalBatchCreate({ onBatchSuccess }) {
       setLoading(true);
       await bulkCreateJournalBatches(batches, token);
       toast.success("All batches created successfully!");
-      setBatches([{ ...emptyBatch }]);
+      setBatches([makeBatch(!!preselectedAccount)]);
       if (onBatchSuccess) onBatchSuccess();
     } catch (error) {
       console.error("Bulk create error:", error.response?.data);

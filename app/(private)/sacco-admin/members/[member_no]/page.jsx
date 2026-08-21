@@ -647,8 +647,8 @@ function MemberDetail() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0 sm:p-6">
-                <div className="overflow-x-auto">
-                  <Table>
+                <div className="overflow-x-auto w-full">
+                  <Table className="min-w-[600px]">
                     <TableHeader>
                       <TableRow className="bg-gray-50/50">
                         <TableHead>Date</TableHead>
