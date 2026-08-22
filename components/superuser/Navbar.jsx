@@ -77,7 +77,7 @@ export default function SuperuserNavbar() {
   return (
     <>
       {/* Top Navbar */}
-      <header className="bg-slate-900 text-white sticky top-0 z-50 shadow">
+      <header className="bg-slate-900 text-white z-50 shadow">
         <div className="mx-auto px-6 py-4 flex justify-between items-center">
           <Link href="/superuser/dashboard" className="flex items-center gap-2">
             <span className="text-xl md:text-2xl font-bold tracking-tight">

@@ -89,7 +89,7 @@ function MemberNavbar() {
   return (
     <>
       {/* Top Navbar */}
-      <header className="bg-[var(--primary)] text-white sticky top-0 z-30 shadow h-16 flex items-center justify-between px-4 md:px-6 md:ml-64">
+      <header className="bg-[var(--primary)] text-white z-30 shadow h-16 flex items-center justify-between px-4 md:px-6 md:ml-64">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"

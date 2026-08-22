@@ -214,7 +214,7 @@ export default function SaccoAdminNavbar() {
     <>
       {/* Top Navbar */}
       <header
-        className={`bg-[var(--accent)] text-white sticky top-0 z-30 shadow h-16 flex items-center justify-between px-4 md:px-6 transition-all duration-300 ${
+        className={`bg-[var(--accent)] text-white z-30 shadow h-16 flex items-center justify-between px-4 md:px-6 transition-all duration-300 ${
           isCollapsed ? "md:pl-6" : "md:pl-[17rem]"
         }`}
       >
