@@ -15,7 +15,6 @@ import {
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import React, { useState, useEffect, createContext, useContext } from "react";
-import { useTheme } from "next-themes";
 
 // ─── Sidebar Context ──────────────────────────────────────────────────────────
 export const SidebarContext = createContext({ isCollapsed: false, toggle: () => {} });
@@ -162,24 +161,7 @@ const NavItem = ({ link, setIsMenuOpen }) => {
   );
 };
 
-// ─── Dark Mode Toggle ─────────────────────────────────────────────────────────
-function DarkModeToggle({ className = "" }) {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  if (!mounted) return <div className={`w-9 h-9 ${className}`} />;
-  return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className={`text-white hover:bg-white/10 ${className}`}
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      aria-label="Toggle dark mode"
-    >
-      {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-    </Button>
-  );
-}
+// --- Removed Dark Mode Toggle ---
 
 // ─── Main Navbar ──────────────────────────────────────────────────────────────
 export default function SaccoAdminNavbar() {
@@ -232,9 +214,9 @@ export default function SaccoAdminNavbar() {
     <>
       {/* Top Navbar */}
       <header
-        className="bg-[var(--accent)] text-white sticky top-0 z-30 shadow h-16 flex items-center justify-between px-4 md:px-6 transition-all duration-300"
-        style={{ marginLeft: isCollapsed ? 0 : undefined }}
-        // On desktop we use inline style to match sidebar; on mobile ml-0 always
+        className={`bg-[var(--accent)] text-white sticky top-0 z-30 shadow h-16 flex items-center justify-between px-4 md:px-6 transition-all duration-300 ${
+          isCollapsed ? "md:pl-6" : "md:pl-[17rem]"
+        }`}
       >
         <div className="flex items-center gap-2">
           {/* Mobile hamburger */}
@@ -264,7 +246,6 @@ export default function SaccoAdminNavbar() {
             </span>
           </Link>
         </div>
-        <DarkModeToggle />
       </header>
 
       {/* Mobile Sidebar (Slides in from Left) */}

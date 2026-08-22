@@ -1,7 +1,7 @@
 import "./globals.css";
 import TanstackQueryProvider from "@/providers/TanstackQueryProvider";
 import NextAuthProvider from "@/providers/NextAuthProvider";
-import { ThemeProvider } from "@/providers/ThemeProvider";
+
 import { Toaster } from "react-hot-toast";
 import { Theme } from "@radix-ui/themes";
 import { Analytics } from "@vercel/analytics/next";
@@ -44,7 +44,6 @@ export default function RootLayout({ children }) {
         <meta name="apple-mobile-web-app-title" content={SACCO_CONFIG.shortName} />
       </head>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           <Toaster position="top-center" />
           <Analytics />
           <NextAuthProvider>
@@ -52,7 +51,6 @@ export default function RootLayout({ children }) {
               <Theme>{children}</Theme>
             </TanstackQueryProvider>
           </NextAuthProvider>
-        </ThemeProvider>
       </body>
     </html>
   );
