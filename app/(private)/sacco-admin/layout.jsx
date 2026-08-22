@@ -10,7 +10,7 @@ function SaccoAdminContent({ children }) {
       style={{ paddingLeft: isCollapsed ? 0 : undefined }}
     >
       {/* On desktop, shift content right by sidebar width when open */}
-      <div className={`transition-all duration-300 ${isCollapsed ? "md:pl-0" : "md:pl-64"}`}>
+      <div className={`transition-all duration-300 w-full min-w-0 ${isCollapsed ? "md:pl-0" : "md:pl-64"}`}>
         {children}
       </div>
     </main>
@@ -20,7 +20,7 @@ function SaccoAdminContent({ children }) {
 function SaccoAdminLayout({ children }) {
   return (
     <SidebarProvider>
-      <div className="admin-theme min-h-screen bg-background">
+      <div className="admin-theme min-h-screen bg-background w-full overflow-x-hidden">
         <SaccoAdminNavbar />
         <SaccoAdminContent>{children}</SaccoAdminContent>
       </div>
