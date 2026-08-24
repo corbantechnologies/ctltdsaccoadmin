@@ -150,6 +150,7 @@
   }
 
   body {
+    overflow-x: clip;
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
   }

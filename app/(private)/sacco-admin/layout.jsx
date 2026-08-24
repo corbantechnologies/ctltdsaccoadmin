@@ -20,7 +20,7 @@ function SaccoAdminContent({ children }) {
 function SaccoAdminLayout({ children }) {
   return (
     <SidebarProvider>
-      <div className="admin-theme min-h-screen bg-background w-full overflow-x-hidden">
+      <div className="admin-theme min-h-screen bg-background">
         <SaccoAdminNavbar />
         <SaccoAdminContent>{children}</SaccoAdminContent>
       </div>
