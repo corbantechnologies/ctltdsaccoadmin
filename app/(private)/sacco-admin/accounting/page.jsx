@@ -66,26 +66,75 @@ export default function AccountingPage() {
 
     // States for GL Accounts
     const [createGLOpen, setCreateGLOpen] = useState(false);
+    const [glSearch, setGlSearch] = useState("");
     const { data: glAccounts, isLoading: isLoadingGL, refetch: refetchGL } = useFetchGLAccounts();
+
+    const filteredGLAccounts = useMemo(() => {
+        if (!glAccounts) return [];
+        if (!glSearch) return glAccounts;
+        const lower = glSearch.toLowerCase();
+        return glAccounts.filter(acc => 
+            (acc.name && acc.name.toLowerCase().includes(lower)) || 
+            (acc.code && acc.code.toLowerCase().includes(lower)) || 
+            (acc.category && acc.category.toLowerCase().includes(lower))
+        );
+    }, [glAccounts, glSearch]);
 
     // States for Journal Batches
     const { data: journalBatches, isLoading: isLoadingBatches, refetch: refetchBatches } = useFetchJournalBatches();
     const [selectedBatch, setSelectedBatch] = useState(null);
     const [batchDetailsOpen, setBatchDetailsOpen] = useState(false);
     const [batchViewMode, setBatchViewMode] = useState("list"); // "list", "form", "upload"
+    const [batchSearch, setBatchSearch] = useState("");
+    const [batchDateFrom, setBatchDateFrom] = useState("");
+    const [batchDateTo, setBatchDateTo] = useState("");
+    const [batchCurrentPage, setBatchCurrentPage] = useState(1);
+    const batchItemsPerPage = 50;
+
+    const filteredBatches = useMemo(() => {
+        if (!journalBatches) return [];
+        return journalBatches.filter(batch => {
+            let match = true;
+            if (batchSearch) {
+                const searchLower = batchSearch.toLowerCase();
+                match = (batch.code && batch.code.toLowerCase().includes(searchLower)) || 
+                        (batch.description && batch.description.toLowerCase().includes(searchLower));
+            }
+            if (match && batchDateFrom) {
+                if (batch.posting_date < batchDateFrom) match = false;
+            }
+            if (match && batchDateTo) {
+                if (batch.posting_date > batchDateTo) match = false;
+            }
+            return match;
+        });
+    }, [journalBatches, batchSearch, batchDateFrom, batchDateTo]);
+
+    // Pagination for Batches
+    const totalBatchPages = Math.ceil(filteredBatches.length / batchItemsPerPage) || 1;
+    const paginatedBatches = useMemo(() => {
+        return filteredBatches.slice(
+            (batchCurrentPage - 1) * batchItemsPerPage,
+            batchCurrentPage * batchItemsPerPage
+        );
+    }, [filteredBatches, batchCurrentPage, batchItemsPerPage]);
 
     // States for Journal Entries
     const [page, setPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedGL, setSelectedGL] = useState("all");
     const [selectedBatchFilter, setSelectedBatchFilter] = useState("all");
+    const [entryDateFrom, setEntryDateFrom] = useState("");
+    const [entryDateTo, setEntryDateTo] = useState("");
 
     const params = useMemo(() => ({
         page,
         search: searchQuery || undefined,
         account: selectedGL !== "all" ? selectedGL : undefined,
         batch: selectedBatchFilter !== "all" ? selectedBatchFilter : undefined,
-    }), [page, searchQuery, selectedGL, selectedBatchFilter]);
+        start_date: entryDateFrom || undefined,
+        end_date: entryDateTo || undefined,
+    }), [page, searchQuery, selectedGL, selectedBatchFilter, entryDateFrom, entryDateTo]);
 
     const { data: entriesData, isLoading: isLoadingEntries } = useFetchJournalEntries(params);
 
@@ -142,13 +191,26 @@ export default function AccountingPage() {
                 <TabsContent value="gl-accounts">
                     <Card className="shadow-sm border-none">
                         <CardHeader className="bg-white border-b rounded-t p-4 md:p-6">
-                            <CardTitle className="text-lg font-semibold">Chart of Accounts</CardTitle>
-                            <CardDescription>All general ledger accounts configured in the system</CardDescription>
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                <div>
+                                    <CardTitle className="text-lg font-semibold">Chart of Accounts</CardTitle>
+                                    <CardDescription>All general ledger accounts configured in the system</CardDescription>
+                                </div>
+                                <div className="relative">
+                                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
+                                    <Input
+                                        placeholder="Search GL accounts..."
+                                        className="pl-9 w-[250px] h-9 text-xs"
+                                        value={glSearch}
+                                        onChange={(e) => setGlSearch(e.target.value)}
+                                    />
+                                </div>
+                            </div>
                         </CardHeader>
                         <CardContent className="p-0 overflow-x-auto">
                             {isLoadingGL ? (
                                 <TableSkeleton rows={5} cols={5} />
-                            ) : glAccounts?.length > 0 ? (
+                            ) : filteredGLAccounts?.length > 0 ? (
                                 <Table>
                                     <TableHeader>
                                         <TableRow className="bg-slate-50/50">
@@ -160,7 +222,7 @@ export default function AccountingPage() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {glAccounts.map((acc) => (
+                                        {filteredGLAccounts.map((acc) => (
                                             <TableRow key={acc.id || acc.reference} className="hover:bg-slate-50/50 transition-colors">
                                                 <TableCell className="text-sm font-medium text-slate-700">{acc.name}</TableCell>
                                                 <TableCell className="text-sm text-slate-500 font-mono">{acc.code}</TableCell>
@@ -202,9 +264,39 @@ export default function AccountingPage() {
                                     <CardTitle className="text-lg font-semibold">Journal Batches</CardTitle>
                                     <CardDescription>Overview of transaction batches</CardDescription>
                                 </div>
-                                <div className="flex bg-slate-100 p-1 rounded self-end md:self-auto">
-                                    <button
-                                        onClick={() => setBatchViewMode("list")}
+                                <div className="flex flex-col sm:flex-row gap-2 self-end md:self-auto w-full md:w-auto">
+                                    {batchViewMode === "list" && (
+                                        <>
+                                            <div className="relative">
+                                                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
+                                                <Input
+                                                    placeholder="Search batches..."
+                                                    className="pl-9 w-full sm:w-[150px] h-9 text-xs"
+                                                    value={batchSearch}
+                                                    onChange={(e) => setBatchSearch(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <Input
+                                                    type="date"
+                                                    title="From Date"
+                                                    className="w-full sm:w-[130px] h-9 text-xs"
+                                                    value={batchDateFrom}
+                                                    onChange={(e) => setBatchDateFrom(e.target.value)}
+                                                />
+                                                <Input
+                                                    type="date"
+                                                    title="To Date"
+                                                    className="w-full sm:w-[130px] h-9 text-xs"
+                                                    value={batchDateTo}
+                                                    onChange={(e) => setBatchDateTo(e.target.value)}
+                                                />
+                                            </div>
+                                        </>
+                                    )}
+                                    <div className="flex bg-slate-100 p-1 rounded ml-auto">
+                                        <button
+                                            onClick={() => setBatchViewMode("list")}
                                         className={`px-4 py-1.5 text-xs font-semibold rounded transition-all ${batchViewMode === "list" ? "bg-white text-[#ea1315] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
                                     >
                                         List View
@@ -221,6 +313,7 @@ export default function AccountingPage() {
                                     >
                                         Bulk Upload
                                     </button>
+                                    </div>
                                 </div>
                             </div>
                         </CardHeader>
@@ -229,7 +322,7 @@ export default function AccountingPage() {
                                 <TableSkeleton rows={5} cols={6} />
                             ) : batchViewMode === "list" ? (
                                 <>
-                                    {journalBatches?.length > 0 ? (
+                                    {filteredBatches?.length > 0 ? (
                                         <Table>
                                             <TableHeader>
                                                 <TableRow className="bg-slate-50/50">
@@ -242,7 +335,7 @@ export default function AccountingPage() {
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
-                                                {journalBatches.map((batch) => (
+                                                {paginatedBatches.map((batch) => (
                                                     <TableRow key={batch.id || batch.reference} className="hover:bg-slate-50/50 transition-colors">
                                                         <TableCell className="text-sm font-semibold text-slate-700">{batch.code}</TableCell>
                                                         <TableCell className="text-sm text-slate-500 max-w-xs truncate">{batch.description}</TableCell>
@@ -274,6 +367,40 @@ export default function AccountingPage() {
                                         </Table>
                                     ) : (
                                         <div className="p-12 text-center text-slate-500 italic">No journal batches available.</div>
+                                    )}
+
+                                    {/* Pagination Controls for Batches */}
+                                    {filteredBatches?.length > 0 && (
+                                        <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t bg-slate-50/30 gap-4">
+                                            <p className="text-xs text-slate-500 font-medium order-2 sm:order-1">
+                                                Showing <span className="text-slate-900">{paginatedBatches.length}</span> of <span className="text-slate-900">{filteredBatches.length}</span> batches
+                                            </p>
+                                            <div className="flex items-center gap-2 order-1 sm:order-2">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    disabled={batchCurrentPage === 1}
+                                                    onClick={() => setBatchCurrentPage(p => Math.max(1, p - 1))}
+                                                    className="h-8 px-2"
+                                                >
+                                                    <ChevronLeft className="w-4 h-4 mr-1" />
+                                                    Prev
+                                                </Button>
+                                                <div className="flex items-center px-4 text-xs font-semibold text-slate-700 bg-white border rounded h-8">
+                                                    Page {batchCurrentPage} of {totalBatchPages}
+                                                </div>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    disabled={batchCurrentPage >= totalBatchPages}
+                                                    onClick={() => setBatchCurrentPage(p => p + 1)}
+                                                    className="h-8 px-2"
+                                                >
+                                                    Next
+                                                    <ChevronRight className="w-4 h-4 ml-1" />
+                                                </Button>
+                                            </div>
+                                        </div>
                                     )}
                                 </>
                             ) : null}
@@ -317,9 +444,25 @@ export default function AccountingPage() {
                                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
                                         <Input
                                             placeholder="Search code or account..."
-                                            className="pl-9 w-[200px] h-9 text-xs"
+                                            className="pl-9 w-[180px] h-9 text-xs"
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            type="date"
+                                            title="From Date"
+                                            className="w-[120px] h-9 text-xs"
+                                            value={entryDateFrom}
+                                            onChange={(e) => setEntryDateFrom(e.target.value)}
+                                        />
+                                        <Input
+                                            type="date"
+                                            title="To Date"
+                                            className="w-[120px] h-9 text-xs"
+                                            value={entryDateTo}
+                                            onChange={(e) => setEntryDateTo(e.target.value)}
                                         />
                                     </div>
                                     <Select value={selectedGL} onValueChange={setSelectedGL}>
