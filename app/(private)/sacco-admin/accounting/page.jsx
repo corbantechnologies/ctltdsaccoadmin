@@ -132,13 +132,31 @@ export default function AccountingPage() {
         search: searchQuery || undefined,
         account: selectedGL !== "all" ? selectedGL : undefined,
         batch: selectedBatchFilter !== "all" ? selectedBatchFilter : undefined,
-        start_date: entryDateFrom || undefined,
-        end_date: entryDateTo || undefined,
-    }), [page, searchQuery, selectedGL, selectedBatchFilter, entryDateFrom, entryDateTo]);
+        // start_date and end_date are removed from backend params per user request
+    }), [page, searchQuery, selectedGL, selectedBatchFilter]);
 
     const { data: entriesData, isLoading: isLoadingEntries } = useFetchJournalEntries(params);
 
-    const entries = entriesData?.results || [];
+    const backendEntries = entriesData?.results || [];
+    
+    // Filter by frontend date filters using batch posting_date
+    const entries = useMemo(() => {
+        if (!backendEntries.length) return [];
+        return backendEntries.filter(entry => {
+            if (!entryDateFrom && !entryDateTo) return true;
+            
+            // Find batch to get posting date
+            const batch = journalBatches?.find(b => b.code === entry.batch);
+            const postingDate = batch ? batch.posting_date : null;
+            
+            if (!postingDate) return true; // If we don't have a posting date, just include it
+
+            if (entryDateFrom && postingDate < entryDateFrom) return false;
+            if (entryDateTo && postingDate > entryDateTo) return false;
+            return true;
+        });
+    }, [backendEntries, journalBatches, entryDateFrom, entryDateTo]);
+
     const totalEntries = entriesData?.count || 0;
     const totalPages = Math.ceil(totalEntries / 10); // Assuming page_size=10
 
@@ -196,14 +214,21 @@ export default function AccountingPage() {
                                     <CardTitle className="text-lg font-semibold">Chart of Accounts</CardTitle>
                                     <CardDescription>All general ledger accounts configured in the system</CardDescription>
                                 </div>
-                                <div className="relative">
-                                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
-                                    <Input
-                                        placeholder="Search GL accounts..."
-                                        className="pl-9 w-[250px] h-9 text-xs"
-                                        value={glSearch}
-                                        onChange={(e) => setGlSearch(e.target.value)}
-                                    />
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <div className="relative">
+                                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
+                                        <Input
+                                            placeholder="Search GL accounts..."
+                                            className="pl-9 w-[200px] sm:w-[250px] h-9 text-xs"
+                                            value={glSearch}
+                                            onChange={(e) => setGlSearch(e.target.value)}
+                                        />
+                                    </div>
+                                    {glSearch && (
+                                        <Button variant="ghost" size="sm" onClick={() => setGlSearch("")} className="h-9 text-xs text-[#ea1315]">
+                                            Clear
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                         </CardHeader>
@@ -264,52 +289,62 @@ export default function AccountingPage() {
                                     <CardTitle className="text-lg font-semibold">Journal Batches</CardTitle>
                                     <CardDescription>Overview of transaction batches</CardDescription>
                                 </div>
-                                <div className="flex flex-col sm:flex-row gap-2 self-end md:self-auto w-full md:w-auto">
+                                <div className="flex flex-col xl:flex-row gap-4 xl:items-center w-full xl:w-auto mt-4 md:mt-0">
                                     {batchViewMode === "list" && (
-                                        <>
+                                        <div className="flex flex-wrap items-center gap-2">
                                             <div className="relative">
                                                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
                                                 <Input
                                                     placeholder="Search batches..."
-                                                    className="pl-9 w-full sm:w-[150px] h-9 text-xs"
+                                                    className="pl-9 w-[160px] h-9 text-xs"
                                                     value={batchSearch}
                                                     onChange={(e) => setBatchSearch(e.target.value)}
                                                 />
                                             </div>
-                                            <div className="flex gap-2">
+                                            <div className="flex items-center gap-2">
                                                 <Input
                                                     type="date"
                                                     title="From Date"
-                                                    className="w-full sm:w-[130px] h-9 text-xs"
+                                                    className="w-[130px] h-9 text-xs"
                                                     value={batchDateFrom}
                                                     onChange={(e) => setBatchDateFrom(e.target.value)}
                                                 />
+                                                <span className="text-xs text-slate-500">to</span>
                                                 <Input
                                                     type="date"
                                                     title="To Date"
-                                                    className="w-full sm:w-[130px] h-9 text-xs"
+                                                    className="w-[130px] h-9 text-xs"
                                                     value={batchDateTo}
                                                     onChange={(e) => setBatchDateTo(e.target.value)}
                                                 />
                                             </div>
-                                        </>
+                                            {(batchSearch || batchDateFrom || batchDateTo) && (
+                                                <Button variant="ghost" size="sm" onClick={() => {
+                                                    setBatchSearch("");
+                                                    setBatchDateFrom("");
+                                                    setBatchDateTo("");
+                                                }} className="h-9 text-xs text-[#ea1315]">
+                                                    Clear
+                                                </Button>
+                                            )}
+                                        </div>
                                     )}
-                                    <div className="flex bg-slate-100 p-1 rounded ml-auto">
+                                    <div className="flex bg-slate-100 p-1 rounded w-fit xl:ml-auto overflow-x-auto no-scrollbar">
                                         <button
                                             onClick={() => setBatchViewMode("list")}
-                                        className={`px-4 py-1.5 text-xs font-semibold rounded transition-all ${batchViewMode === "list" ? "bg-white text-[#ea1315] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                                        className={`whitespace-nowrap px-4 py-1.5 text-xs font-semibold rounded transition-all ${batchViewMode === "list" ? "bg-white text-[#ea1315] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
                                     >
                                         List View
                                     </button>
                                     <button
                                         onClick={() => setBatchViewMode("form")}
-                                        className={`px-4 py-1.5 text-xs font-semibold rounded transition-all ${batchViewMode === "form" ? "bg-white text-[#ea1315] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                                        className={`whitespace-nowrap px-4 py-1.5 text-xs font-semibold rounded transition-all ${batchViewMode === "form" ? "bg-white text-[#ea1315] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
                                     >
                                         Bulk Form
                                     </button>
                                     <button
                                         onClick={() => setBatchViewMode("upload")}
-                                        className={`px-4 py-1.5 text-xs font-semibold rounded transition-all ${batchViewMode === "upload" ? "bg-white text-[#ea1315] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                                        className={`whitespace-nowrap px-4 py-1.5 text-xs font-semibold rounded transition-all ${batchViewMode === "upload" ? "bg-white text-[#ea1315] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
                                     >
                                         Bulk Upload
                                     </button>
@@ -439,34 +474,35 @@ export default function AccountingPage() {
                                     <CardTitle className="text-lg font-semibold">Journal Entries</CardTitle>
                                     <CardDescription>Detailed list of all ledger entries</CardDescription>
                                 </div>
-                                <div className="flex flex-wrap items-center gap-2">
+                                <div className="flex flex-wrap items-center gap-3 mt-4 lg:mt-0">
                                     <div className="relative">
                                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
                                         <Input
                                             placeholder="Search code or account..."
-                                            className="pl-9 w-[180px] h-9 text-xs"
+                                            className="pl-9 w-[160px] h-9 text-xs"
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                         />
                                     </div>
-                                    <div className="flex gap-2">
+                                    <div className="flex items-center gap-2">
                                         <Input
                                             type="date"
                                             title="From Date"
-                                            className="w-[120px] h-9 text-xs"
+                                            className="w-[130px] h-9 text-xs"
                                             value={entryDateFrom}
                                             onChange={(e) => setEntryDateFrom(e.target.value)}
                                         />
+                                        <span className="text-xs text-slate-500">to</span>
                                         <Input
                                             type="date"
                                             title="To Date"
-                                            className="w-[120px] h-9 text-xs"
+                                            className="w-[130px] h-9 text-xs"
                                             value={entryDateTo}
                                             onChange={(e) => setEntryDateTo(e.target.value)}
                                         />
                                     </div>
                                     <Select value={selectedGL} onValueChange={setSelectedGL}>
-                                        <SelectTrigger className="w-[160px] h-9 text-xs">
+                                        <SelectTrigger className="w-[150px] h-9 text-xs">
                                             <Filter className="w-3 h-3 mr-2 text-slate-500" />
                                             <SelectValue placeholder="GL Account" />
                                         </SelectTrigger>
@@ -478,7 +514,7 @@ export default function AccountingPage() {
                                         </SelectContent>
                                     </Select>
                                     <Select value={selectedBatchFilter} onValueChange={setSelectedBatchFilter}>
-                                        <SelectTrigger className="w-[160px] h-9 text-xs">
+                                        <SelectTrigger className="w-[150px] h-9 text-xs">
                                             <Receipt className="w-3 h-3 mr-2 text-slate-500" />
                                             <SelectValue placeholder="Batch" />
                                         </SelectTrigger>
@@ -489,6 +525,18 @@ export default function AccountingPage() {
                                             ))}
                                         </SelectContent>
                                     </Select>
+                                    {(searchQuery || entryDateFrom || entryDateTo || selectedGL !== "all" || selectedBatchFilter !== "all") && (
+                                        <Button variant="ghost" size="sm" onClick={() => {
+                                            setSearchQuery("");
+                                            setEntryDateFrom("");
+                                            setEntryDateTo("");
+                                            setSelectedGL("all");
+                                            setSelectedBatchFilter("all");
+                                            setPage(1);
+                                        }} className="h-9 text-xs text-[#ea1315]">
+                                            Clear
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                         </CardHeader>
@@ -521,7 +569,11 @@ export default function AccountingPage() {
                                                     </TableCell>
                                                     <TableCell className="text-sm text-slate-500 font-mono text-xs">{entry.batch}</TableCell>
                                                     <TableCell className="text-sm text-slate-500">
-                                                        {entry.created_at ? format(new Date(entry.created_at), "MMM d, HH:mm") : "-"}
+                                                        {(() => {
+                                                            const batch = journalBatches?.find(b => b.code === entry.batch);
+                                                            return batch?.posting_date ? format(new Date(batch.posting_date), "MMM d, yyyy") : 
+                                                                   (entry.created_at ? format(new Date(entry.created_at), "MMM d, yyyy") : "-");
+                                                        })()}
                                                     </TableCell>
                                                 </TableRow>
                                             ))}
