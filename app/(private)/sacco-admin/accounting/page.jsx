@@ -101,10 +101,15 @@ export default function AccountingPage() {
                         (batch.description && batch.description.toLowerCase().includes(searchLower));
             }
             if (match && batchDateFrom) {
-                if (batch.posting_date < batchDateFrom) match = false;
+                const bDate = new Date(batch.posting_date);
+                const fromDate = new Date(batchDateFrom);
+                if (bDate < fromDate) match = false;
             }
             if (match && batchDateTo) {
-                if (batch.posting_date > batchDateTo) match = false;
+                const bDate = new Date(batch.posting_date);
+                const toDate = new Date(batchDateTo);
+                toDate.setHours(23, 59, 59, 999);
+                if (bDate > toDate) match = false;
             }
             return match;
         });
@@ -151,8 +156,17 @@ export default function AccountingPage() {
             
             if (!postingDate) return true; // If we don't have a posting date, just include it
 
-            if (entryDateFrom && postingDate < entryDateFrom) return false;
-            if (entryDateTo && postingDate > entryDateTo) return false;
+            if (entryDateFrom) {
+                const pDate = new Date(postingDate);
+                const fromDate = new Date(entryDateFrom);
+                if (pDate < fromDate) return false;
+            }
+            if (entryDateTo) {
+                const pDate = new Date(postingDate);
+                const toDate = new Date(entryDateTo);
+                toDate.setHours(23, 59, 59, 999);
+                if (pDate > toDate) return false;
+            }
             return true;
         });
     }, [backendEntries, journalBatches, entryDateFrom, entryDateTo]);
@@ -375,7 +389,7 @@ export default function AccountingPage() {
                                                         <TableCell className="text-sm font-semibold text-slate-700">{batch.code}</TableCell>
                                                         <TableCell className="text-sm text-slate-500 max-w-xs truncate">{batch.description}</TableCell>
                                                         <TableCell className="text-sm text-slate-500">
-                                                            {batch.posting_date}
+                                                            {batch.posting_date ? format(new Date(batch.posting_date), "MMM d, yyyy") : "-"}
                                                         </TableCell>
                                                         <TableCell>
                                                             <Badge variant={batch.posted ? "success" : "secondary"} className="text-[10px] font-semibold">
