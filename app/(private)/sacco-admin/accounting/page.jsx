@@ -246,13 +246,13 @@ export default function AccountingPage() {
                                 </div>
                             </div>
                         </CardHeader>
-                        <CardContent className="p-0 overflow-x-auto">
+                        <CardContent className="p-0 overflow-auto max-h-[calc(100vh-320px)] relative">
                             {isLoadingGL ? (
                                 <TableSkeleton rows={5} cols={5} />
                             ) : filteredGLAccounts?.length > 0 ? (
                                 <Table>
-                                    <TableHeader>
-                                        <TableRow className="bg-slate-50/50">
+                                    <TableHeader className="sticky top-0 bg-slate-50 z-10 shadow-sm">
+                                        <TableRow className="border-b-0">
                                             <TableHead className="font-semibold text-xs">ACCOUNT NAME</TableHead>
                                             <TableHead className="font-semibold text-xs">CODE</TableHead>
                                             <TableHead className="font-semibold text-xs">CATEGORY</TableHead>
@@ -366,15 +366,15 @@ export default function AccountingPage() {
                                 </div>
                             </div>
                         </CardHeader>
-                        <CardContent className="p-0 overflow-x-auto min-h-[400px]">
+                        <CardContent className="p-0 overflow-auto max-h-[calc(100vh-320px)] min-h-[300px] relative">
                             {isLoadingBatches ? (
                                 <TableSkeleton rows={5} cols={6} />
                             ) : batchViewMode === "list" ? (
                                 <>
                                     {filteredBatches?.length > 0 ? (
                                         <Table>
-                                            <TableHeader>
-                                                <TableRow className="bg-slate-50/50">
+                                            <TableHeader className="sticky top-0 bg-slate-50 z-10 shadow-sm">
+                                                <TableRow className="border-b-0">
                                                     <TableHead className="font-semibold text-xs">BATCH CODE</TableHead>
                                                     <TableHead className="font-semibold text-xs">DESCRIPTION</TableHead>
                                                     <TableHead className="font-semibold text-xs">DATE</TableHead>
@@ -417,40 +417,6 @@ export default function AccountingPage() {
                                     ) : (
                                         <div className="p-12 text-center text-slate-500 italic">No journal batches available.</div>
                                     )}
-
-                                    {/* Pagination Controls for Batches */}
-                                    {filteredBatches?.length > 0 && (
-                                        <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t bg-slate-50/30 gap-4">
-                                            <p className="text-xs text-slate-500 font-medium order-2 sm:order-1">
-                                                Showing <span className="text-slate-900">{paginatedBatches.length}</span> of <span className="text-slate-900">{filteredBatches.length}</span> batches
-                                            </p>
-                                            <div className="flex items-center gap-2 order-1 sm:order-2">
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    disabled={batchCurrentPage === 1}
-                                                    onClick={() => setBatchCurrentPage(p => Math.max(1, p - 1))}
-                                                    className="h-8 px-2"
-                                                >
-                                                    <ChevronLeft className="w-4 h-4 mr-1" />
-                                                    Prev
-                                                </Button>
-                                                <div className="flex items-center px-4 text-xs font-semibold text-slate-700 bg-white border rounded h-8">
-                                                    Page {batchCurrentPage} of {totalBatchPages}
-                                                </div>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    disabled={batchCurrentPage >= totalBatchPages}
-                                                    onClick={() => setBatchCurrentPage(p => p + 1)}
-                                                    className="h-8 px-2"
-                                                >
-                                                    Next
-                                                    <ChevronRight className="w-4 h-4 ml-1" />
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    )}
                                 </>
                             ) : null}
 
@@ -476,6 +442,40 @@ export default function AccountingPage() {
                                 </div>
                             )}
                         </CardContent>
+
+                        {/* Pagination Controls for Batches */}
+                        {batchViewMode === "list" && filteredBatches?.length > 0 && (
+                            <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t bg-slate-50/30 gap-4 rounded-b">
+                                <p className="text-xs text-slate-500 font-medium order-2 sm:order-1">
+                                    Showing <span className="text-slate-900">{paginatedBatches.length}</span> of <span className="text-slate-900">{filteredBatches.length}</span> batches
+                                </p>
+                                <div className="flex items-center gap-2 order-1 sm:order-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        disabled={batchCurrentPage === 1}
+                                        onClick={() => setBatchCurrentPage(p => Math.max(1, p - 1))}
+                                        className="h-8 px-2"
+                                    >
+                                        <ChevronLeft className="w-4 h-4 mr-1" />
+                                        Prev
+                                    </Button>
+                                    <div className="flex items-center px-4 text-xs font-semibold text-slate-700 bg-white border rounded h-8">
+                                        Page {batchCurrentPage} of {totalBatchPages}
+                                    </div>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        disabled={batchCurrentPage >= totalBatchPages}
+                                        onClick={() => setBatchCurrentPage(p => p + 1)}
+                                        className="h-8 px-2"
+                                    >
+                                        Next
+                                        <ChevronRight className="w-4 h-4 ml-1" />
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
                     </Card>
                 </TabsContent>
 
@@ -554,14 +554,14 @@ export default function AccountingPage() {
                                 </div>
                             </div>
                         </CardHeader>
-                        <CardContent className="p-0 overflow-x-auto">
+                        <CardContent className="p-0 overflow-auto max-h-[calc(100vh-320px)] relative">
                             {isLoadingEntries ? (
                                 <TableSkeleton rows={5} cols={6} />
                             ) : entries.length > 0 ? (
                                 <>
                                     <Table>
-                                        <TableHeader>
-                                            <TableRow className="bg-slate-50/50">
+                                        <TableHeader className="sticky top-0 bg-slate-50 z-10 shadow-sm">
+                                            <TableRow className="border-b-0">
                                                 <TableHead className="font-semibold text-xs">CODE</TableHead>
                                                 <TableHead className="font-semibold text-xs">ACCOUNT</TableHead>
                                                 <TableHead className="font-semibold text-xs text-right">DEBIT</TableHead>
@@ -593,43 +593,45 @@ export default function AccountingPage() {
                                             ))}
                                         </TableBody>
                                     </Table>
-
-                                    {/* Pagination */}
-                                    <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t bg-slate-50/30 gap-4">
-                                        <p className="text-xs text-slate-500 font-medium order-2 sm:order-1">
-                                            Showing <span className="text-slate-900">{entries.length}</span> of <span className="text-slate-900">{totalEntries}</span> entries
-                                        </p>
-                                        <div className="flex items-center gap-2 order-1 sm:order-2">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                disabled={page === 1}
-                                                onClick={() => setPage(p => Math.max(1, p - 1))}
-                                                className="h-8 px-2"
-                                            >
-                                                <ChevronLeft className="w-4 h-4 mr-1" />
-                                                Prev
-                                            </Button>
-                                            <div className="flex items-center px-4 text-xs font-semibold text-slate-700 bg-white border rounded h-8">
-                                                Page {page} of {totalPages || 1}
-                                            </div>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                disabled={page >= totalPages}
-                                                onClick={() => setPage(p => p + 1)}
-                                                className="h-8 px-2"
-                                            >
-                                                Next
-                                                <ChevronRight className="w-4 h-4 ml-1" />
-                                            </Button>
-                                        </div>
-                                    </div>
                                 </>
                             ) : (
                                 <div className="p-12 text-center text-slate-500 italic">No journal entries found matching filters.</div>
                             )}
                         </CardContent>
+
+                        {/* Pagination */}
+                        {!isLoadingEntries && entries.length > 0 && (
+                            <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t bg-slate-50/30 gap-4 rounded-b">
+                                <p className="text-xs text-slate-500 font-medium order-2 sm:order-1">
+                                    Showing <span className="text-slate-900">{entries.length}</span> of <span className="text-slate-900">{totalEntries}</span> entries
+                                </p>
+                                <div className="flex items-center gap-2 order-1 sm:order-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        disabled={page === 1}
+                                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                                        className="h-8 px-2"
+                                    >
+                                        <ChevronLeft className="w-4 h-4 mr-1" />
+                                        Prev
+                                    </Button>
+                                    <div className="flex items-center px-4 text-xs font-semibold text-slate-700 bg-white border rounded h-8">
+                                        Page {page} of {totalPages || 1}
+                                    </div>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        disabled={page >= totalPages}
+                                        onClick={() => setPage(p => p + 1)}
+                                        className="h-8 px-2"
+                                    >
+                                        Next
+                                        <ChevronRight className="w-4 h-4 ml-1" />
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
                     </Card>
                 </TabsContent>
             </Tabs>
