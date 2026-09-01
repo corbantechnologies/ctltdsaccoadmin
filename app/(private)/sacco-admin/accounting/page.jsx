@@ -161,7 +161,7 @@ export default function AccountingPage() {
     const totalPages = Math.ceil(totalEntries / 10); // Assuming page_size=10
 
     return (
-        <div className="min-h-screen bg-gray-50/50 p-4 md:p-6 space-y-6">
+        <div className="min-h-screen bg-gray-50/50 p-4 md:p-6 space-y-6 w-full max-w-[100vw] overflow-x-hidden">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-xl font-semibold tracking-tight text-slate-900 flex items-center gap-2">
@@ -189,43 +189,43 @@ export default function AccountingPage() {
                 </div>
             </div>
 
-            <Tabs defaultValue="gl-accounts" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="bg-white border shadow-sm p-1 mb-6 flex h-auto overflow-x-auto no-scrollbar justify-start md:justify-center">
-                    <TabsTrigger value="gl-accounts" className="flex items-center gap-2 px-3 md:px-6 py-2 text-xs md:text-sm whitespace-nowrap">
+            <Tabs defaultValue="gl-accounts" value={activeTab} onValueChange={setActiveTab} className="w-full max-w-full">
+                <TabsList className="bg-white border shadow-sm p-1 mb-6 flex h-auto w-full overflow-x-auto no-scrollbar justify-start md:justify-center">
+                    <TabsTrigger value="gl-accounts" className="flex shrink-0 items-center gap-2 px-3 md:px-6 py-2 text-xs md:text-sm whitespace-nowrap">
                         <List className="w-4 h-4" />
                         GL Accounts
                     </TabsTrigger>
-                    <TabsTrigger value="journal-batches" className="flex items-center gap-2 px-3 md:px-6 py-2 text-xs md:text-sm whitespace-nowrap">
+                    <TabsTrigger value="journal-batches" className="flex shrink-0 items-center gap-2 px-3 md:px-6 py-2 text-xs md:text-sm whitespace-nowrap">
                         <Receipt className="w-4 h-4" />
                         Journal Batches
                     </TabsTrigger>
-                    <TabsTrigger value="journal-entries" className="flex items-center gap-2 px-3 md:px-6 py-2 text-xs md:text-sm whitespace-nowrap">
+                    <TabsTrigger value="journal-entries" className="flex shrink-0 items-center gap-2 px-3 md:px-6 py-2 text-xs md:text-sm whitespace-nowrap">
                         <Fingerprint className="w-4 h-4" />
                         Journal Entries
                     </TabsTrigger>
                 </TabsList>
 
                 {/* GL ACCOUNTS TAB */}
-                <TabsContent value="gl-accounts">
-                    <Card className="shadow-sm border-none">
+                <TabsContent value="gl-accounts" className="max-w-full overflow-hidden">
+                    <Card className="shadow-sm border-none w-full">
                         <CardHeader className="bg-white border-b rounded-t p-4 md:p-6">
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                                 <div>
                                     <CardTitle className="text-lg font-semibold">Chart of Accounts</CardTitle>
                                     <CardDescription>All general ledger accounts configured in the system</CardDescription>
                                 </div>
-                                <div className="flex flex-wrap items-center gap-2">
-                                    <div className="relative">
+                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto">
+                                    <div className="relative w-full sm:w-auto">
                                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
                                         <Input
                                             placeholder="Search GL accounts..."
-                                            className="pl-9 w-[200px] sm:w-[250px] h-9 text-xs"
+                                            className="pl-9 w-full sm:w-[250px] h-9 text-xs"
                                             value={glSearch}
                                             onChange={(e) => setGlSearch(e.target.value)}
                                         />
                                     </div>
                                     {glSearch && (
-                                        <Button variant="ghost" size="sm" onClick={() => setGlSearch("")} className="h-9 text-xs text-[#ea1315]">
+                                        <Button variant="ghost" size="sm" onClick={() => setGlSearch("")} className="h-9 text-xs text-[#ea1315] w-full sm:w-auto">
                                             Clear
                                         </Button>
                                     )}
@@ -281,8 +281,8 @@ export default function AccountingPage() {
                 </TabsContent>
 
                 {/* JOURNAL BATCHES TAB */}
-                <TabsContent value="journal-batches">
-                    <Card className="shadow-sm border-none">
+                <TabsContent value="journal-batches" className="max-w-full overflow-hidden">
+                    <Card className="shadow-sm border-none w-full">
                         <CardHeader className="bg-white border-b rounded-t p-4 md:p-6">
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                                 <div>
@@ -291,29 +291,29 @@ export default function AccountingPage() {
                                 </div>
                                 <div className="flex flex-col xl:flex-row gap-4 xl:items-center w-full xl:w-auto mt-4 md:mt-0">
                                     {batchViewMode === "list" && (
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            <div className="relative">
+                                        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 w-full xl:w-auto">
+                                            <div className="relative w-full sm:w-auto">
                                                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
                                                 <Input
                                                     placeholder="Search batches..."
-                                                    className="pl-9 w-[160px] h-9 text-xs"
+                                                    className="pl-9 w-full sm:w-[160px] h-9 text-xs"
                                                     value={batchSearch}
                                                     onChange={(e) => setBatchSearch(e.target.value)}
                                                 />
                                             </div>
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2 w-full sm:w-auto">
                                                 <Input
                                                     type="date"
                                                     title="From Date"
-                                                    className="w-[130px] h-9 text-xs"
+                                                    className="w-full sm:w-[130px] h-9 text-xs flex-1 sm:flex-none"
                                                     value={batchDateFrom}
                                                     onChange={(e) => setBatchDateFrom(e.target.value)}
                                                 />
-                                                <span className="text-xs text-slate-500">to</span>
+                                                <span className="text-xs text-slate-500 shrink-0">to</span>
                                                 <Input
                                                     type="date"
                                                     title="To Date"
-                                                    className="w-[130px] h-9 text-xs"
+                                                    className="w-full sm:w-[130px] h-9 text-xs flex-1 sm:flex-none"
                                                     value={batchDateTo}
                                                     onChange={(e) => setBatchDateTo(e.target.value)}
                                                 />
@@ -323,13 +323,13 @@ export default function AccountingPage() {
                                                     setBatchSearch("");
                                                     setBatchDateFrom("");
                                                     setBatchDateTo("");
-                                                }} className="h-9 text-xs text-[#ea1315]">
+                                                }} className="h-9 text-xs text-[#ea1315] w-full sm:w-auto">
                                                     Clear
                                                 </Button>
                                             )}
                                         </div>
                                     )}
-                                    <div className="flex bg-slate-100 p-1 rounded w-fit xl:ml-auto overflow-x-auto no-scrollbar">
+                                    <div className="flex bg-slate-100 p-1 rounded w-full sm:w-fit xl:ml-auto overflow-x-auto no-scrollbar justify-between sm:justify-start">
                                         <button
                                             onClick={() => setBatchViewMode("list")}
                                         className={`whitespace-nowrap px-4 py-1.5 text-xs font-semibold rounded transition-all ${batchViewMode === "list" ? "bg-white text-[#ea1315] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
@@ -466,45 +466,45 @@ export default function AccountingPage() {
                 </TabsContent>
 
                 {/* JOURNAL ENTRIES TAB */}
-                <TabsContent value="journal-entries">
-                    <Card className="shadow-sm border-none">
+                <TabsContent value="journal-entries" className="max-w-full overflow-hidden">
+                    <Card className="shadow-sm border-none w-full">
                         <CardHeader className="bg-white border-b rounded-t p-4 md:p-6">
                             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                                 <div>
                                     <CardTitle className="text-lg font-semibold">Journal Entries</CardTitle>
                                     <CardDescription>Detailed list of all ledger entries</CardDescription>
                                 </div>
-                                <div className="flex flex-wrap items-center gap-3 mt-4 lg:mt-0">
-                                    <div className="relative">
+                                <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 mt-4 lg:mt-0 w-full lg:w-auto">
+                                    <div className="relative w-full sm:w-auto">
                                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
                                         <Input
                                             placeholder="Search code or account..."
-                                            className="pl-9 w-[160px] h-9 text-xs"
+                                            className="pl-9 w-full sm:w-[160px] h-9 text-xs"
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                         />
                                     </div>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2 w-full sm:w-auto">
                                         <Input
                                             type="date"
                                             title="From Date"
-                                            className="w-[130px] h-9 text-xs"
+                                            className="w-full sm:w-[130px] h-9 text-xs flex-1 sm:flex-none"
                                             value={entryDateFrom}
                                             onChange={(e) => setEntryDateFrom(e.target.value)}
                                         />
-                                        <span className="text-xs text-slate-500">to</span>
+                                        <span className="text-xs text-slate-500 shrink-0">to</span>
                                         <Input
                                             type="date"
                                             title="To Date"
-                                            className="w-[130px] h-9 text-xs"
+                                            className="w-full sm:w-[130px] h-9 text-xs flex-1 sm:flex-none"
                                             value={entryDateTo}
                                             onChange={(e) => setEntryDateTo(e.target.value)}
                                         />
                                     </div>
                                     <Select value={selectedGL} onValueChange={setSelectedGL}>
-                                        <SelectTrigger className="w-[150px] h-9 text-xs">
-                                            <Filter className="w-3 h-3 mr-2 text-slate-500" />
-                                            <SelectValue placeholder="GL Account" />
+                                        <SelectTrigger className="w-full sm:w-[150px] h-9 text-xs">
+                                            <Filter className="w-3 h-3 mr-2 text-slate-500 shrink-0" />
+                                            <SelectValue placeholder="GL Account" className="truncate" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="all">All Accounts</SelectItem>
@@ -514,9 +514,9 @@ export default function AccountingPage() {
                                         </SelectContent>
                                     </Select>
                                     <Select value={selectedBatchFilter} onValueChange={setSelectedBatchFilter}>
-                                        <SelectTrigger className="w-[150px] h-9 text-xs">
-                                            <Receipt className="w-3 h-3 mr-2 text-slate-500" />
-                                            <SelectValue placeholder="Batch" />
+                                        <SelectTrigger className="w-full sm:w-[150px] h-9 text-xs">
+                                            <Receipt className="w-3 h-3 mr-2 text-slate-500 shrink-0" />
+                                            <SelectValue placeholder="Batch" className="truncate" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="all">All Batches</SelectItem>
@@ -533,7 +533,7 @@ export default function AccountingPage() {
                                             setSelectedGL("all");
                                             setSelectedBatchFilter("all");
                                             setPage(1);
-                                        }} className="h-9 text-xs text-[#ea1315]">
+                                        }} className="h-9 text-xs text-[#ea1315] w-full sm:w-auto">
                                             Clear
                                         </Button>
                                     )}
