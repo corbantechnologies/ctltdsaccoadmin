@@ -251,24 +251,24 @@ export default function AccountingPage() {
                 <TabsContent value="journal-batches" className="max-w-full overflow-hidden">
                     <Card className="shadow-sm border-none w-full">
                         <CardHeader className="bg-white border-b rounded-t p-4 md:p-6">
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div className="flex flex-col 2xl:flex-row justify-between items-start 2xl:items-center gap-4">
                                 <div>
                                     <CardTitle className="text-lg font-semibold">Journal Batches</CardTitle>
                                     <CardDescription>Overview of transaction batches</CardDescription>
                                 </div>
-                                <div className="flex flex-col xl:flex-row gap-4 xl:items-center w-full xl:w-auto mt-4 md:mt-0">
+                                <div className="flex flex-col xl:flex-row gap-3 items-stretch xl:items-center w-full xl:w-auto mt-4 md:mt-0">
                                     {batchViewMode === "list" && (
                                         <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 w-full xl:w-auto">
                                             <div className="relative w-full sm:w-auto">
                                                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
                                                 <Input
                                                     placeholder="Search batches..."
-                                                    className="pl-9 w-full sm:w-[160px] h-9 text-xs"
+                                                    className="pl-9 w-full sm:w-[180px] h-9 text-xs"
                                                     value={batchSearch}
                                                     onChange={(e) => setBatchSearch(e.target.value)}
                                                 />
                                             </div>
-                                            <div className="flex items-center gap-2 w-full sm:w-auto">
+                                            <div className="flex flex-row items-center gap-2 w-full sm:w-auto">
                                                 <Input
                                                     type="date"
                                                     title="From Date"
@@ -296,7 +296,7 @@ export default function AccountingPage() {
                                             )}
                                         </div>
                                     )}
-                                    <div className="flex bg-slate-100 p-1 rounded w-full sm:w-fit xl:ml-auto overflow-x-auto no-scrollbar justify-between sm:justify-start">
+                                    <div className="flex bg-slate-100 p-1 rounded w-full sm:w-fit xl:ml-auto overflow-x-auto no-scrollbar justify-start items-center">
                                         <button
                                             onClick={() => setBatchViewMode("list")}
                                         className={`whitespace-nowrap px-4 py-1.5 text-xs font-semibold rounded transition-all ${batchViewMode === "list" ? "bg-white text-[#ea1315] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
@@ -436,12 +436,12 @@ export default function AccountingPage() {
                 <TabsContent value="journal-entries" className="max-w-full overflow-hidden">
                     <Card className="shadow-sm border-none w-full">
                         <CardHeader className="bg-white border-b rounded-t p-4 md:p-6">
-                            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                            <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
                                 <div>
                                     <CardTitle className="text-lg font-semibold">Journal Entries</CardTitle>
                                     <CardDescription>Detailed list of all ledger entries</CardDescription>
                                 </div>
-                                <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 mt-4 lg:mt-0 w-full lg:w-auto">
+                                <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 mt-4 xl:mt-0 w-full xl:w-auto">
                                     <div className="relative w-full sm:w-auto">
                                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
                                         <Input
