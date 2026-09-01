@@ -81,7 +81,6 @@ export default function AccountingPage() {
     }, [glAccounts, glSearch]);
 
     // States for Journal Batches
-    const { data: journalBatches, isLoading: isLoadingBatches, refetch: refetchBatches } = useFetchJournalBatches();
     const [selectedBatch, setSelectedBatch] = useState(null);
     const [batchDetailsOpen, setBatchDetailsOpen] = useState(false);
     const [batchViewMode, setBatchViewMode] = useState("list"); // "list", "form", "upload"
@@ -89,40 +88,20 @@ export default function AccountingPage() {
     const [batchDateFrom, setBatchDateFrom] = useState("");
     const [batchDateTo, setBatchDateTo] = useState("");
     const [batchCurrentPage, setBatchCurrentPage] = useState(1);
-    const batchItemsPerPage = 50;
+    const batchItemsPerPage = 1000; // API PAGE_SIZE is 1000
 
-    const filteredBatches = useMemo(() => {
-        if (!journalBatches) return [];
-        return journalBatches.filter(batch => {
-            let match = true;
-            if (batchSearch) {
-                const searchLower = batchSearch.toLowerCase();
-                match = (batch.code && batch.code.toLowerCase().includes(searchLower)) || 
-                        (batch.description && batch.description.toLowerCase().includes(searchLower));
-            }
-            if (match && batchDateFrom) {
-                const bDate = new Date(batch.posting_date);
-                const fromDate = new Date(batchDateFrom);
-                if (bDate < fromDate) match = false;
-            }
-            if (match && batchDateTo) {
-                const bDate = new Date(batch.posting_date);
-                const toDate = new Date(batchDateTo);
-                toDate.setHours(23, 59, 59, 999);
-                if (bDate > toDate) match = false;
-            }
-            return match;
-        });
-    }, [journalBatches, batchSearch, batchDateFrom, batchDateTo]);
+    const batchParams = useMemo(() => ({
+        page: batchCurrentPage,
+        search: batchSearch || undefined,
+        start_date: batchDateFrom || undefined,
+        end_date: batchDateTo || undefined,
+    }), [batchCurrentPage, batchSearch, batchDateFrom, batchDateTo]);
 
-    // Pagination for Batches
-    const totalBatchPages = Math.ceil(filteredBatches.length / batchItemsPerPage) || 1;
-    const paginatedBatches = useMemo(() => {
-        return filteredBatches.slice(
-            (batchCurrentPage - 1) * batchItemsPerPage,
-            batchCurrentPage * batchItemsPerPage
-        );
-    }, [filteredBatches, batchCurrentPage, batchItemsPerPage]);
+    const { data: batchesData, isLoading: isLoadingBatches, refetch: refetchBatches } = useFetchJournalBatches(batchParams);
+
+    const journalBatches = batchesData?.results || [];
+    const totalBatchCount = batchesData?.count || 0;
+    const totalBatchPages = Math.ceil(totalBatchCount / batchItemsPerPage) || 1;
 
     // States for Journal Entries
     const [page, setPage] = useState(1);
@@ -137,39 +116,13 @@ export default function AccountingPage() {
         search: searchQuery || undefined,
         account: selectedGL !== "all" ? selectedGL : undefined,
         batch: selectedBatchFilter !== "all" ? selectedBatchFilter : undefined,
-        // start_date and end_date are removed from backend params per user request
-    }), [page, searchQuery, selectedGL, selectedBatchFilter]);
+        start_date: entryDateFrom || undefined,
+        end_date: entryDateTo || undefined,
+    }), [page, searchQuery, selectedGL, selectedBatchFilter, entryDateFrom, entryDateTo]);
 
     const { data: entriesData, isLoading: isLoadingEntries } = useFetchJournalEntries(params);
 
-    const backendEntries = entriesData?.results || [];
-    
-    // Filter by frontend date filters using batch posting_date
-    const entries = useMemo(() => {
-        if (!backendEntries.length) return [];
-        return backendEntries.filter(entry => {
-            if (!entryDateFrom && !entryDateTo) return true;
-            
-            // Find batch to get posting date
-            const batch = journalBatches?.find(b => b.code === entry.batch);
-            const postingDate = batch ? batch.posting_date : null;
-            
-            if (!postingDate) return true; // If we don't have a posting date, just include it
-
-            if (entryDateFrom) {
-                const pDate = new Date(postingDate);
-                const fromDate = new Date(entryDateFrom);
-                if (pDate < fromDate) return false;
-            }
-            if (entryDateTo) {
-                const pDate = new Date(postingDate);
-                const toDate = new Date(entryDateTo);
-                toDate.setHours(23, 59, 59, 999);
-                if (pDate > toDate) return false;
-            }
-            return true;
-        });
-    }, [backendEntries, journalBatches, entryDateFrom, entryDateTo]);
+    const entries = entriesData?.results || [];
 
     const totalEntries = entriesData?.count || 0;
     const totalPages = Math.ceil(totalEntries / 10); // Assuming page_size=10

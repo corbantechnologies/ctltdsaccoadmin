@@ -4,12 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosAuth from "../authentication/useAxiosAuth";
 import { getJournalBatches, getJournalBatch } from "@/services/journalbatches";
 
-export function useFetchJournalBatches() {
+export function useFetchJournalBatches(params = {}) {
     const token = useAxiosAuth();
 
     return useQuery({
-        queryKey: ["journalbatches"],
-        queryFn: () => getJournalBatches(token),
+        queryKey: ["journalbatches", params],
+        queryFn: () => getJournalBatches(token, params),
     });
 }
 

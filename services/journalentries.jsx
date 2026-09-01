@@ -18,11 +18,7 @@ export const updateJournalEntry = async (reference, values, token) => {
 };
 
 export const getJournalEntries = async (token, params = {}) => {
-    const response = await apiActions?.get("/api/v1/journalentries/", {
-        headers: { Authorization: `Bearer ${token}` }, // Axios instance might not have it set, but useAxiosAuth handles it usually
-        params
-    });
-    // Wait, let's check how apiActions is used in other services
+    const response = await apiActions?.get("/api/v1/journalentries/", { ...token, params });
     return response?.data;
 };
 

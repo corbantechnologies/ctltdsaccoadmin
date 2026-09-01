@@ -22,6 +22,11 @@ export const getGLAccounts = async (token) => {
     return response?.data?.results;
 };
 
+export const getPaginatedGLAccounts = async (token, params = {}) => {
+    const response = await apiActions?.get("/api/v1/glaccounts/", { ...token, params });
+    return response?.data;
+};
+
 export const getGLAccount = async (reference, token) => {
     const response = await apiActions?.get(
         `/api/v1/glaccounts/${reference}/`,

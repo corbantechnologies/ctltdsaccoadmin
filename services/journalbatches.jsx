@@ -28,9 +28,9 @@ export const postJournalBatch = async (reference, token) => {
     return response?.data;
 };
 
-export const getJournalBatches = async (token) => {
-    const response = await apiActions?.get("/api/v1/journalbatches/", token);
-    return response?.data?.results;
+export const getJournalBatches = async (token, params = {}) => {
+    const response = await apiActions?.get("/api/v1/journalbatches/", { ...token, params });
+    return response?.data;
 };
 
 export const getJournalBatch = async (reference, token) => {
