@@ -324,7 +324,7 @@ export default function AccountingPage() {
                                 <TableSkeleton rows={5} cols={6} />
                             ) : batchViewMode === "list" ? (
                                 <>
-                                    {filteredBatches?.length > 0 ? (
+                                    {totalBatchCount > 0 ? (
                                         <Table>
                                             <TableHeader className="sticky top-0 bg-slate-50 z-10 shadow-sm">
                                                 <TableRow className="border-b-0">
@@ -337,7 +337,7 @@ export default function AccountingPage() {
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
-                                                {paginatedBatches.map((batch) => (
+                                                {journalBatches.map((batch) => (
                                                     <TableRow key={batch.id || batch.reference} className="hover:bg-slate-50/50 transition-colors">
                                                         <TableCell className="text-sm font-semibold text-slate-700">{batch.code}</TableCell>
                                                         <TableCell className="text-sm text-slate-500 max-w-xs truncate">{batch.description}</TableCell>
@@ -397,11 +397,11 @@ export default function AccountingPage() {
                         </CardContent>
 
                         {/* Pagination Controls for Batches */}
-                        {batchViewMode === "list" && filteredBatches?.length > 0 && (
-                            <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t bg-slate-50/30 gap-4 rounded-b">
-                                <p className="text-xs text-slate-500 font-medium order-2 sm:order-1">
-                                    Showing <span className="text-slate-900">{paginatedBatches.length}</span> of <span className="text-slate-900">{filteredBatches.length}</span> batches
-                                </p>
+                        {batchViewMode === "list" && totalBatchCount > 0 && (
+                            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-slate-200">
+                                <div className="text-sm text-slate-500 font-medium">
+                                    Showing <span className="text-slate-900">{journalBatches.length}</span> of <span className="text-slate-900">{totalBatchCount}</span> batches
+                                </div>
                                 <div className="flex items-center gap-2 order-1 sm:order-2">
                                     <Button
                                         variant="outline"
