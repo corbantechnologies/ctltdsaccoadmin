@@ -25,6 +25,54 @@ import { createLoanRepayment } from "@/services/loanrepayments";
 import { useFetchPaymentAccounts } from "@/hooks/paymentaccounts/actions";
 import toast from "react-hot-toast";
 
+export const getPendingProcessingFee = (loanData) => {
+  if (!loanData) return 0;
+
+  // 1. Check processing_fees array if populated
+  if (Array.isArray(loanData.processing_fees) && loanData.processing_fees.length > 0) {
+    const pendingFees = loanData.processing_fees.filter((f) => {
+      const st = String(f.status || "").toLowerCase();
+      return st !== "paid" && st !== "waived";
+    });
+
+    if (pendingFees.length > 0) {
+      const total = pendingFees.reduce((acc, f) => {
+        const bal =
+          f.balance !== undefined && f.balance !== null
+            ? parseFloat(f.balance)
+            : (parseFloat(f.amount) || 0) - (parseFloat(f.amount_paid) || 0);
+        return acc + (isNaN(bal) ? 0 : Math.max(0, bal));
+      }, 0);
+      if (total > 0) return total;
+    }
+  }
+
+  // 2. Direct loanData.processing_fee field on LoanAccount
+  const directFee = parseFloat(loanData.processing_fee || 0);
+  if (directFee > 0) {
+    // Check if any processing fee was already recorded as paid in loan_payments
+    const payments = Array.isArray(loanData.loan_payments) ? loanData.loan_payments : [];
+    const paidFees = payments
+      .filter((p) => {
+        const t = String(p.repayment_type || p.payment_type || "").toLowerCase();
+        return t.includes("processing") || t.includes("fee");
+      })
+      .reduce((acc, p) => acc + (parseFloat(p.amount) || 0), 0);
+
+    const remaining = Math.max(0, directFee - paidFees);
+    if (remaining > 0) return remaining;
+    if (paidFees === 0) return directFee;
+  }
+
+  // 3. Fall back to projection snapshot
+  if (loanData.projection_snapshot?.processing_fee) {
+    const snapshotFee = parseFloat(loanData.projection_snapshot.processing_fee);
+    if (snapshotFee > 0) return snapshotFee;
+  }
+
+  return 0;
+};
+
 const REPAYMENT_TYPE_CHOICES = [
   { value: "Regular Repayment", label: "Regular Repayment" }, //initialize so it picks the amount to be paid that month in the schedule
   { value: "Partial Payment", label: "Partial Payment" },
@@ -32,7 +80,16 @@ const REPAYMENT_TYPE_CHOICES = [
   { value: "Processing Fee Payment", label: "Processing Fee Payment" },
 ];
 
-function CreateLoanPayment({ isOpen, onClose, refetchLoan, loan_account, maxAmount, loanData, exactClearanceAmount }) {
+function CreateLoanPayment({ 
+  isOpen, 
+  onClose, 
+  refetchLoan, 
+  loan_account, 
+  maxAmount, 
+  loanData, 
+  exactClearanceAmount,
+  initialRepaymentType = "Regular Repayment" 
+}) {
   const [loading, setLoading] = useState(false);
   const token = useAxiosAuth();
   const { data: paymentAccounts, isLoading: isLoadingPayment } = useFetchPaymentAccounts();
@@ -49,6 +106,14 @@ function CreateLoanPayment({ isOpen, onClose, refetchLoan, loan_account, maxAmou
           initialValues={{
             loan_account: loan_account || "",
             amount: (() => {
+              if (initialRepaymentType === "Processing Fee Payment") {
+                const fee = getPendingProcessingFee(loanData);
+                return fee > 0 ? fee : "";
+              }
+              if (initialRepaymentType === "Loan Clearance") {
+                const fillAmount = exactClearanceAmount ?? parseFloat(loanData?.total_clearance_amount ?? 0);
+                return fillAmount > 0 ? fillAmount : "";
+              }
               if (loanData?.projection_snapshot?.schedule?.length > 0) {
                 const nextUnpaid = loanData.projection_snapshot.schedule.find(item => !item.is_paid);
                 const targetItem = nextUnpaid || loanData.projection_snapshot.schedule[0];
@@ -60,16 +125,24 @@ function CreateLoanPayment({ isOpen, onClose, refetchLoan, loan_account, maxAmou
             })(),
             transaction_date: new Date().toISOString().split('T')[0],
             payment_method: "",
-            repayment_type: "Regular Repayment",
+            repayment_type: initialRepaymentType || "Regular Repayment",
             transaction_status: "Completed",
           }}
           enableReinitialize={true}
           onSubmit={async (values) => {
             const isLoanClearance = values.repayment_type === "Loan Clearance";
-            // For standard types, cap at outstanding balance; clearance amounts are validated server-side
-            if (!isLoanClearance && values.amount > maxAmount) {
+            const isProcessingFee = values.repayment_type === "Processing Fee Payment";
+            // For standard types, cap at outstanding balance; clearance and fee amounts are validated separately
+            if (!isLoanClearance && !isProcessingFee && values.amount > maxAmount) {
               toast.error(`Amount cannot exceed the remaining balance of ${maxAmount.toLocaleString()}`);
               return;
+            }
+            if (isProcessingFee) {
+              const pendingFee = getPendingProcessingFee(loanData);
+              if (pendingFee > 0 && values.amount > pendingFee) {
+                toast.error(`Amount cannot exceed the pending processing fee of ${pendingFee.toLocaleString()} KES`);
+                return;
+              }
             }
             setLoading(true);
             try {
@@ -124,15 +197,9 @@ function CreateLoanPayment({ isOpen, onClose, refetchLoan, loan_account, maxAmou
                         }
                       }
                     } else if (value === "Processing Fee Payment") {
-                      if (loanData?.processing_fees && loanData.processing_fees.length > 0) {
-                        const totalFee = loanData.processing_fees
-                          .filter(f => f.status === 'Pending')
-                          .reduce((acc, f) => acc + (parseFloat(f.amount) || 0) - (parseFloat(f.amount_paid) || 0), 0);
-                        if (totalFee > 0) {
-                          setFieldValue("amount", totalFee);
-                        } else {
-                          setFieldValue("amount", "");
-                        }
+                      const totalFee = getPendingProcessingFee(loanData);
+                      if (totalFee > 0) {
+                        setFieldValue("amount", totalFee);
                       } else {
                         setFieldValue("amount", "");
                       }
@@ -173,6 +240,11 @@ function CreateLoanPayment({ isOpen, onClose, refetchLoan, loan_account, maxAmou
                 {values.repayment_type === "Loan Clearance" && (
                   <p className="text-[11px] text-amber-600 font-medium">
                     ⚡ Includes loan balance. Amount is pre-filled from the account estimate — the server will validate the exact figure.
+                  </p>
+                )}
+                {values.repayment_type === "Processing Fee Payment" && (
+                  <p className="text-[11px] text-indigo-600 font-medium">
+                    💼 Pre-filled from pending processing fee ({getPendingProcessingFee(loanData) > 0 ? `${getPendingProcessingFee(loanData).toLocaleString()} KES` : "0 KES"}).
                   </p>
                 )}
               </div>

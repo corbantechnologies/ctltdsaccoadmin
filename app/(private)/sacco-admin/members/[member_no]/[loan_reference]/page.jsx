@@ -49,7 +49,7 @@ import {
   AlertTriangle,
   Pencil, Plus,
 } from "lucide-react";
-import CreateLoanPayment from "@/forms/loanrepayments/CreateLoanPayment";
+import CreateLoanPayment, { getPendingProcessingFee } from "@/forms/loanrepayments/CreateLoanPayment";
 import { useFetchLoanPenaltiesByLoanAccountReference } from "@/hooks/loanpenalties/actions";
 import CreateLoanPenalty from "@/forms/loanpenalties/CreateLoanPenalty";
 import UpdateLoanPenalty from "@/forms/loanpenalties/UpdateLoanPenalty";
@@ -110,6 +110,7 @@ export default function LoanAccountDetail({ params }) {
   const [isReverseModalOpen, setIsReverseModalOpen] = useState(false);
   const [selectedPaymentForReversal, setSelectedPaymentForReversal] = useState(null);
   const [selectedPenalty, setSelectedPenalty] = useState(null);
+  const [repaymentType, setRepaymentType] = useState("Regular Repayment");
 
   const token = useAxiosAuth();
   const [retryingPayments, setRetryingPayments] = useState({});
@@ -231,9 +232,12 @@ export default function LoanAccountDetail({ params }) {
                 </Button>
               </>
             )}
-            {parseFloat(loan.outstanding_balance) > 0 && (
+            {(parseFloat(loan.outstanding_balance) > 0 || getPendingProcessingFee(loan) > 0) && (
               <Button
-                onClick={() => setIsPaymentModalOpen(true)}
+                onClick={() => {
+                  setRepaymentType("Regular Repayment");
+                  setIsPaymentModalOpen(true);
+                }}
                 className="bg-primary hover:bg-[#022007] text-white flex-1 md:flex-none"
               >
                 <Banknote className="mr-2 h-4 w-4" />
@@ -301,15 +305,28 @@ export default function LoanAccountDetail({ params }) {
               </Card>
 
               <Card className="bg-white border-l-4 border-l-red-500">
-                <CardHeader className="pb-2">
+                <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
                   <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                     Pending Fees
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-2">
                   <p className="text-xl font-semibold text-red-600">
-                    {formatCurrency((loan?.processing_fees || []).filter(f => f.status === 'Pending').reduce((acc, f) => acc + (parseFloat(f.amount) || 0) - (parseFloat(f.amount_paid) || 0), 0))}
+                    {formatCurrency(getPendingProcessingFee(loan))}
                   </p>
+                  {getPendingProcessingFee(loan) > 0 && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setRepaymentType("Processing Fee Payment");
+                        setIsPaymentModalOpen(true);
+                      }}
+                      className="h-7 text-xs border-red-200 text-red-700 hover:bg-red-50 w-full font-medium"
+                    >
+                      Pay Processing Fee
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
 
@@ -804,6 +821,7 @@ export default function LoanAccountDetail({ params }) {
           loan_account={loan.account_number}
           maxAmount={parseFloat(loan.outstanding_balance)}
           loanData={loan}
+          initialRepaymentType={repaymentType}
           exactClearanceAmount={
             payoffQuote
               ? parseFloat(payoffQuote.total_payoff_amount) + parseFloat(loan.total_penalties_owed || 0)
