@@ -1,6 +1,7 @@
 "use client";
 
 import React, { use, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { useFetchLoanApplicationDetail } from "@/hooks/loanapplications/actions";
 import MemberLoadingSpinner from "@/components/general/MemberLoadingSpinner";
@@ -44,6 +45,7 @@ import {
   Edit,
   Users,
   Loader2,
+  Trash2,
 } from "lucide-react";
 import { MemberUpdateLoanApplication } from "@/forms/loanapplications/MemberUpdateLoanApplication";
 import { AdminUpdateLoanApplication } from "@/forms/loanapplications/AdminUpdateLoanApplication";
@@ -56,6 +58,7 @@ import {
   acceptAmendment,
   rejectAmendment,
   submitLoanApplication,
+  deleteLoanApplication,
 } from "@/services/loanapplications";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import toast from "react-hot-toast";
@@ -72,6 +75,7 @@ import EmptyState from "@/components/general/EmptyState";
 
 export default function AdminLoanApplicationDetail({ params }) {
   const { reference } = use(params);
+  const router = useRouter();
   const {
     data: application,
     isPending,
@@ -260,6 +264,57 @@ export default function AdminLoanApplicationDetail({ params }) {
               }}
             >
               Confirm
+            </Button>
+          </div>
+        </div>
+      ),
+      { duration: Infinity, position: "top-center" }
+    );
+  };
+
+  const handleDeleteApplication = () => {
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-3 p-1">
+          <div className="font-semibold text-gray-900 text-sm">
+            Delete Loan Application?
+          </div>
+          <p className="text-xs text-gray-600">
+            Are you sure you want to permanently delete application{" "}
+            <span className="font-mono font-bold text-gray-900">{reference}</span>?
+            This will also remove any attached guarantee requests. This action cannot be undone.
+          </p>
+          <div className="flex gap-2 justify-end mt-1">
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-8 text-xs"
+              onClick={() => toast.dismiss(t.id)}
+            >
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              className="h-8 text-xs bg-red-600 hover:bg-red-700"
+              disabled={isSubmitting}
+              onClick={async () => {
+                toast.dismiss(t.id);
+                setIsSubmitting(true);
+                try {
+                  await deleteLoanApplication(reference, token);
+                  toast.success("Application deleted successfully.");
+                  router.push("/sacco-admin/loan-applications");
+                } catch (error) {
+                  console.error("Delete failed", error);
+                  const msg = error?.response?.data?.detail || "Failed to delete application.";
+                  toast.error(msg);
+                } finally {
+                  setIsSubmitting(false);
+                }
+              }}
+            >
+              Confirm Delete
             </Button>
           </div>
         </div>
@@ -469,6 +524,18 @@ const LoanApplicationDetailSkeleton = () => (
             {/* Logic for Other Applications (Admin Actions) */}
             {!isOwnApplication && (
               <>
+                {/* Editable by Admin in pre-approval states */}
+                {["Pending", "In Progress", "Ready for Submission", "Submitted"].includes(application.status) && (
+                  <Button
+                    onClick={() => setIsUpdateModalOpen(true)}
+                    variant="outline"
+                    className="border-slate-300 text-slate-700 hover:bg-slate-100 w-full sm:w-auto"
+                  >
+                    <Pencil className="mr-2 h-4 w-4" />
+                    Edit Application
+                  </Button>
+                )}
+
                 {application.status === "Submitted" && (
                   <>
                     <Button
@@ -491,13 +558,23 @@ const LoanApplicationDetailSkeleton = () => (
                   </>
                 )}
                 {application.status === "Approved" && (
-                  <Button
-                    onClick={() => setIsDisburseModalOpen(true)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
-                  >
-                    <CheckCircle2 className="mr-2 h-4 w-4" />
-                    Disburse Loan
-                  </Button>
+                  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                    <Button
+                      onClick={() => setIsAdminEditApprovedModalOpen(true)}
+                      variant="outline"
+                      className="border-slate-300 text-slate-700 hover:bg-slate-100 w-full sm:w-auto"
+                    >
+                      <Pencil className="mr-2 h-4 w-4" />
+                      Edit Application
+                    </Button>
+                    <Button
+                      onClick={() => setIsDisburseModalOpen(true)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
+                    >
+                      <CheckCircle2 className="mr-2 h-4 w-4" />
+                      Disburse Loan
+                    </Button>
+                  </div>
                 )}
                 {application.status === "Ready for Amendment" && (
                   <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
@@ -517,6 +594,19 @@ const LoanApplicationDetailSkeleton = () => (
                       Finalize Amendment
                     </Button>
                   </div>
+                )}
+
+                {/* Delete Application for Admin (as long as it is not Disbursed) */}
+                {application.status !== "Disbursed" && (
+                  <Button
+                    onClick={handleDeleteApplication}
+                    disabled={isSubmitting}
+                    variant="outline"
+                    className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 w-full sm:w-auto"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete Application
+                  </Button>
                 )}
               </>
             )}

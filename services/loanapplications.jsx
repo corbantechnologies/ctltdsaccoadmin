@@ -94,10 +94,15 @@ export const rejectLoanApplication = async (reference, token) => {
     }, token)
 }
 
+export const deleteLoanApplication = async (reference, token) => {
+    const response = await apiActions?.delete(`/api/v1/loanapplications/${reference}/`, token)
+    return response?.data
+}
+
 // Admin Functions
 export const adminEditApprovedApplication = async (reference, values, token) => {
     const response = await apiActions?.patch(
-        "/api/v1/loanapplications/$reference/admin/edit/",
+        `/api/v1/loanapplications/${reference}/admin/edit/`,
         values,
         token
     )
