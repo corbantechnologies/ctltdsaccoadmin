@@ -242,24 +242,28 @@ export default function SavingAccountReferencePage() {
                             </TableHeader>
                             <TableBody>
                                 {deposits.length > 0 ? (
-                                    [...deposits].reverse().map((dep, index) => (
-                                        <TableRow key={dep.reference || index} className="hover:bg-slate-50 transition-colors border-b border-slate-50">
-                                            <TableCell className="pl-6 py-4">
-                                                <div className="flex flex-col">
-                                                    <span className="text-xs font-semibold text-[var(--accent)] font-mono">{dep.identity || dep.reference}</span>
-                                                    <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-tighter">System ID</span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="py-4">
-                                                <div className="flex flex-col">
-                                                    <span className="text-xs font-semibold text-slate-700">
-                                                        {new Date(dep.created_at).toLocaleDateString("en-GB", { day: 'numeric', month: 'short', year: 'numeric' })}
-                                                    </span>
-                                                    <span className="text-[10px] text-slate-400 font-medium">
-                                                        {new Date(dep.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                    </span>
-                                                </div>
-                                            </TableCell>
+                                    [...deposits]
+                                        .sort((a, b) => new Date(b.transaction_date || b.created_at).getTime() - new Date(a.transaction_date || a.created_at).getTime())
+                                        .map((dep, index) => {
+                                            const displayDate = dep.transaction_date || dep.created_at;
+                                            return (
+                                                <TableRow key={dep.reference || index} className="hover:bg-slate-50 transition-colors border-b border-slate-50">
+                                                    <TableCell className="pl-6 py-4">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-xs font-semibold text-[var(--accent)] font-mono">{dep.identity || dep.reference}</span>
+                                                            <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-tighter">System ID</span>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell className="py-4">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-xs font-semibold text-slate-700">
+                                                                {new Date(displayDate).toLocaleDateString("en-GB", { day: 'numeric', month: 'short', year: 'numeric' })}
+                                                            </span>
+                                                            <span className="text-[10px] text-slate-400 font-medium">
+                                                                {dep.transaction_date ? "Transaction Date" : (dep.created_at ? new Date(dep.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "")}
+                                                            </span>
+                                                        </div>
+                                                    </TableCell>
                                             <TableCell className="py-4">
                                                 <div className="flex items-center gap-1.5">
                                                     <ArrowDownLeft className="w-3.5 h-3.5 text-emerald-500" />

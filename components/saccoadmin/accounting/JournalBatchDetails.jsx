@@ -59,7 +59,7 @@ export default function JournalBatchDetails({ isOpen, onClose, batch, refetch })
                         </p>
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-400 font-medium uppercase tracking-tight italic">
                             <span>Reference: <span className="text-slate-600 not-italic font-bold">{batch.reference}</span></span>
-                            <span>Date: <span className="text-slate-600 not-italic font-bold">{batch.posting_date}</span></span>
+                            <span>Posting Date: <span className="text-slate-600 not-italic font-bold">{batch.posting_date}</span></span>
                         </div>
                     </div>
                     <Button

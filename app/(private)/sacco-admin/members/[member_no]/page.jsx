@@ -114,7 +114,7 @@ function MemberDetail() {
         ...p,
         fee_type: acc.fee_type
       }))
-    ).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) || [];
+    ).sort((a, b) => new Date(b.transaction_date || b.created_at).getTime() - new Date(a.transaction_date || a.created_at).getTime()) || [];
   }, [member]);
 
   const [isApproving, setIsApproving] = useState(false);
@@ -680,7 +680,7 @@ function MemberDetail() {
                   <Table className="min-w-[600px]">
                     <TableHeader>
                       <TableRow className="bg-gray-50/50">
-                        <TableHead>Date</TableHead>
+                        <TableHead>Transaction Date</TableHead>
                         <TableHead>Fee Type</TableHead>
                         <TableHead>Reference</TableHead>
                         <TableHead>Method</TableHead>

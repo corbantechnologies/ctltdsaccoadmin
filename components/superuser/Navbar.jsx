@@ -5,6 +5,7 @@ import { Menu as MenuIcon, X as XIcon, ChevronDown, ChevronRight } from "lucide-
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import React, { useState } from "react";
+import { SACCO_CONFIG } from "@/lib/sacco-config";
 
 const MENU_LINKS = [
   { label: "Dashboard", href: "/superuser/dashboard" },
@@ -81,7 +82,7 @@ export default function SuperuserNavbar() {
         <div className="mx-auto px-6 py-4 flex justify-between items-center">
           <Link href="/superuser/dashboard" className="flex items-center gap-2">
             <span className="text-xl md:text-2xl font-bold tracking-tight">
-              Tamarind Sacco
+              {SACCO_CONFIG.name}
               <span className="text-[10px] font-normal uppercase tracking-[2px] opacity-75 ml-1.5 text-red-400">SUPERUSER</span>
             </span>
           </Link>

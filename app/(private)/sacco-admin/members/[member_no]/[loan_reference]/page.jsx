@@ -603,7 +603,7 @@ export default function LoanAccountDetail({ params }) {
                     <Table className="min-w-[700px]">
                       <TableHeader className="bg-slate-50/70">
                         <TableRow>
-                          <TableHead>Date</TableHead>
+                          <TableHead>Transaction Date</TableHead>
                           <TableHead>Transaction Ref</TableHead>
                           <TableHead>Payment Method</TableHead>
                           <TableHead>Repayment Type</TableHead>
@@ -614,10 +614,12 @@ export default function LoanAccountDetail({ params }) {
                       </TableHeader>
                       <TableBody>
                         {loan.loan_payments?.length > 0 ? (
-                          loan.loan_payments.map((payment, i) => (
+                          [...loan.loan_payments]
+                            .sort((a, b) => new Date(b.transaction_date || b.created_at).getTime() - new Date(a.transaction_date || a.created_at).getTime())
+                            .map((payment, i) => (
                             <TableRow key={i} className="hover:bg-slate-50/60 transition-colors">
                               <TableCell className="font-medium text-xs whitespace-nowrap">
-                                {payment.transaction_date}
+                                {payment.transaction_date || (payment.created_at ? new Date(payment.created_at).toLocaleDateString("en-GB") : "-")}
                               </TableCell>
                               <TableCell className="font-mono text-xs font-medium text-slate-700">
                                 {payment.transaction_code || payment.reference}
@@ -797,10 +799,12 @@ export default function LoanAccountDetail({ params }) {
                       </TableHeader>
                       <TableBody>
                         {loan.disbursements?.length > 0 ? (
-                          loan.disbursements.map((d, i) => (
+                          [...loan.disbursements]
+                            .sort((a, b) => new Date(b.transaction_date || b.created_at).getTime() - new Date(a.transaction_date || a.created_at).getTime())
+                            .map((d, i) => (
                             <TableRow key={i} className="hover:bg-slate-50/60 transition-colors">
                               <TableCell className="font-medium text-xs">
-                                {d.transaction_date}
+                                {d.transaction_date || (d.created_at ? new Date(d.created_at).toLocaleDateString("en-GB") : "-")}
                               </TableCell>
                               <TableCell className="text-xs">{d.payment_method}</TableCell>
                               <TableCell className="text-xs">{d.disbursement_type}</TableCell>

@@ -43,7 +43,8 @@ function WithdrawalsTable({ withdrawals, refetchWithdrawals }) {
   // Filter and sort withdrawals
   const filteredWithdrawals = useMemo(() => {
     let filtered = withdrawals?.filter((withdrawal) => {
-      const withdrawalDate = new Date(withdrawal.created_at);
+      const rawDate = withdrawal.transaction_date || withdrawal.created_at;
+      const withdrawalDate = new Date(rawDate.includes("T") ? rawDate : `${rawDate}T00:00:00`);
 
       // Specific Date Filter
       if (specificDate) {
@@ -76,7 +77,7 @@ function WithdrawalsTable({ withdrawals, refetchWithdrawals }) {
         b.transaction_status === "Pending"
       )
         return 1;
-      return new Date(b.created_at) - new Date(a.created_at);
+      return new Date(b.transaction_date || b.created_at).getTime() - new Date(a.transaction_date || a.created_at).getTime();
     });
   }, [withdrawals, specificDate, startDate, endDate, status]);
 
@@ -139,12 +140,12 @@ function WithdrawalsTable({ withdrawals, refetchWithdrawals }) {
 
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-US", {
+    const parsed = dateString.includes("T") ? dateString : `${dateString}T00:00:00`;
+    return new Date(parsed).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+      ...(dateString.includes("T") ? { hour: "2-digit", minute: "2-digit" } : {}),
     });
   };
 
@@ -267,7 +268,7 @@ function WithdrawalsTable({ withdrawals, refetchWithdrawals }) {
           <Table>
             <TableHeader>
               <TableRow className="bg-[var(--accent)] hover:bg-[var(--accent-hover)]">
-                <TableHead className="text-white font-semibold">Date</TableHead>
+                <TableHead className="text-white font-semibold">Transaction Date</TableHead>
                 <TableHead className="text-white font-semibold">
                   Amount
                 </TableHead>
@@ -290,7 +291,7 @@ function WithdrawalsTable({ withdrawals, refetchWithdrawals }) {
               {paginatedWithdrawals.map((withdrawal) => (
                 <TableRow key={withdrawal.reference} className="border-b">
                   <TableCell className="text-sm text-gray-700">
-                    {formatDate(withdrawal.created_at)}
+                    {formatDate(withdrawal.transaction_date || withdrawal.created_at)}
                   </TableCell>
                   <TableCell className="text-sm text-gray-700">
                     KES {parseFloat(withdrawal.amount).toFixed(2)}

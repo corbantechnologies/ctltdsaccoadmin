@@ -58,15 +58,19 @@ export default function GLAccountReferencePage() {
     const isCreditNormal = useMemo(() => {
         if (!account?.category) return false;
         return ["LIABILITY", "EQUITY", "REVENUE"].includes(account.category.toUpperCase());
-    }, [account?.category]);
+    }, [account]);
 
     // Process entries: sort chronologically + calculate running balance
+    const entries = account?.entries;
     const processedEntries = useMemo(() => {
-        if (!account?.entries?.length) return [];
+        if (!entries?.length) return [];
 
-        const sorted = [...account.entries].sort((a, b) =>
-            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-        );
+        const sorted = [...entries].sort((a, b) => {
+            const dateA = new Date(a.posting_date || a.batch_details?.posting_date || a.created_at).getTime();
+            const dateB = new Date(b.posting_date || b.batch_details?.posting_date || b.created_at).getTime();
+            if (dateA !== dateB) return dateA - dateB;
+            return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        });
 
         let running = 0;
         return sorted.map((entry) => {
@@ -80,7 +84,7 @@ export default function GLAccountReferencePage() {
                 runningBalance: running,
             };
         });
-    }, [account?.entries, isCreditNormal]);
+    }, [entries, isCreditNormal]);
 
     // Filtered entries (search works on the processed list)
     const filteredEntries = useMemo(() => {
@@ -262,7 +266,7 @@ export default function GLAccountReferencePage() {
                             <TableHeader>
                                 <TableRow className="bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-50/50">
                                     <TableHead className="text-[10px] text-slate-500 uppercase tracking-wider py-4 pl-6">
-                                        <div className="flex items-center gap-1.5"><Calendar className="w-3 h-3" />DATE & TIME</div>
+                                        <div className="flex items-center gap-1.5"><Calendar className="w-3 h-3" />POSTING DATE</div>
                                     </TableHead>
                                     <TableHead className="text-[10px] text-slate-500 uppercase tracking-wider py-4">
                                         <div className="flex items-center gap-1.5"><Hash className="w-3 h-3" />CODES</div>
@@ -277,12 +281,22 @@ export default function GLAccountReferencePage() {
                                 {filteredEntries.map((entry) => (
                                     <TableRow key={entry.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors border-b-slate-100">
                                         <TableCell className="py-4 pl-6">
-                                            <div className="text-xs text-slate-900 dark:text-slate-200 leading-none">
-                                                {format(new Date(entry.created_at), "MMM dd, yyyy")}
-                                            </div>
-                                            <div className="text-[10px] text-slate-500 font-medium mt-1 uppercase">
-                                                {format(new Date(entry.created_at), "HH:mm:ss")}
-                                            </div>
+                                            {(() => {
+                                                const rawPostingDate = entry.posting_date || entry.batch_details?.posting_date;
+                                                const displayDate = rawPostingDate 
+                                                    ? new Date(rawPostingDate.includes("T") ? rawPostingDate : `${rawPostingDate}T00:00:00`)
+                                                    : new Date(entry.created_at);
+                                                return (
+                                                    <>
+                                                        <div className="text-xs text-slate-900 dark:text-slate-200 leading-none">
+                                                            {format(displayDate, "MMM dd, yyyy")}
+                                                        </div>
+                                                        <div className="text-[10px] text-slate-500 font-medium mt-1 uppercase">
+                                                            {rawPostingDate ? "Posting Date" : format(new Date(entry.created_at), "HH:mm:ss")}
+                                                        </div>
+                                                    </>
+                                                );
+                                            })()}
                                         </TableCell>
                                         <TableCell className="py-4 font-mono">
                                             <div className="text-[10px] text-slate-900 dark:text-slate-200">{entry.code}</div>

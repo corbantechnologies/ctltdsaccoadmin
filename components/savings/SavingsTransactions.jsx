@@ -50,14 +50,15 @@ function SavingsTransactions({ deposits = [], withdrawals = [] }) {
       initiator: withdrawal.withdrawn_by,
     }));
     return [...formattedDeposits, ...formattedWithdrawals].sort(
-      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      (a, b) => new Date(b.transaction_date || b.created_at).getTime() - new Date(a.transaction_date || a.created_at).getTime()
     );
   }, [deposits, withdrawals]);
 
   // Filter transactions
   const filteredTransactions = useMemo(() => {
     return allTransactions.filter((transaction) => {
-      const transactionDate = new Date(transaction.created_at);
+      const rawDate = transaction.transaction_date || transaction.created_at;
+      const transactionDate = new Date(rawDate.includes("T") ? rawDate : `${rawDate}T00:00:00`);
 
       // Specific Date Filter
       if (specificDate) {
@@ -157,7 +158,8 @@ function SavingsTransactions({ deposits = [], withdrawals = [] }) {
 
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-US", {
+    const parsed = dateString.includes("T") ? dateString : `${dateString}T00:00:00`;
+    return new Date(parsed).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -377,7 +379,7 @@ function SavingsTransactions({ deposits = [], withdrawals = [] }) {
           <Table>
             <TableHeader>
               <TableRow className="bg-primary hover:bg-primary">
-                <TableHead className="text-white font-semibold">Date</TableHead>
+                <TableHead className="text-white font-semibold">Transaction Date</TableHead>
                 <TableHead className="text-white font-semibold">
                   Transaction Type
                 </TableHead>
@@ -402,7 +404,7 @@ function SavingsTransactions({ deposits = [], withdrawals = [] }) {
               {paginatedTransactions.map((transaction) => (
                 <TableRow key={transaction.reference} className="border-b">
                   <TableCell className="text-sm text-gray-700">
-                    {formatDate(transaction.created_at)}
+                    {formatDate(transaction.transaction_date || transaction.created_at)}
                   </TableCell>
                   <TableCell className="text-sm text-gray-700">
                     {transaction.transaction_type}

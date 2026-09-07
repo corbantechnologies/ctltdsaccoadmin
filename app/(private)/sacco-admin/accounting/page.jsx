@@ -88,14 +88,15 @@ export default function AccountingPage() {
     const [batchDateFrom, setBatchDateFrom] = useState("");
     const [batchDateTo, setBatchDateTo] = useState("");
     const [batchCurrentPage, setBatchCurrentPage] = useState(1);
-    const batchItemsPerPage = 1000; // API PAGE_SIZE is 1000
+    const batchItemsPerPage = 100;
 
     const batchParams = useMemo(() => ({
         page: batchCurrentPage,
+        page_size: batchItemsPerPage,
         search: batchSearch || undefined,
         start_date: batchDateFrom || undefined,
         end_date: batchDateTo || undefined,
-    }), [batchCurrentPage, batchSearch, batchDateFrom, batchDateTo]);
+    }), [batchCurrentPage, batchItemsPerPage, batchSearch, batchDateFrom, batchDateTo]);
 
     const { data: batchesData, isLoading: isLoadingBatches, refetch: refetchBatches } = useFetchJournalBatches(batchParams);
 
@@ -265,7 +266,10 @@ export default function AccountingPage() {
                                                     placeholder="Search batches..."
                                                     className="pl-9 w-full sm:w-[180px] h-9 text-xs"
                                                     value={batchSearch}
-                                                    onChange={(e) => setBatchSearch(e.target.value)}
+                                                    onChange={(e) => {
+                                                        setBatchSearch(e.target.value);
+                                                        setBatchCurrentPage(1);
+                                                    }}
                                                 />
                                             </div>
                                             <div className="flex flex-row items-center gap-2 w-full sm:w-auto">
@@ -274,7 +278,10 @@ export default function AccountingPage() {
                                                     title="From Date"
                                                     className="w-full sm:w-[130px] h-9 text-xs flex-1 sm:flex-none"
                                                     value={batchDateFrom}
-                                                    onChange={(e) => setBatchDateFrom(e.target.value)}
+                                                    onChange={(e) => {
+                                                        setBatchDateFrom(e.target.value);
+                                                        setBatchCurrentPage(1);
+                                                    }}
                                                 />
                                                 <span className="text-xs text-slate-500 shrink-0">to</span>
                                                 <Input
@@ -282,7 +289,10 @@ export default function AccountingPage() {
                                                     title="To Date"
                                                     className="w-full sm:w-[130px] h-9 text-xs flex-1 sm:flex-none"
                                                     value={batchDateTo}
-                                                    onChange={(e) => setBatchDateTo(e.target.value)}
+                                                    onChange={(e) => {
+                                                        setBatchDateTo(e.target.value);
+                                                        setBatchCurrentPage(1);
+                                                    }}
                                                 />
                                             </div>
                                             {(batchSearch || batchDateFrom || batchDateTo) && (
@@ -290,6 +300,7 @@ export default function AccountingPage() {
                                                     setBatchSearch("");
                                                     setBatchDateFrom("");
                                                     setBatchDateTo("");
+                                                    setBatchCurrentPage(1);
                                                 }} className="h-9 text-xs text-[#ea1315] w-full sm:w-auto">
                                                     Clear
                                                 </Button>
@@ -330,7 +341,7 @@ export default function AccountingPage() {
                                                 <TableRow className="border-b-0">
                                                     <TableHead className="font-semibold text-xs">BATCH CODE</TableHead>
                                                     <TableHead className="font-semibold text-xs">DESCRIPTION</TableHead>
-                                                    <TableHead className="font-semibold text-xs">DATE</TableHead>
+                                                    <TableHead className="font-semibold text-xs">POSTING DATE</TableHead>
                                                     <TableHead className="font-semibold text-xs">STATUS</TableHead>
                                                     <TableHead className="font-semibold text-xs text-right">ENTRIES</TableHead>
                                                     <TableHead className="font-semibold text-xs text-right">ACTION</TableHead>
@@ -520,7 +531,7 @@ export default function AccountingPage() {
                                                 <TableHead className="font-semibold text-xs text-right">DEBIT</TableHead>
                                                 <TableHead className="font-semibold text-xs text-right">CREDIT</TableHead>
                                                 <TableHead className="font-semibold text-xs">BATCH</TableHead>
-                                                <TableHead className="font-semibold text-xs">DATE</TableHead>
+                                                <TableHead className="font-semibold text-xs">POSTING DATE</TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
@@ -537,9 +548,11 @@ export default function AccountingPage() {
                                                     <TableCell className="text-sm text-slate-500 font-mono text-xs">{entry.batch}</TableCell>
                                                     <TableCell className="text-sm text-slate-500">
                                                         {(() => {
-                                                            const batch = journalBatches?.find(b => b.code === entry.batch);
-                                                            return batch?.posting_date ? format(new Date(batch.posting_date), "MMM d, yyyy") : 
-                                                                   (entry.created_at ? format(new Date(entry.created_at), "MMM d, yyyy") : "-");
+                                                            const rawDate = entry.posting_date || entry.batch_details?.posting_date || journalBatches?.find(b => b.code === entry.batch)?.posting_date;
+                                                            if (rawDate) {
+                                                                return format(new Date(rawDate.includes("T") ? rawDate : `${rawDate}T00:00:00`), "MMM d, yyyy");
+                                                            }
+                                                            return entry.created_at ? format(new Date(entry.created_at), "MMM d, yyyy") : "-";
                                                         })()}
                                                     </TableCell>
                                                 </TableRow>

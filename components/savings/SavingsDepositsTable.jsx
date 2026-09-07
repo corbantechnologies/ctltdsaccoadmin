@@ -102,7 +102,8 @@ function SavingsDepositsTable({ deposits }) {
         }
       }
 
-      const depositDate = new Date(deposit.created_at);
+      const rawDate = deposit.transaction_date || deposit.created_at;
+      const depositDate = new Date(rawDate.includes("T") ? rawDate : `${rawDate}T00:00:00`);
 
       // Specific Date Filter
       if (specificDate) {
@@ -142,7 +143,7 @@ function SavingsDepositsTable({ deposits }) {
         return false;
 
       return true;
-    });
+    }).sort((a, b) => new Date(b.transaction_date || b.created_at).getTime() - new Date(a.transaction_date || a.created_at).getTime());
   }, [
     deposits,
     searchInput,
@@ -376,7 +377,7 @@ function SavingsDepositsTable({ deposits }) {
           <Table>
             <TableHeader className="bg-[var(--accent)] hover:bg-[var(--accent)]">
               <TableRow>
-                <TableHead className="text-white font-semibold">Date</TableHead>
+                <TableHead className="text-white font-semibold">Transaction Date</TableHead>
                 <TableHead className="text-white font-semibold">
                   Amount
                 </TableHead>
