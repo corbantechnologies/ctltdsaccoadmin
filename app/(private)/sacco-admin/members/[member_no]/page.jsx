@@ -59,6 +59,7 @@ import { downloadMemberSummary } from "@/services/membersummary";
 import { Download, Loader2 } from "lucide-react";
 import EmptyState from "@/components/general/EmptyState";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { formatCurrency } from "@/lib/utils";
 
 const MemberDetailSkeleton = () => (
   <div className="mx-auto space-y-8 animate-pulse p-4 md:p-6">
@@ -451,25 +452,25 @@ function MemberDetail() {
         {/* Quick Action Cards */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Savings Accounts */}
-          <Card className="shadow-md border-l-4 border-l-blue-500">
-            <CardHeader>
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
-                <CardTitle className="flex items-center gap-2 text-xl">
-                  <Wallet className="h-6 w-6 text-primary" />
-                  Savings Accounts
+          <Card className="shadow-sm border border-slate-200 bg-white">
+            <CardHeader className="pb-3">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-base font-bold text-slate-800">
+                  <Wallet className="h-5 w-5 text-primary" />
+                  Savings Accounts ({member?.savings?.length || 0})
                 </CardTitle>
                 {member?.is_approved && (
                   <Button
                     onClick={() => setDepositModal(true)}
                     size="sm"
-                    className="h-8 w-full sm:w-auto bg-primary hover:bg-primary/90 text-white"
+                    className="h-8 bg-primary hover:bg-primary/90 text-white text-xs"
                   >
                     Deposit
                   </Button>
                 )}
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3">
               {member?.savings?.length > 0 ? (
                 <>
                   {paginate(member.savings, savingsPage).map((account) => (
@@ -478,11 +479,15 @@ function MemberDetail() {
                       href={`/sacco-admin/saving-accounts/${account.reference}`}
                       className="block transition-transform hover:scale-[1.01]"
                     >
-                      <InfoField
-                        icon={Wallet2}
-                        label={`${account.account_type} - ${account.account_number}`}
-                        value={`${formatBalance(account.balance)} KES`}
-                      />
+                      <div className="p-3 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-100 transition-colors flex items-center justify-between">
+                        <div>
+                          <p className="font-semibold text-xs text-slate-800">{account.account_type}</p>
+                          <p className="font-mono text-[11px] text-muted-foreground">{account.account_number}</p>
+                        </div>
+                        <p className="text-sm font-bold text-slate-900 font-mono">
+                          {formatCurrency(account.balance)}
+                        </p>
+                      </div>
                     </Link>
                   ))}
                   <PaginationControls
@@ -505,34 +510,49 @@ function MemberDetail() {
           </Card>
 
           {/* Fee Accounts */}
-          <Card className="shadow-md border-l-4 border-l-amber-500">
-            <CardHeader>
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
-                <CardTitle className="flex items-center gap-2 text-xl">
-                  <Shield className="h-6 w-6 text-primary" />
-                  Fee Accounts
+          <Card className="shadow-sm border border-slate-200 bg-white">
+            <CardHeader className="pb-3">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-base font-bold text-slate-800">
+                  <Shield className="h-5 w-5 text-amber-600" />
+                  Fee Accounts ({member?.fee_accounts?.length || 0})
                 </CardTitle>
                 {member?.is_approved && (
                   <Button
                     onClick={() => setFeePaymentModal(true)}
                     size="sm"
-                    className="h-8 w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white disabled:bg-slate-300 disabled:text-slate-500"
+                    className="h-8 bg-amber-600 hover:bg-amber-700 text-white text-xs"
                   >
                     Pay Fee
                   </Button>
                 )}
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3">
               {member?.fee_accounts?.length > 0 ? (
                 <>
                   {paginate(member.fee_accounts, feesPage).map((account) => (
-                    <InfoField
+                    <div
                       key={account.reference}
-                      icon={CreditCard}
-                      label={`${account.fee_type} - ${account.account_number}`}
-                      value={`${formatBalance(account.outstanding_balance)} KES | ${formatBalance(account.amount_paid)} KES`}
-                    />
+                      className="p-3 rounded-lg bg-slate-50 border border-slate-100 space-y-1.5"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-xs text-slate-800">
+                          {account.fee_type}
+                        </span>
+                        <span className="font-mono text-[11px] text-muted-foreground">
+                          {account.account_number}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs pt-1 border-t border-slate-200/50">
+                        <span className="text-muted-foreground">
+                          Due: <strong className="text-red-600 font-semibold">{formatCurrency(account.outstanding_balance)}</strong>
+                        </span>
+                        <span className="text-muted-foreground">
+                          Paid: <strong className="text-green-700 font-semibold">{formatCurrency(account.amount_paid)}</strong>
+                        </span>
+                      </div>
+                    </div>
                   ))}
                   <PaginationControls
                     currentPage={feesPage}
@@ -554,16 +574,16 @@ function MemberDetail() {
           </Card>
 
           {/* Loan Accounts */}
-          <Card className="shadow-md border-l-4 border-l-rose-500">
-            <CardHeader>
+          <Card className="shadow-sm border border-slate-200 bg-white">
+            <CardHeader className="pb-3">
               <div className="flex justify-between items-center">
-                <CardTitle className="flex items-center gap-2 text-xl">
-                  <CreditCard className="h-6 w-6 text-primary" />
-                  Loan Accounts
+                <CardTitle className="flex items-center gap-2 text-base font-bold text-slate-800">
+                  <CreditCard className="h-5 w-5 text-primary" />
+                  Loan Accounts ({member?.loan_accounts?.length || 0})
                 </CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3">
               {member?.loan_accounts?.length > 0 ? (
                 <>
                   {paginate(member.loan_accounts, loansPage).map((account) => (
@@ -572,11 +592,20 @@ function MemberDetail() {
                       href={`/sacco-admin/members/${member_no}/${account.reference}`}
                       className="block transition-transform hover:scale-[1.01]"
                     >
-                      <InfoField
-                        icon={CreditCard}
-                        label={`${account.product} - ${account.account_number}`}
-                        value={`${formatBalance(account.outstanding_balance)} KES`}
-                      />
+                      <div className="p-3 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-100 transition-colors space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="font-semibold text-xs text-slate-800">
+                            {account.product}
+                          </span>
+                          <Badge variant="outline" className="text-[10px] py-0">
+                            {account.status || "Active"}
+                          </Badge>
+                        </div>
+                        <div className="flex justify-between items-center text-xs pt-1 border-t border-slate-200/50">
+                          <span className="font-mono text-[11px] text-muted-foreground">{account.account_number}</span>
+                          <span className="font-bold text-slate-900 font-mono">{formatCurrency(account.outstanding_balance)}</span>
+                        </div>
+                      </div>
                     </Link>
                   ))}
                   <PaginationControls
@@ -703,8 +732,8 @@ function MemberDetail() {
                                 )}
                               </div>
                             </TableCell>
-                            <TableCell className="text-right font-semibold text-xs">
-                              {payment.amount.toLocaleString()} KES
+                            <TableCell className="text-right font-semibold text-xs font-mono">
+                              {formatCurrency(payment.amount)}
                             </TableCell>
                           </TableRow>
                         ))

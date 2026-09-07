@@ -32,6 +32,8 @@ import Link from "next/link";
 
 import BulkFeePaymentCreate from "@/forms/feepayments/BulkFeePaymentCreate";
 import BulkFeePaymentUploadCreate from "@/forms/feepayments/BulkFeePaymentUploadCreate";
+import CreateFeePayment from "@/forms/feepayments/CreateFeePayment";
+import { formatCurrency } from "@/lib/utils";
 
 const TableSkeleton = ({ rows = 5, cols = 5 }) => {
     return (
@@ -54,6 +56,8 @@ export default function FeePaymentsManagementPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [feeTypeFilter, setFeeTypeFilter] = useState("all");
     const [statusFilter, setStatusFilter] = useState("all");
+    const [selectedAccountForPayment, setSelectedAccountForPayment] = useState(null);
+    const [isPayModalOpen, setIsPayModalOpen] = useState(false);
 
     const feeTypesList = useMemo(() => {
         if (!feeAccounts) return [];
@@ -109,6 +113,17 @@ export default function FeePaymentsManagementPage() {
                         </p>
                     </div>
                 </div>
+                <div className="flex gap-2 w-full sm:w-auto">
+                    <Button
+                        onClick={() => {
+                            setSelectedAccountForPayment(feeAccounts && feeAccounts.length > 0 ? feeAccounts[0] : null);
+                            setIsPayModalOpen(true);
+                        }}
+                        className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-xs font-semibold px-4 h-10 shadow-sm gap-1.5 w-full sm:w-auto"
+                    >
+                        <Plus className="w-4 h-4" /> Record Fee Payment
+                    </Button>
+                </div>
             </div>
 
             {/* Stats Overview */}
@@ -116,8 +131,8 @@ export default function FeePaymentsManagementPage() {
                 <Card className="border shadow-sm bg-[var(--accent)] text-white rounded">
                     <CardHeader className="p-6">
                         <CardDescription className="text-white/60 uppercase tracking-widest text-[9px]">Total Receivables</CardDescription>
-                        <CardTitle className="text-xl font-semibold">
-                            {(feeAccounts || []).reduce((sum, acc) => sum + Number(acc.outstanding_balance || 0), 0).toLocaleString()}
+                        <CardTitle className="text-xl font-semibold font-mono">
+                            {formatCurrency((feeAccounts || []).reduce((sum, acc) => sum + Number(acc.outstanding_balance || 0), 0))}
                         </CardTitle>
                     </CardHeader>
                 </Card>
@@ -140,8 +155,8 @@ export default function FeePaymentsManagementPage() {
                 <Card className="border shadow-sm bg-white rounded">
                     <CardHeader className="p-6">
                         <CardDescription className="text-slate-400 uppercase tracking-widest text-[9px]">Avg Fee Bal</CardDescription>
-                        <CardTitle className="text-xl font-semibold text-slate-800">
-                            {feeAccounts?.length ? Math.round(feeAccounts.reduce((sum, acc) => sum + Number(acc.outstanding_balance || 0), 0) / feeAccounts.length).toLocaleString() : 0}
+                        <CardTitle className="text-xl font-semibold text-slate-800 font-mono">
+                            {formatCurrency(feeAccounts?.length ? Math.round(feeAccounts.reduce((sum, acc) => sum + Number(acc.outstanding_balance || 0), 0) / feeAccounts.length) : 0)}
                         </CardTitle>
                     </CardHeader>
                 </Card>
@@ -256,7 +271,7 @@ export default function FeePaymentsManagementPage() {
                                                         <span className="text-sm text-slate-700">{typeof acc.fee_type === "string" ? acc.fee_type : acc.fee_type?.name}</span>
                                                     </TableCell>
                                                     <TableCell className="text-center text-slate-800 font-mono text-sm">
-                                                        {Number(acc.outstanding_balance).toLocaleString()}
+                                                        {formatCurrency(acc.outstanding_balance || 0)}
                                                     </TableCell>
                                                     <TableCell className="text-center">
                                                         <span className={`px-2 py-1 rounded text-[10px] font-semibold tracking-wider ${Number(acc.outstanding_balance) === 0
@@ -267,11 +282,26 @@ export default function FeePaymentsManagementPage() {
                                                         </span>
                                                     </TableCell>
                                                     <TableCell className="pr-6 text-right">
-                                                        <Link href={`/sacco-admin/members/${typeof acc.member === "string" ? acc.member : acc.member?.member_no}`}>
-                                                            <Button size="icon" variant="ghost" className="h-8 w-8 text-slate-400 hover:text-[var(--accent)] hover:bg-slate-100 border-transparent border">
-                                                                <Users className="h-4 w-4" />
-                                                            </Button>
-                                                        </Link>
+                                                        <div className="flex items-center justify-end gap-1.5">
+                                                            {Number(acc.outstanding_balance) > 0 && (
+                                                                <Button
+                                                                    size="sm"
+                                                                    variant="outline"
+                                                                    onClick={() => {
+                                                                        setSelectedAccountForPayment(acc);
+                                                                        setIsPayModalOpen(true);
+                                                                    }}
+                                                                    className="h-7 text-xs font-semibold text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 border-emerald-200"
+                                                                >
+                                                                    Pay Fee
+                                                                </Button>
+                                                            )}
+                                                            <Link href={`/sacco-admin/members/${typeof acc.member === "string" ? acc.member : acc.member?.member_no}`}>
+                                                                <Button size="icon" variant="ghost" className="h-7 w-7 text-slate-400 hover:text-[var(--accent)] hover:bg-slate-100 border-transparent border" title="View Member Profile">
+                                                                    <Users className="h-3.5 w-3.5" />
+                                                                </Button>
+                                                            </Link>
+                                                        </div>
                                                     </TableCell>
                                                 </TableRow>
                                             ))
@@ -307,6 +337,19 @@ export default function FeePaymentsManagementPage() {
                     </Card>
                 </TabsContent>
             </Tabs>
+
+            {/* Single Fee Payment Modal */}
+            {isPayModalOpen && (
+                <CreateFeePayment
+                    isOpen={isPayModalOpen}
+                    onClose={() => {
+                        setIsPayModalOpen(false);
+                        setSelectedAccountForPayment(null);
+                    }}
+                    refetchMember={refetch}
+                    accounts={selectedAccountForPayment ? [selectedAccountForPayment] : (feeAccounts || [])}
+                />
+            )}
         </div>
     );
 }
