@@ -34,6 +34,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   AlertCircle,
   CheckCircle2,
   FileText,
@@ -46,6 +51,7 @@ import {
   Users,
   Loader2,
   Trash2,
+  MoreVertical,
 } from "lucide-react";
 import { MemberUpdateLoanApplication } from "@/forms/loanapplications/MemberUpdateLoanApplication";
 import { AdminUpdateLoanApplication } from "@/forms/loanapplications/AdminUpdateLoanApplication";
@@ -429,8 +435,8 @@ const LoanApplicationDetailSkeleton = () => (
             </p>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap gap-2 w-full md:w-auto">
+          {/* Action Buttons with Clear Hierarchy */}
+          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
             <Badge
               className={getStatusColor(application.status)}
               variant="outline"
@@ -446,31 +452,33 @@ const LoanApplicationDetailSkeleton = () => (
               }
               variant="outline"
             >
-              {application.admin_created ? "Admin" : "Member"}
+              {application.admin_created ? "Admin Created" : "Member Portal"}
             </Badge>
 
-            {/* Logic for Own Application (Member Actions) */}
+            {/* Member Own Application Flow */}
             {isOwnApplication && (
-              <>
+              <div className="flex items-center gap-2">
                 {application.status === "Pending" && (
                   <>
                     <Button
                       variant="outline"
+                      size="sm"
                       onClick={() => setIsUpdateModalOpen(true)}
-                      className="border-[#045e32] text-[#045e32] hover:bg-[#045e32]/10 w-full sm:w-auto"
+                      className="border-slate-200 text-slate-700 hover:bg-slate-50 h-9"
                     >
-                      <Pencil className="mr-2 h-4 w-4" />
+                      <Pencil className="mr-1.5 h-3.5 w-3.5" />
                       Update
                     </Button>
                     <Button
+                      size="sm"
                       onClick={handleSubmitForAmendment}
                       disabled={isSubmitting}
-                      className="bg-[#045e32] hover:bg-[#034625] w-full sm:w-auto"
+                      className="bg-[#045e32] hover:bg-[#034625] text-white h-9"
                     >
                       {isSubmitting ? (
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
                       ) : (
-                        <Send className="mr-2 h-4 w-4" />
+                        <Send className="mr-1.5 h-3.5 w-3.5" />
                       )}
                       Submit for Amendment
                     </Button>
@@ -479,17 +487,19 @@ const LoanApplicationDetailSkeleton = () => (
                 {application.status === "Amended" && (
                   <>
                     <Button
+                      size="sm"
                       onClick={handleRejectAmendment}
                       disabled={isSubmitting}
                       variant="outline"
-                      className="text-red-600 border-red-200 hover:bg-red-50 w-full sm:w-auto"
+                      className="text-red-600 border-red-200 hover:bg-red-50 h-9"
                     >
                       Reject
                     </Button>
                     <Button
+                      size="sm"
                       onClick={handleAcceptAmendment}
                       disabled={isSubmitting}
-                      className="bg-[#045e32] hover:bg-[#034625] w-full sm:w-auto"
+                      className="bg-[#045e32] hover:bg-[#034625] text-white h-9"
                     >
                       Accept Amendment
                     </Button>
@@ -497,118 +507,162 @@ const LoanApplicationDetailSkeleton = () => (
                 )}
                 {application.status === "Ready for Submission" && (
                   <Button
+                    size="sm"
                     onClick={handleSubmitLoanApplication}
                     disabled={isSubmitting}
-                    className="bg-[#045e32] hover:bg-[#034625] w-full sm:w-auto"
+                    className="bg-[#045e32] hover:bg-[#034625] text-white h-9"
                   >
                     {isSubmitting ? (
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
                     ) : (
-                      <Send className="mr-2 h-4 w-4" />
+                      <Send className="mr-1.5 h-3.5 w-3.5" />
                     )}
                     Submit Application
                   </Button>
                 )}
                 {application.status === "In Progress" && (
                   <Button
+                    size="sm"
                     onClick={() => setIsGuarantorModalOpen(true)}
                     variant="outline"
-                    className="w-full sm:w-auto"
+                    className="h-9"
                   >
                     Request Guarantors
                   </Button>
                 )}
-              </>
+              </div>
             )}
 
-            {/* Logic for Other Applications (Admin Actions) */}
+            {/* Admin Management Actions (Streamlined Primary CTA + Actions Menu) */}
             {!isOwnApplication && (
-              <>
-                {/* Editable by Admin in pre-approval states */}
-                {["Pending", "In Progress", "Ready for Submission", "Submitted"].includes(application.status) && (
-                  <Button
-                    onClick={() => setIsUpdateModalOpen(true)}
-                    variant="outline"
-                    className="border-slate-300 text-slate-700 hover:bg-slate-100 w-full sm:w-auto"
-                  >
-                    <Pencil className="mr-2 h-4 w-4" />
-                    Edit Application
-                  </Button>
-                )}
-
+              <div className="flex items-center gap-2">
+                {/* Primary CTA based on lifecycle stage */}
                 {application.status === "Submitted" && (
-                  <>
-                    <Button
-                      onClick={handleReject}
-                      disabled={isSubmitting}
-                      variant="destructive"
-                      className="w-full sm:w-auto"
-                    >
-                      <ThumbsDown className="mr-2 h-4 w-4" />
-                      Decline
-                    </Button>
-                    <Button
-                      onClick={handleApprove}
-                      disabled={isSubmitting}
-                      className="bg-[#045e32] hover:bg-[#034625] w-full sm:w-auto"
-                    >
-                      <ThumbsUp className="mr-2 h-4 w-4" />
-                      Approve
-                    </Button>
-                  </>
-                )}
-                {application.status === "Approved" && (
-                  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                    <Button
-                      onClick={() => setIsAdminEditApprovedModalOpen(true)}
-                      variant="outline"
-                      className="border-slate-300 text-slate-700 hover:bg-slate-100 w-full sm:w-auto"
-                    >
-                      <Pencil className="mr-2 h-4 w-4" />
-                      Edit Application
-                    </Button>
-                    <Button
-                      onClick={() => setIsDisburseModalOpen(true)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
-                    >
-                      <CheckCircle2 className="mr-2 h-4 w-4" />
-                      Disburse Loan
-                    </Button>
-                  </div>
-                )}
-                {application.status === "Ready for Amendment" && (
-                  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                    <Button
-                      onClick={() => setIsUpdateAdminModalOpen(true)}
-                      variant="outline"
-                      className="border-amber-600 text-amber-600 hover:bg-amber-50 w-full sm:w-auto"
-                    >
-                      <Pencil className="mr-2 h-4 w-4" />
-                      Update Application
-                    </Button>
-                    <Button
-                      onClick={() => setIsAmendModalOpen(true)}
-                      className="bg-amber-600 hover:bg-amber-700 w-full sm:w-auto"
-                    >
-                      <CheckCircle2 className="mr-2 h-4 w-4" />
-                      Finalize Amendment
-                    </Button>
-                  </div>
-                )}
-
-                {/* Delete Application for Admin (as long as it is not Disbursed) */}
-                {application.status !== "Disbursed" && (
                   <Button
-                    onClick={handleDeleteApplication}
+                    size="sm"
+                    onClick={handleApprove}
                     disabled={isSubmitting}
-                    variant="outline"
-                    className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 w-full sm:w-auto"
+                    className="bg-[#045e32] hover:bg-[#034625] text-white h-9 px-4 font-medium flex items-center gap-1.5"
                   >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Delete Application
+                    <ThumbsUp className="h-4 w-4" />
+                    Approve Application
                   </Button>
                 )}
-              </>
+
+                {application.status === "Approved" && (
+                  <Button
+                    size="sm"
+                    onClick={() => setIsDisburseModalOpen(true)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white h-9 px-4 font-medium flex items-center gap-1.5"
+                  >
+                    <CheckCircle2 className="h-4 w-4" />
+                    Disburse Loan
+                  </Button>
+                )}
+
+                {application.status === "Ready for Amendment" && (
+                  <Button
+                    size="sm"
+                    onClick={() => setIsAmendModalOpen(true)}
+                    className="bg-amber-600 hover:bg-amber-700 text-white h-9 px-4 font-medium flex items-center gap-1.5"
+                  >
+                    <CheckCircle2 className="h-4 w-4" />
+                    Finalize Amendment
+                  </Button>
+                )}
+
+                {/* Secondary Actions Popover Menu */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-slate-200 text-slate-700 hover:bg-slate-50 h-9 px-2.5 flex items-center gap-1.5"
+                      aria-label="Application Actions"
+                    >
+                      <MoreVertical className="h-4 w-4" />
+                      <span className="hidden sm:inline text-xs font-medium">Actions</span>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent align="end" className="w-52 p-1.5 space-y-1">
+                    {/* Editable in pre-approval states */}
+                    {["Pending", "In Progress", "Ready for Submission", "Submitted"].includes(application.status) && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsUpdateModalOpen(true)}
+                        className="w-full justify-start text-xs font-medium h-9 text-slate-700"
+                      >
+                        <Pencil className="mr-2 h-3.5 w-3.5 text-slate-500" />
+                        Edit Application
+                      </Button>
+                    )}
+
+                    {application.status === "Approved" && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsAdminEditApprovedModalOpen(true)}
+                        className="w-full justify-start text-xs font-medium h-9 text-slate-700"
+                      >
+                        <Pencil className="mr-2 h-3.5 w-3.5 text-slate-500" />
+                        Edit Application
+                      </Button>
+                    )}
+
+                    {application.status === "Ready for Amendment" && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsUpdateAdminModalOpen(true)}
+                        className="w-full justify-start text-xs font-medium h-9 text-amber-700 hover:bg-amber-50"
+                      >
+                        <Pencil className="mr-2 h-3.5 w-3.5 text-amber-600" />
+                        Update Application
+                      </Button>
+                    )}
+
+                    {application.status === "In Progress" && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsGuarantorModalOpen(true)}
+                        className="w-full justify-start text-xs font-medium h-9 text-slate-700"
+                      >
+                        <Users className="mr-2 h-3.5 w-3.5 text-slate-500" />
+                        Request Guarantors
+                      </Button>
+                    )}
+
+                    {application.status === "Submitted" && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleReject}
+                        disabled={isSubmitting}
+                        className="w-full justify-start text-xs font-medium h-9 text-red-600 hover:bg-red-50"
+                      >
+                        <ThumbsDown className="mr-2 h-3.5 w-3.5 text-red-500" />
+                        Decline Application
+                      </Button>
+                    )}
+
+                    {/* Delete Application (as long as it is not Disbursed) */}
+                    {application.status !== "Disbursed" && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleDeleteApplication}
+                        disabled={isSubmitting}
+                        className="w-full justify-start text-xs font-medium h-9 text-red-600 hover:bg-red-50 hover:text-red-700"
+                      >
+                        <Trash2 className="mr-2 h-3.5 w-3.5 text-red-500" />
+                        Delete Application
+                      </Button>
+                    )}
+                  </PopoverContent>
+                </Popover>
+              </div>
             )}
           </div>
         </div>
@@ -800,6 +854,25 @@ const LoanApplicationDetailSkeleton = () => (
                     <span>
                       {formatCurrency(application.effective_coverage)}
                     </span>
+                  </div>
+
+                  {/* Visual Coverage Progress Bar */}
+                  <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden my-1">
+                    <div
+                      className={`h-2 rounded-full transition-all duration-500 ${
+                        application.is_fully_covered ? "bg-green-600" : "bg-amber-500"
+                      }`}
+                      style={{
+                        width: `${Math.min(
+                          100,
+                          Math.round(
+                            ((parseFloat(application.effective_coverage) || 0) /
+                              (parseFloat(application.requested_amount) || 1)) *
+                              100
+                          )
+                        )}%`,
+                      }}
+                    />
                   </div>
                 </div>
 

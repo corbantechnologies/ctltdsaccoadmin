@@ -78,7 +78,7 @@ function CreateLoanPenalty({ isOpen, onClose, refetchLoan, loan_account }) {
                   required
                 />
                 <p className="text-xs text-muted-foreground">
-                  A penalty will be automatically calculated based on the loan's overdue status.
+                  A penalty will be automatically calculated based on the loan&apos;s overdue status.
                 </p>
               </div>
 
