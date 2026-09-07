@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 
 import CreateDepositAdmin from "@/forms/savingsdeposits/CreateDepositAdmin";
+import { formatCurrency } from "@/lib/utils";
 
 const TableSkeleton = ({ rows = 5, cols = 6 }) => {
     return (
@@ -188,7 +189,7 @@ export default function SavingAccountsPage() {
                                     placeholder="Search by member name or account number..."
                                     value={searchInput}
                                     onChange={(e) => setSearchInput(e.target.value)}
-                                    className="pl-10 border-black rounded text-base"
+                                    className="pl-10 border-slate-200 focus:border-[var(--accent)] rounded text-sm bg-slate-50/50"
                                 />
                             </div>
                         </div>
@@ -198,7 +199,7 @@ export default function SavingAccountsPage() {
                                 id="status-filter"
                                 value={statusFilter}
                                 onChange={(e) => handleStatusChange(e.target.value)}
-                                className="w-full border border-black rounded px-3 py-2 text-base focus:ring-2 transition-colors"
+                                className="w-full border border-slate-200 rounded px-3 py-2 text-sm bg-slate-50/50 focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-colors"
                             >
                                 <option value="all">All Statuses</option>
                                 <option value="active">Active</option>
@@ -255,7 +256,7 @@ export default function SavingAccountsPage() {
                                                                     </div>
                                                                     <div className="flex items-center justify-between sm:justify-end gap-4 ml-auto sm:ml-0">
                                                                         <span className="text-sm font-semibold text-slate-900 font-mono">
-                                                                            KES {parseFloat(acc.balance).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                                            {formatCurrency(acc.balance || 0)}
                                                                         </span>
                                                                         <div className="flex gap-1.5">
                                                                             <Button

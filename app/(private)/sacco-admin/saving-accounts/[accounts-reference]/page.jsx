@@ -21,8 +21,12 @@ import {
     FileText,
     Receipt,
     Wallet,
-    Edit
+    Edit,
+    Plus,
+    TrendingUp
 } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
+import CreateDepositAdmin from "@/forms/savingsdeposits/CreateDepositAdmin";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import ReversePaymentModal from "@/forms/loans/ReversePaymentModal";
 import { Label } from "@/components/ui/label";
@@ -35,6 +39,25 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
+const SavingAccountDetailSkeleton = () => (
+  <div className="mx-auto p-4 sm:p-6 space-y-6 animate-pulse">
+    <div className="h-4 w-48 bg-slate-200 rounded" />
+    <div className="flex justify-between items-center">
+      <div className="space-y-2">
+        <div className="h-6 w-64 bg-slate-200 rounded" />
+        <div className="h-4 w-40 bg-slate-200 rounded" />
+      </div>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="h-24 bg-slate-200 rounded-lg" />
+      <div className="h-24 bg-slate-200 rounded-lg" />
+      <div className="h-24 bg-slate-200 rounded-lg" />
+      <div className="h-24 bg-slate-200 rounded-lg" />
+    </div>
+    <div className="h-96 bg-slate-200 rounded-lg" />
+  </div>
+);
+
 export default function SavingAccountReferencePage() {
     const params = useParams();
     const router = useRouter();
@@ -46,6 +69,7 @@ export default function SavingAccountReferencePage() {
 
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [isReverseDialogOpen, setIsReverseDialogOpen] = useState(false);
+    const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
     const [selectedDepositForReversal, setSelectedDepositForReversal] = useState(null);
     const [selectedDeposit, setSelectedDeposit] = useState(null);
     const [newDate, setNewDate] = useState("");
@@ -73,25 +97,6 @@ export default function SavingAccountReferencePage() {
             }
         });
     };
-
-const SavingAccountDetailSkeleton = () => (
-  <div className="mx-auto p-4 sm:p-6 space-y-6 animate-pulse">
-    <div className="h-4 w-48 bg-slate-200 rounded" />
-    <div className="flex justify-between items-center">
-      <div className="space-y-2">
-        <div className="h-6 w-64 bg-slate-200 rounded" />
-        <div className="h-4 w-40 bg-slate-200 rounded" />
-      </div>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div className="h-24 bg-slate-200 rounded-lg" />
-      <div className="h-24 bg-slate-200 rounded-lg" />
-      <div className="h-24 bg-slate-200 rounded-lg" />
-      <div className="h-24 bg-slate-200 rounded-lg" />
-    </div>
-    <div className="h-96 bg-slate-200 rounded-lg" />
-  </div>
-);
 
     if (isLoading) {
         return (
@@ -132,6 +137,14 @@ const SavingAccountDetailSkeleton = () => (
                     </div>
                 </div>
 
+                <div className="flex gap-2 w-full sm:w-auto">
+                    <Button
+                        onClick={() => setIsDepositModalOpen(true)}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 h-10 shadow-sm gap-1.5 w-full sm:w-auto"
+                    >
+                        <TrendingUp className="w-4 h-4" /> Log Deposit
+                    </Button>
+                </div>
             </div>
 
             {/* Account Summary Cards */}
@@ -145,7 +158,7 @@ const SavingAccountDetailSkeleton = () => (
                             <div>
                                 <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Current Balance</p>
                                 <p className="text-xl font-semibold text-slate-900 font-mono tracking-tighter">
-                                    KES {parseFloat(account.balance).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    {formatCurrency(account.balance || 0)}
                                 </p>
                             </div>
                         </div>
@@ -260,7 +273,7 @@ const SavingAccountDetailSkeleton = () => (
                                             </TableCell>
                                             <TableCell className="text-right pr-6 py-4">
                                                 <span className="text-sm font-semibold text-emerald-600 font-mono tracking-tighter">
-                                                    + {parseFloat(dep.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                    + {formatCurrency(dep.amount || 0)}
                                                 </span>
                                             </TableCell>
                                             <TableCell className="text-right pr-6 py-4">
@@ -299,7 +312,7 @@ const SavingAccountDetailSkeleton = () => (
                                     ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan={5} className="text-center h-48 text-slate-400 text-sm font-medium italic">
+                                        <TableCell colSpan={6} className="text-center h-48 text-slate-400 text-sm font-medium italic">
                                             No deposits or transactions recorded for this account.
                                         </TableCell>
                                     </TableRow>
@@ -349,6 +362,15 @@ const SavingAccountDetailSkeleton = () => (
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+            {/* Single Deposit Modal */}
+            {isDepositModalOpen && (
+                <CreateDepositAdmin
+                    isOpen={isDepositModalOpen}
+                    onClose={() => setIsDepositModalOpen(false)}
+                    refetchMember={() => queryClient.invalidateQueries({ queryKey: ["savingDetail", reference] })}
+                    accounts={[account]}
+                />
+            )}
         </div>
     );
 }
