@@ -39,6 +39,7 @@ export default function CreateTopUpModal({ isOpen, onClose, refetchLoan, loan })
             top_up_amount: "",
             new_term_months: "",
             payment_method: "",
+            top_up_date: loan?.last_payment_date || new Date().toISOString().split("T")[0],
             notes: "",
           }}
           onSubmit={async (values) => {
@@ -50,12 +51,14 @@ export default function CreateTopUpModal({ isOpen, onClose, refetchLoan, loan })
                 top_up_amount: values.top_up_amount,
                 new_term_months: values.new_term_months,
                 payment_method: values.payment_method,
+                top_up_date: values.top_up_date || undefined,
                 notes: values.notes,
               }, token);
 
               // 2. Disburse Top Up immediately (admin-initiated bypass)
               await disburseLoanTopUp(topUpData.reference, {
-                payment_method: values.payment_method
+                payment_method: values.payment_method,
+                top_up_date: values.top_up_date || undefined,
               }, token);
 
               toast.success("Loan topped up and disbursed successfully!");
@@ -99,6 +102,25 @@ export default function CreateTopUpModal({ isOpen, onClose, refetchLoan, loan })
                   required
                   className="border-black"
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="top_up_date" className="text-black font-semibold">
+                  Top-Up Anchor Date
+                </Label>
+                <Field
+                  as={Input}
+                  type="date"
+                  id="top_up_date"
+                  name="top_up_date"
+                  className="border-black"
+                />
+                <p className="text-xs text-gray-500">
+                  The anchor date for the new schedule. Installments will land on this calendar day.
+                  {loan?.last_payment_date
+                    ? ` Pre-filled with last payment date (${loan.last_payment_date}).`
+                    : " Defaults to today if left blank."}
+                </p>
               </div>
 
               <div className="space-y-2">

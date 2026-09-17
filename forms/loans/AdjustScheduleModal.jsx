@@ -131,7 +131,6 @@ export default function AdjustScheduleModal({ isOpen, onClose, refetchLoan, loan
                   type="date"
                   id="reschedule_date"
                   name="reschedule_date"
-                  max={new Date().toISOString().split("T")[0]}
                   className="border-black"
                 />
                 <p className="text-xs text-gray-500">
