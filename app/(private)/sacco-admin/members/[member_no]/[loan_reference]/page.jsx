@@ -229,8 +229,8 @@ export default function LoanAccountDetail({ params }) {
           </BreadcrumbList>
         </Breadcrumb>
 
-        {/* Header with Title & Action Controls */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+        {/* Header with Title & Action Controls - Sticky for easy access while scrolling */}
+        <div className="sticky top-16 z-20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/95 backdrop-blur-md p-4 sm:p-5 rounded-xl border border-slate-200/80 shadow-sm transition-all">
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2.5">
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
