@@ -313,7 +313,8 @@ export default function SavingAccountReferencePage() {
                                                 )}
                                             </TableCell>
                                         </TableRow>
-                                    ))
+                                    );
+                                })
                                 ) : (
                                     <TableRow>
                                         <TableCell colSpan={6} className="text-center h-48 text-slate-400 text-sm font-medium italic">
