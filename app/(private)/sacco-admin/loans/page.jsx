@@ -60,6 +60,15 @@ export default function LoansManagementPage() {
 
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
+    const [productFilter, setProductFilter] = useState("all");
+
+    // Distinct product names from loaded loans (for filter dropdown)
+    const productOptions = useMemo(() => {
+        if (!loans) return [];
+        const seen = new Set();
+        loans.forEach(l => { if (l.product) seen.add(l.product); });
+        return Array.from(seen).sort();
+    }, [loans]);
 
     // Portfolio KPI metrics calculated from active loan accounts
     const stats = useMemo(() => {
@@ -120,9 +129,12 @@ export default function LoansManagementPage() {
                 (statusFilter === "active" && (status === "Active" || status === "Funded")) ||
                 (statusFilter === "arrears" && (status.includes("Arrear") || status.includes("Default")));
 
-            return matchesSearch && matchesStatus;
+            const matchesProduct =
+                productFilter === "all" || loan.product === productFilter;
+
+            return matchesSearch && matchesStatus && matchesProduct;
         });
-    }, [loans, searchTerm, statusFilter]);
+    }, [loans, searchTerm, statusFilter, productFilter]);
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -275,7 +287,7 @@ export default function LoansManagementPage() {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        <div className="flex gap-1.5 w-full md:w-auto overflow-x-auto pb-1 md:pb-0 no-scrollbar">
+                        <div className="flex gap-1.5 w-full md:w-auto overflow-x-auto pb-1 md:pb-0 no-scrollbar flex-wrap">
                             {[
                                 { label: "All", value: "all" },
                                 { label: "Active", value: "active" },
@@ -294,6 +306,19 @@ export default function LoansManagementPage() {
                                     {tab.label}
                                 </button>
                             ))}
+                            {/* Product filter dropdown */}
+                            {productOptions.length > 0 && (
+                                <select
+                                    value={productFilter}
+                                    onChange={(e) => setProductFilter(e.target.value)}
+                                    className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+                                >
+                                    <option value="all">All Products</option>
+                                    {productOptions.map(p => (
+                                        <option key={p} value={p}>{p}</option>
+                                    ))}
+                                </select>
+                            )}
                         </div>
                     </div>
 

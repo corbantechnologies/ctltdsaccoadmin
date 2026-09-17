@@ -29,8 +29,32 @@ import {
 } from "@/components/ui/breadcrumb";
 import MpesaCreateLoanPaymentForm from "@/forms/loanrepayments/MpesaCreateLoanPayment";
 
+const PersonalLoanDetailSkeleton = () => (
+  <div className="mx-auto p-4 sm:p-6 space-y-6 animate-pulse">
+    <div className="h-4 w-48 bg-slate-200 rounded" />
+    <div className="flex justify-between items-center">
+      <div className="space-y-2">
+        <div className="h-6 w-64 bg-slate-200 rounded" />
+        <div className="h-4 w-40 bg-slate-200 rounded" />
+      </div>
+      <div className="h-10 w-32 bg-slate-200 rounded" />
+    </div>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="lg:col-span-2 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          <div className="h-24 bg-slate-200 rounded-lg" />
+          <div className="h-24 bg-slate-200 rounded-lg" />
+          <div className="h-24 bg-slate-200 rounded-lg" />
+        </div>
+        <div className="h-96 bg-slate-200 rounded-lg" />
+      </div>
+      <div className="h-96 bg-slate-200 rounded-lg" />
+    </div>
+  </div>
+);
+
 function LoanDetail() {
-    const { reference } = useParams(); // This is the correct loan REFERENCE for URLs
+    const { reference } = useParams();
 
     const [activeTab, setActiveTab] = useState("overview");
     const [monthFilter, setMonthFilter] = useState("");
@@ -89,30 +113,6 @@ function LoanDetail() {
     const formatCurrency = (amount) => `KES ${parseFloat(amount || 0).toFixed(2)}`;
     const formatDate = (dateStr) => dateStr ? format(new Date(dateStr), "MMM dd, yyyy") : "N/A";
 
-const PersonalLoanDetailSkeleton = () => (
-  <div className="mx-auto p-4 sm:p-6 space-y-6 animate-pulse">
-    <div className="h-4 w-48 bg-slate-200 rounded" />
-    <div className="flex justify-between items-center">
-      <div className="space-y-2">
-        <div className="h-6 w-64 bg-slate-200 rounded" />
-        <div className="h-4 w-40 bg-slate-200 rounded" />
-      </div>
-      <div className="h-10 w-32 bg-slate-200 rounded" />
-    </div>
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-          <div className="h-24 bg-slate-200 rounded-lg" />
-          <div className="h-24 bg-slate-200 rounded-lg" />
-          <div className="h-24 bg-slate-200 rounded-lg" />
-        </div>
-        <div className="h-96 bg-slate-200 rounded-lg" />
-      </div>
-      <div className="h-96 bg-slate-200 rounded-lg" />
-    </div>
-  </div>
-);
-
     if (isLoadingLoan || isLoadingMember) {
         return (
             <div className="min-h-screen bg-gray-50/50">
@@ -161,12 +161,12 @@ const PersonalLoanDetailSkeleton = () => (
                 </div>
 
                 {/* Tabs */}
-                <div className="flex space-x-1 rounded bg-gray-200 p-1 w-fit">
+                <div className="flex space-x-1 rounded bg-gray-200 p-1 w-fit overflow-x-auto">
                     {['overview', 'schedule', 'transactions'].map((tab) => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
-                            className={`px-6 py-2.5 text-sm font-medium rounded transition-all ${activeTab === tab
+                            className={`px-6 py-2.5 text-sm font-medium rounded transition-all whitespace-nowrap ${activeTab === tab
                                 ? 'bg-white text-[#045e32] shadow'
                                 : 'text-gray-600 hover:bg-white/70'
                                 }`}
@@ -181,7 +181,7 @@ const PersonalLoanDetailSkeleton = () => (
                     {activeTab === 'overview' && (
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                             {/* Summary Cards */}
-                            <div className="lg:col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                            <div className="lg:col-span-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                                 <Card className="border-l-4 border-l-[var(--accent)]">
                                     <CardHeader className="pb-2"><CardTitle className="text-xs uppercase tracking-wider text-slate-500">Outstanding Balance</CardTitle></CardHeader>
                                     <CardContent><p className="text-xl font-semibold text-[var(--accent)]">{formatCurrency(loan.outstanding_balance)}</p></CardContent>
@@ -194,7 +194,7 @@ const PersonalLoanDetailSkeleton = () => (
                                     <CardHeader className="pb-2"><CardTitle className="text-xs uppercase tracking-wider text-slate-500">Interest Accrued</CardTitle></CardHeader>
                                     <CardContent><p className="text-xl font-semibold">{formatCurrency(loan.total_interest_accrued)}</p></CardContent>
                                 </Card>
-                                                                <Card className="border-l-4 border-l-[#045e32]">
+                                <Card className="border-l-4 border-l-[#045e32]">
                                     <CardHeader className="pb-2"><CardTitle className="text-xs uppercase tracking-wider text-slate-500">Total Loan Amount</CardTitle></CardHeader>
                                     <CardContent><p className="text-xl font-semibold text-[#045e32]">{formatCurrency(loan.total_loan_amount)}</p></CardContent>
                                 </Card>
@@ -262,16 +262,15 @@ const PersonalLoanDetailSkeleton = () => (
                                     </CardTitle>
                                     <CardDescription>
                                         {loan.product_details?.interest_method === "Flat"
-                                            ? "Flat-rate: interest is charged on the original principal. Processing fee is spread evenly. The balance column shows total amount still outstanding."
+                                            ? "Flat-rate: interest is charged on the original principal. The balance column shows total amount still outstanding."
                                             : "Reducing balance: interest is charged on the remaining principal each period. The balance column shows remaining principal after each payment."}
                                     </CardDescription>
                                 </div>
                             </CardHeader>
-                            <CardContent className="overflow-x-auto">
-                                <Table>
+                            <CardContent className="overflow-x-auto p-0">
+                                <Table className="min-w-[700px]">
                                     <TableHeader>
                                         <TableRow className="bg-gray-50">
-                                            <TableHead>Installment</TableHead>
                                             <TableHead>Due Date</TableHead>
                                             <TableHead>Principal</TableHead>
                                             <TableHead>{loan.product_details?.interest_method === "Flat" ? "Interest (Flat)" : "Interest (Reducing)"}</TableHead>
@@ -281,30 +280,32 @@ const PersonalLoanDetailSkeleton = () => (
                                             <TableHead>Total Paid</TableHead>
                                             <TableHead>Uncleared</TableHead>
                                             <TableHead>Status</TableHead>
-                                            <TableHead className="text-right">{loan.product_details?.interest_method === "Flat" ? "Remaining Balance (Total)" : "Remaining Principal"}</TableHead>
+                                            <TableHead className="text-right">{loan.product_details?.interest_method === "Flat" ? "Remaining Balance" : "Remaining Principal"}</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {schedule.map((item, i) => (
-                                            <TableRow key={i}>
-                                                <TableCell className="font-medium">{item.installment_code}</TableCell>
-                                                <TableCell>{formatDate(item.due_date)}</TableCell>
-                                                <TableCell>{formatCurrency(item.principal_due)}</TableCell>
-                                                <TableCell>{formatCurrency(item.interest_due)}</TableCell>
-                                                
-                                                <TableCell className="font-semibold text-[#045e32]">{formatCurrency(item.total_due)}</TableCell>
-                                                <TableCell>{formatCurrency(item.principal_paid || 0)}</TableCell>
-                                                <TableCell>{formatCurrency(item.interest_paid || 0)}</TableCell>
-                                                <TableCell className="font-medium">{formatCurrency(item.amount_paid || 0)}</TableCell>
-                                                <TableCell className="font-medium text-amber-700">{formatCurrency((item.total_due || 0) - (item.amount_paid || 0))}</TableCell>
+                                        {schedule.length > 0 ? schedule.map((item, i) => (
+                                            <TableRow key={i} className="hover:bg-slate-50/60 transition-colors">
+                                                <TableCell className="text-xs whitespace-nowrap">{formatDate(item.due_date)}</TableCell>
+                                                <TableCell className="text-xs">{formatCurrency(item.principal_due)}</TableCell>
+                                                <TableCell className="text-xs">{formatCurrency(item.interest_due)}</TableCell>
+                                                <TableCell className="font-semibold text-xs text-[#045e32]">{formatCurrency(item.total_due)}</TableCell>
+                                                <TableCell className="text-xs">{formatCurrency(item.principal_paid || 0)}</TableCell>
+                                                <TableCell className="text-xs">{formatCurrency(item.interest_paid || 0)}</TableCell>
+                                                <TableCell className="font-medium text-xs">{formatCurrency(item.amount_paid || 0)}</TableCell>
+                                                <TableCell className="font-medium text-xs text-amber-700">{formatCurrency((item.total_due || 0) - (item.amount_paid || 0))}</TableCell>
                                                 <TableCell>
-                                                    <Badge variant={item.is_paid ? "default" : "secondary"} className={item.is_paid ? "bg-green-100 text-green-700" : ""}>
+                                                    <Badge variant={item.is_paid ? "default" : "secondary"} className={item.is_paid ? "bg-green-100 text-green-700 text-[10px]" : "text-[10px]"}>
                                                         {item.is_paid ? "Paid" : "Pending"}
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell className="text-right text-muted-foreground">{formatCurrency(item.balance_after)}</TableCell>
+                                                <TableCell className="text-right text-xs text-muted-foreground">{formatCurrency(item.balance_after)}</TableCell>
                                             </TableRow>
-                                        ))}
+                                        )) : (
+                                            <TableRow>
+                                                <TableCell colSpan={10} className="text-center h-24 text-muted-foreground text-sm">No schedule found.</TableCell>
+                                            </TableRow>
+                                        )}
                                     </TableBody>
                                 </Table>
                             </CardContent>
@@ -338,15 +339,15 @@ const PersonalLoanDetailSkeleton = () => (
                                     <TableBody>
                                         {paginatedTransactions.map((t, i) => (
                                             <TableRow key={i}>
-                                                <TableCell>{formatDate(t.date)}</TableCell>
+                                                <TableCell className="text-xs">{formatDate(t.date)}</TableCell>
                                                 <TableCell>
-                                                                                                        <Badge variant={t.type === 'Disbursement' ? "default" : "secondary"}>
+                                                    <Badge variant={t.type === 'Disbursement' ? "default" : "secondary"} className="text-[10px]">
                                                         {t.type === 'Repayment' ? (t.repayment_type || 'Repayment') : t.type}
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell className="font-semibold">{formatCurrency(t.amount)}</TableCell>
-                                                <TableCell>{t.payment_method || t.method || 'N/A'}</TableCell>
-                                                <TableCell>{t.status || 'Completed'}</TableCell>
+                                                <TableCell className="font-semibold text-xs">{formatCurrency(t.amount)}</TableCell>
+                                                <TableCell className="text-xs">{t.payment_method || t.method || 'N/A'}</TableCell>
+                                                <TableCell className="text-xs">{t.status || 'Completed'}</TableCell>
                                             </TableRow>
                                         ))}
                                         {paginatedTransactions.length === 0 && (
@@ -368,7 +369,7 @@ const PersonalLoanDetailSkeleton = () => (
             <MpesaCreateLoanPaymentForm
                 isOpen={isMpesaModalOpen}
                 onClose={() => setIsMpesaModalOpen(false)}
-                loanReference={reference}           // Correct reference for URL
+                loanReference={reference}
                 loanAccountNumber={loan?.account_number}
             />
         </div>
@@ -376,5 +377,3 @@ const PersonalLoanDetailSkeleton = () => (
 }
 
 export default LoanDetail;
-
-

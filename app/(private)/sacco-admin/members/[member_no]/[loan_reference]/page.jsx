@@ -528,11 +528,10 @@ export default function LoanAccountDetail({ params }) {
                       ? "Flat-rate amortization: Interest is charged on original principal. Balance column indicates total outstanding debt."
                       : "Reducing balance amortization: Interest is assessed on remaining principal each period. Balance column shows remaining principal balance."}
                   </div>
-                  <div className="overflow-x-auto w-full">
-                    <Table className="min-w-[750px]">
+                  <div className="overflow-x-auto w-full -mx-0">
+                    <Table className="min-w-[600px]">
                       <TableHeader className="bg-slate-50/70">
                         <TableRow>
-                          <TableHead className="w-24">Installment</TableHead>
                           <TableHead>Due Date</TableHead>
                           <TableHead>Principal Due</TableHead>
                           <TableHead>Interest Due</TableHead>
@@ -547,9 +546,6 @@ export default function LoanAccountDetail({ params }) {
                         {loan.projection_snapshot?.schedule?.length > 0 ? (
                           loan.projection_snapshot.schedule.map((item, i) => (
                             <TableRow key={i} className="hover:bg-slate-50/60 transition-colors">
-                              <TableCell className="font-mono text-xs font-semibold text-slate-800">
-                                {item.installment_code}
-                              </TableCell>
                               <TableCell className="whitespace-nowrap text-xs">
                                 {format(new Date(item.due_date), "MMM dd, yyyy")}
                               </TableCell>
@@ -587,7 +583,7 @@ export default function LoanAccountDetail({ params }) {
                           ))
                         ) : (
                           <TableRow>
-                            <TableCell colSpan={9} className="text-center py-12 text-muted-foreground text-sm">
+                            <TableCell colSpan={8} className="text-center py-12 text-muted-foreground text-sm">
                               No projection schedule recorded for this loan.
                             </TableCell>
                           </TableRow>
