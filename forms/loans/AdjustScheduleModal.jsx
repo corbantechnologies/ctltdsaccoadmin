@@ -20,17 +20,21 @@ import toast from "react-hot-toast";
 export default function AdjustScheduleModal({ isOpen, onClose, refetchLoan, loan }) {
   const [loading, setLoading] = useState(false);
   const token = useAxiosAuth();
-  
+
   const isReducing = loan?.product_details?.interest_method === "Reducing";
+
+  // Pre-fill reschedule_date with the last payment date (from the serializer).
+  // The admin should confirm this is the correct anchor date before submitting.
+  const lastPaymentDate = loan?.last_payment_date ?? "";
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[460px]">
         <DialogHeader>
           <DialogTitle>Adjust Repayment Schedule</DialogTitle>
           <DialogDescription>
-            {isReducing 
-              ? "Reducing balance loans are fixed term only. Adjusting will regenerate the remaining schedule based on the new term months."
+            {isReducing
+              ? "Reducing balance loans are fixed term only. Adjusting will regenerate the remaining schedule based on the new term and reschedule date."
               : "Flat rate loans allow adjusting the term months or setting a new monthly payment."}
           </DialogDescription>
         </DialogHeader>
@@ -40,7 +44,9 @@ export default function AdjustScheduleModal({ isOpen, onClose, refetchLoan, loan
             mode: "term",
             new_term_months: "",
             new_monthly_payment: "",
+            reschedule_date: lastPaymentDate,
           }}
+          enableReinitialize
           onSubmit={async (values) => {
             setLoading(true);
             const payload = {};
@@ -48,6 +54,10 @@ export default function AdjustScheduleModal({ isOpen, onClose, refetchLoan, loan
               payload.new_term_months = values.new_term_months;
             } else {
               payload.new_monthly_payment = values.new_monthly_payment;
+            }
+            // Only send reschedule_date if the admin has set one
+            if (values.reschedule_date) {
+              payload.reschedule_date = values.reschedule_date;
             }
 
             try {
@@ -110,6 +120,27 @@ export default function AdjustScheduleModal({ isOpen, onClose, refetchLoan, loan
                   />
                 </div>
               )}
+
+              {/* Reschedule date — anchor for new schedule. Pre-filled with last payment date. */}
+              <div className="space-y-2">
+                <Label htmlFor="reschedule_date" className="text-black font-semibold">
+                  Reschedule From Date
+                </Label>
+                <Field
+                  as={Input}
+                  type="date"
+                  id="reschedule_date"
+                  name="reschedule_date"
+                  max={new Date().toISOString().split("T")[0]}
+                  className="border-black"
+                />
+                <p className="text-xs text-gray-500">
+                  The first new installment falls one period after this date.
+                  {lastPaymentDate
+                    ? ` Pre-filled with last payment date (${lastPaymentDate}).`
+                    : " Leave blank to use today's date."}
+                </p>
+              </div>
 
               <DialogFooter className="pt-4">
                 <Button variant="outline" type="button" onClick={onClose} disabled={loading}>
