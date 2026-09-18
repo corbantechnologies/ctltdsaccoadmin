@@ -317,20 +317,29 @@ export default function SaccoAdminDashboard() {
 
       {/* Main Operations Tabs */}
       <Tabs defaultValue="members" className="w-full">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-          <TabsList className="bg-white border p-1 rounded-lg w-full sm:w-auto flex overflow-x-auto no-scrollbar gap-1">
-            <TabsTrigger value="members" className="text-xs sm:text-sm py-2 px-3 data-[state=active]:bg-slate-100 font-medium">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+          <TabsList className="bg-transparent border-0 p-0 h-auto w-full sm:w-auto flex flex-wrap items-center gap-2 sm:gap-2.5">
+            <TabsTrigger
+              value="members"
+              className="h-10 px-4 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900 data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:border-primary data-[state=active]:shadow-sm"
+            >
               Members Directory ({members?.length || 0})
             </TabsTrigger>
-            <TabsTrigger value="queue" className="text-xs sm:text-sm py-2 px-3 data-[state=active]:bg-slate-100 font-medium flex items-center gap-1.5">
+            <TabsTrigger
+              value="queue"
+              className="h-10 px-4 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900 data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:border-primary data-[state=active]:shadow-sm flex items-center gap-1.5"
+            >
               <span>Approval Queue</span>
               {executiveMetrics.pendingApps.length > 0 && (
-                <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-1.5 py-0.2 rounded-full">
+                <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
                   {executiveMetrics.pendingApps.length}
                 </span>
               )}
             </TabsTrigger>
-            <TabsTrigger value="setup" className="text-xs sm:text-sm py-2 px-3 data-[state=active]:bg-slate-100 font-medium">
+            <TabsTrigger
+              value="setup"
+              className="h-10 px-4 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900 data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:border-primary data-[state=active]:shadow-sm"
+            >
               Platform Products & Setup
             </TabsTrigger>
           </TabsList>

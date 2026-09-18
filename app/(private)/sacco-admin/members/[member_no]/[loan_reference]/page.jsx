@@ -468,40 +468,40 @@ export default function LoanAccountDetail({ params }) {
             <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 
-                {/* Horizontal Scrollable Pill Tabs */}
-                <div className="border-b border-slate-100 bg-slate-50/70 p-3 sm:p-4">
-                  <TabsList className="bg-slate-200/60 p-1 rounded-lg w-full sm:w-auto flex overflow-x-auto gap-1 no-scrollbar">
+                {/* Well-Spaced Action Tabs */}
+                <div className="border-b border-slate-100 bg-slate-50/60 p-3 sm:p-4">
+                  <TabsList className="bg-transparent border-0 p-0 h-auto w-full flex flex-wrap items-center gap-2 sm:gap-2.5">
                     <TabsTrigger
                       value="schedule"
-                      className="flex items-center gap-1.5 text-xs sm:text-sm py-2 px-3 rounded-md data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm font-medium whitespace-nowrap"
+                      className="h-10 px-4 rounded-lg border border-slate-200 bg-white text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900 data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:border-primary data-[state=active]:shadow-sm flex items-center gap-2 text-xs sm:text-sm font-medium whitespace-nowrap"
                     >
                       <Calendar className="h-4 w-4" />
                       <span>Amortization Schedule</span>
-                      <span className="ml-1 text-[10px] font-semibold px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-600">
+                      <span className="ml-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 data-[state=active]:bg-white/20 data-[state=active]:text-white">
                         {loan.projection_snapshot?.schedule?.length || 0}
                       </span>
                     </TabsTrigger>
 
                     <TabsTrigger
                       value="repayments"
-                      className="flex items-center gap-1.5 text-xs sm:text-sm py-2 px-3 rounded-md data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm font-medium whitespace-nowrap"
+                      className="h-10 px-4 rounded-lg border border-slate-200 bg-white text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900 data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:border-primary data-[state=active]:shadow-sm flex items-center gap-2 text-xs sm:text-sm font-medium whitespace-nowrap"
                     >
                       <History className="h-4 w-4" />
                       <span>Repayments & GL</span>
-                      <span className="ml-1 text-[10px] font-semibold px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-600">
+                      <span className="ml-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 data-[state=active]:bg-white/20 data-[state=active]:text-white">
                         {loan.loan_payments?.length || 0}
                       </span>
                     </TabsTrigger>
 
                     <TabsTrigger
                       value="penalties"
-                      className="flex items-center gap-1.5 text-xs sm:text-sm py-2 px-3 rounded-md data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm font-medium whitespace-nowrap"
+                      className="h-10 px-4 rounded-lg border border-slate-200 bg-white text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900 data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:border-primary data-[state=active]:shadow-sm flex items-center gap-2 text-xs sm:text-sm font-medium whitespace-nowrap"
                     >
                       <AlertTriangle className="h-4 w-4" />
                       <span>Penalties</span>
                       {penalties?.length > 0 && (
-                        <span className={`ml-1 text-[10px] font-semibold px-1.5 py-0.2 rounded-full ${
-                          penaltiesOwed > 0 ? "bg-red-100 text-red-700" : "bg-slate-100 text-slate-600"
+                        <span className={`ml-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                          penaltiesOwed > 0 ? "bg-red-100 text-red-700 data-[state=active]:bg-red-200/40 data-[state=active]:text-white" : "bg-slate-100 text-slate-700 data-[state=active]:bg-white/20 data-[state=active]:text-white"
                         }`}>
                           {penalties.length}
                         </span>
@@ -510,11 +510,11 @@ export default function LoanAccountDetail({ params }) {
 
                     <TabsTrigger
                       value="disbursements"
-                      className="flex items-center gap-1.5 text-xs sm:text-sm py-2 px-3 rounded-md data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm font-medium whitespace-nowrap"
+                      className="h-10 px-4 rounded-lg border border-slate-200 bg-white text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900 data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:border-primary data-[state=active]:shadow-sm flex items-center gap-2 text-xs sm:text-sm font-medium whitespace-nowrap"
                     >
                       <Banknote className="h-4 w-4" />
                       <span>Disbursements</span>
-                      <span className="ml-1 text-[10px] font-semibold px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-600">
+                      <span className="ml-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 data-[state=active]:bg-white/20 data-[state=active]:text-white">
                         {loan.disbursements?.length || 0}
                       </span>
                     </TabsTrigger>
