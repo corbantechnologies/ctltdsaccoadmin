@@ -35,3 +35,12 @@ export const adjustSchedule = async (reference, values, token) => {
   );
   return response?.data;
 };
+
+export const resetLoanAccount = async (accountNumber, values, token) => {
+  const response = await apiActions?.post(
+    `/api/v1/loanaccounts/${accountNumber}/reset/`,
+    values,
+    token
+  );
+  return response?.data;
+};

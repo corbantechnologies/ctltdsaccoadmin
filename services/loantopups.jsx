@@ -37,3 +37,17 @@ export const rejectLoanTopUp = async (reference, token) => {
   );
   return response?.data;
 };
+
+export const previewLoanTopUp = async (payload, token) => {
+  const response = await apiActions?.post("/api/v1/loantopups/preview/", payload, token);
+  return response?.data;
+};
+
+export const reverseLoanTopUp = async (reference, reason, token) => {
+  const response = await apiActions?.post(
+    `/api/v1/loantopups/${reference}/reverse/`,
+    { reason },
+    token
+  );
+  return response?.data;
+};

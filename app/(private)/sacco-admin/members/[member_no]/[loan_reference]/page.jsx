@@ -66,6 +66,8 @@ import {
   ShieldCheck,
   TrendingDown,
   TrendingUp,
+  RotateCcw,
+  Undo2,
 } from "lucide-react";
 import CreateLoanPayment, { getPendingProcessingFee } from "@/forms/loanrepayments/CreateLoanPayment";
 import { useFetchLoanPenaltiesByLoanAccountReference } from "@/hooks/loanpenalties/actions";
@@ -74,6 +76,8 @@ import UpdateLoanPenalty from "@/forms/loanpenalties/UpdateLoanPenalty";
 import AdjustScheduleModal from "@/forms/loans/AdjustScheduleModal";
 import CreateTopUpModal from "@/forms/loans/CreateTopUpModal";
 import ReversePaymentModal from "@/forms/loans/ReversePaymentModal";
+import ResetLoanModal from "@/forms/loans/ResetLoanModal";
+import ReverseTopUpModal from "@/forms/loans/ReverseTopUpModal";
 
 const LoanDetailSkeleton = () => (
   <div className="mx-auto p-4 sm:p-6 space-y-6 animate-pulse">
@@ -120,7 +124,10 @@ export default function LoanAccountDetail({ params }) {
   const [isAdjustScheduleModalOpen, setIsAdjustScheduleModalOpen] = useState(false);
   const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false);
   const [isReverseModalOpen, setIsReverseModalOpen] = useState(false);
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [isReverseTopUpModalOpen, setIsReverseTopUpModalOpen] = useState(false);
   const [selectedPaymentForReversal, setSelectedPaymentForReversal] = useState(null);
+  const [selectedTopUpForReversal, setSelectedTopUpForReversal] = useState(null);
   const [selectedPenalty, setSelectedPenalty] = useState(null);
   const [repaymentType, setRepaymentType] = useState("Regular Repayment");
   const [activeTab, setActiveTab] = useState("schedule");
@@ -301,6 +308,16 @@ export default function LoanAccountDetail({ params }) {
                   >
                     <AlertTriangle className="mr-2 h-3.5 w-3.5 text-amber-600" />
                     Apply Penalty
+                  </Button>
+                  <div className="border-t border-slate-100 my-1" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsResetModalOpen(true)}
+                    className="w-full justify-start text-xs font-medium h-9 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <RotateCcw className="mr-2 h-3.5 w-3.5 text-red-600" />
+                    Reset Loan Account
                   </Button>
                 </PopoverContent>
               </Popover>
@@ -790,28 +807,71 @@ export default function LoanAccountDetail({ params }) {
                           <TableHead>Disbursement Date</TableHead>
                           <TableHead>Payment Method</TableHead>
                           <TableHead>Type</TableHead>
+                          <TableHead>Status</TableHead>
                           <TableHead className="text-right">Amount</TableHead>
+                          <TableHead className="text-right">Action</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {loan.disbursements?.length > 0 ? (
                           [...loan.disbursements]
                             .sort((a, b) => new Date(b.transaction_date || b.created_at).getTime() - new Date(a.transaction_date || a.created_at).getTime())
-                            .map((d, i) => (
-                            <TableRow key={i} className="hover:bg-slate-50/60 transition-colors">
-                              <TableCell className="font-medium text-xs">
-                                {d.transaction_date || (d.created_at ? new Date(d.created_at).toLocaleDateString("en-GB") : "-")}
-                              </TableCell>
-                              <TableCell className="text-xs">{d.payment_method}</TableCell>
-                              <TableCell className="text-xs">{d.disbursement_type}</TableCell>
-                              <TableCell className="text-right font-bold text-slate-900 text-xs">
-                                {formatCurrency(d.amount)}
-                              </TableCell>
-                            </TableRow>
-                          ))
+                            .map((d, i) => {
+                              const matchingTopUp = loan.top_ups?.find(
+                                (t) => t.disbursement === d.reference || t.reference === d.reference || (t.top_up_amount === d.amount && t.status === "Disbursed")
+                              );
+                              return (
+                                <TableRow key={i} className="hover:bg-slate-50/60 transition-colors">
+                                  <TableCell className="font-medium text-xs">
+                                    {d.transaction_date || (d.created_at ? new Date(d.created_at).toLocaleDateString("en-GB") : "-")}
+                                  </TableCell>
+                                  <TableCell className="text-xs">{d.payment_method}</TableCell>
+                                  <TableCell className="text-xs">
+                                    <Badge variant="outline" className="text-[10px] py-0 font-normal">
+                                      {d.disbursement_type}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="text-xs">
+                                    <Badge
+                                      variant="outline"
+                                      className={`text-[10px] py-0 ${
+                                        d.transaction_status === "Completed"
+                                          ? "bg-green-50 text-green-700 border-green-200"
+                                          : d.transaction_status === "Cancelled" || d.transaction_status === "Reversed"
+                                          ? "bg-slate-100 text-slate-600 border-slate-200"
+                                          : "bg-amber-50 text-amber-700 border-amber-200"
+                                      }`}
+                                    >
+                                      {d.transaction_status}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="text-right font-bold text-slate-900 text-xs">
+                                    {formatCurrency(d.amount)}
+                                  </TableCell>
+                                  <TableCell className="text-right">
+                                    {d.disbursement_type === "Topup" && matchingTopUp && matchingTopUp.status === "Disbursed" ? (
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => {
+                                          setSelectedTopUpForReversal(matchingTopUp);
+                                          setIsReverseTopUpModalOpen(true);
+                                        }}
+                                        className="h-7 text-[11px] text-amber-700 hover:text-amber-800 hover:bg-amber-50 gap-1 border-amber-200 font-medium"
+                                      >
+                                        <Undo2 className="h-3 w-3" />
+                                        Reverse
+                                      </Button>
+                                    ) : (
+                                      <span className="text-slate-400 text-xs">-</span>
+                                    )}
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })
                         ) : (
                           <TableRow>
-                            <TableCell colSpan={4} className="text-center py-12 text-muted-foreground text-sm">
+                            <TableCell colSpan={6} className="text-center py-12 text-muted-foreground text-sm">
                               No disbursements recorded yet.
                             </TableCell>
                           </TableRow>
@@ -1030,6 +1090,25 @@ export default function LoanAccountDetail({ params }) {
           refetch={refetchAll}
           paymentRef={selectedPaymentForReversal}
           type="LoanPayment"
+        />
+
+        {/* Reset Loan Modal */}
+        <ResetLoanModal
+          isOpen={isResetModalOpen}
+          onClose={() => setIsResetModalOpen(false)}
+          refetchLoan={refetchAll}
+          loan={loan}
+        />
+
+        {/* Reverse Top-Up Modal */}
+        <ReverseTopUpModal
+          isOpen={isReverseTopUpModalOpen}
+          onClose={() => {
+            setIsReverseTopUpModalOpen(false);
+            setSelectedTopUpForReversal(null);
+          }}
+          refetchLoan={refetchAll}
+          topUp={selectedTopUpForReversal}
         />
 
       </div>
