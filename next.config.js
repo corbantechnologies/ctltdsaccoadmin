@@ -13,6 +13,10 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "files.wananchimali.com",
+      },
+      {
+        protocol: "https",
         hostname: "res.cloudinary.com",
       },
     ],
