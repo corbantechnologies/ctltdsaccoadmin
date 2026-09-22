@@ -173,7 +173,7 @@ export default function CreateTopUpModal({ isOpen, onClose, refetchLoan, loan })
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div className="space-y-1.5">
                   <Label htmlFor="top_up_date" className="text-xs font-semibold text-slate-700">
-                    Anchor Date
+                    Effective Date (Start of New Schedule)
                   </Label>
                   <Field
                     as={Input}
@@ -186,6 +186,9 @@ export default function CreateTopUpModal({ isOpen, onClose, refetchLoan, loan })
                       setPreview(null);
                     }}
                   />
+                  <p className="text-[10px] text-slate-500">
+                    First new installment due 1 month after this date
+                  </p>
                 </div>
 
                 <div className="space-y-1.5">
@@ -254,13 +257,19 @@ export default function CreateTopUpModal({ isOpen, onClose, refetchLoan, loan })
                         +{formatCurrency(preview.top_up_amount)}
                       </p>
                     </div>
+                    <div className="bg-white p-2 rounded-lg border border-amber-200 shadow-xs bg-amber-50/40">
+                      <span className="text-amber-800 font-medium text-[11px]">Separate Processing Fee</span>
+                      <p className="font-bold text-amber-900 text-sm mt-0.5">
+                        {formatCurrency(preview.processing_fee)}
+                      </p>
+                    </div>
+
                     <div className="bg-white p-2 rounded-lg border border-emerald-200 shadow-xs bg-emerald-50/30">
                       <span className="text-emerald-800 font-medium text-[11px]">New Principal Base</span>
                       <p className="font-bold text-emerald-900 text-sm mt-0.5">
                         {formatCurrency(preview.new_consolidated_principal)}
                       </p>
                     </div>
-
                     <div className="bg-white p-2 rounded-lg border border-slate-200/80 shadow-xs">
                       <span className="text-slate-500 text-[11px]">New Monthly Due</span>
                       <p className="font-bold text-primary text-sm mt-0.5">
@@ -273,7 +282,7 @@ export default function CreateTopUpModal({ isOpen, onClose, refetchLoan, loan })
                         {formatCurrency(preview.new_total_interest)}
                       </p>
                     </div>
-                    <div className="bg-white p-2 rounded-lg border border-slate-200/80 shadow-xs">
+                    <div className="bg-white p-2 rounded-lg border border-slate-200/80 shadow-xs col-span-2 sm:col-span-1">
                       <span className="text-slate-500 text-[11px]">Total Repayable</span>
                       <p className="font-semibold text-slate-800 text-sm mt-0.5">
                         {formatCurrency(preview.new_total_repayable)}

@@ -124,7 +124,7 @@ export default function AdjustScheduleModal({ isOpen, onClose, refetchLoan, loan
               {/* Reschedule date — anchor for new schedule. Pre-filled with last payment date. */}
               <div className="space-y-2">
                 <Label htmlFor="reschedule_date" className="text-black font-semibold">
-                  Reschedule From Date
+                  Effective Reschedule Date (Last Payment Date)
                 </Label>
                 <Field
                   as={Input}
