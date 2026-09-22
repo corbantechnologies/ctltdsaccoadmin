@@ -326,29 +326,29 @@ export default function LoanAccountDetail({ params }) {
         </div>
 
         {/* 2-Column Responsive Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start">
           
           {/* Main Left Column (Financial Summary & Tabbed Tables) */}
-          <div className="lg:col-span-3 space-y-6">
+          <div className="xl:col-span-3 space-y-6 min-w-0">
             
             {/* Unified 3-Card Financial Overview */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               
               {/* Card 1: Outstanding Balance & Repayment Progress */}
-              <Card className="border border-slate-200/80 shadow-sm bg-white overflow-hidden flex flex-col justify-between">
+              <Card className="border border-slate-200/80 shadow-sm bg-white overflow-hidden flex flex-col justify-between min-w-0">
                 <CardHeader className="pb-2 pt-4 px-4 sm:px-5">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 shrink-0">
                       <TrendingDown className="h-4 w-4 text-[var(--accent)]" /> Outstanding Balance
                     </CardTitle>
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 whitespace-nowrap">
                       {progressPercent}% Repaid
                     </span>
                   </div>
                 </CardHeader>
                 <CardContent className="px-4 sm:px-5 pb-4 space-y-3">
                   <div>
-                    <p className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+                    <p className="text-xl sm:text-2xl 2xl:text-3xl font-bold text-slate-900 tracking-tight whitespace-nowrap">
                       {formatCurrency(outstandingBalance)}
                     </p>
                     <p className="text-xs text-muted-foreground mt-0.5">
@@ -371,38 +371,42 @@ export default function LoanAccountDetail({ params }) {
                 </CardContent>
               </Card>
 
-              {/* Card 2: Unified Processing Fee Component (Direct User Fix) */}
-              <Card className="border border-slate-200/80 shadow-sm bg-white flex flex-col justify-between">
+              {/* Card 2: Unified Processing Fee Component */}
+              <Card className="border border-slate-200/80 shadow-sm bg-white flex flex-col justify-between min-w-0">
                 <CardHeader className="pb-2 pt-4 px-4 sm:px-5">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 shrink-0">
                       <Receipt className="h-4 w-4 text-indigo-500" /> Processing Fee
                     </CardTitle>
                     <Badge
                       variant="outline"
-                      className={`text-[10px] font-medium py-0.5 px-2 ${
-                        pendingProcessingFee === 0 && totalProcessingFee > 0
+                      className={`text-[10px] font-medium py-0.5 px-2 shrink-0 ${
+                        totalProcessingFee === 0
+                          ? "bg-slate-100 text-slate-600 border-slate-200"
+                          : pendingProcessingFee === 0
                           ? "bg-green-50 text-green-700 border-green-200"
                           : paidProcessingFee > 0
                           ? "bg-amber-50 text-amber-700 border-amber-200"
                           : "bg-red-50 text-red-700 border-red-200"
                       }`}
                     >
-                      {pendingProcessingFee === 0 && totalProcessingFee > 0 ? (
+                      {totalProcessingFee === 0 ? (
+                        "No Fee"
+                      ) : pendingProcessingFee === 0 ? (
                         <span className="flex items-center gap-1">
                           <CheckCircle2 className="h-3 w-3 text-green-600" /> Paid in Full
                         </span>
                       ) : paidProcessingFee > 0 ? (
-                        `Partial (Due ${formatCurrency(pendingProcessingFee)})`
+                        `Due ${formatCurrency(pendingProcessingFee)}`
                       ) : (
-                        `Unpaid (Due ${formatCurrency(pendingProcessingFee)})`
+                        `Due ${formatCurrency(pendingProcessingFee)}`
                       )}
                     </Badge>
                   </div>
                 </CardHeader>
                 <CardContent className="px-4 sm:px-5 pb-4 space-y-3">
                   <div>
-                    <p className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+                    <p className="text-xl sm:text-2xl 2xl:text-3xl font-bold text-slate-900 tracking-tight whitespace-nowrap">
                       {formatCurrency(totalProcessingFee)}
                     </p>
                     <div className="flex justify-between items-center text-xs text-muted-foreground mt-0.5">
@@ -433,14 +437,14 @@ export default function LoanAccountDetail({ params }) {
               </Card>
 
               {/* Card 3: Penalties & Compliance Status */}
-              <Card className={`border shadow-sm flex flex-col justify-between ${
+              <Card className={`border shadow-sm flex flex-col justify-between min-w-0 ${
                 penaltiesOwed > 0 
                   ? "border-red-200 bg-red-50/20" 
                   : "border-slate-200/80 bg-white"
               }`}>
                 <CardHeader className="pb-2 pt-4 px-4 sm:px-5">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className={`text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 ${
+                  <div className="flex items-center justify-between gap-2">
+                    <CardTitle className={`text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 shrink-0 ${
                       penaltiesOwed > 0 ? "text-red-700" : "text-slate-500"
                     }`}>
                       <AlertTriangle className={`h-4 w-4 ${penaltiesOwed > 0 ? "text-red-600" : "text-slate-400"}`} />
@@ -448,7 +452,7 @@ export default function LoanAccountDetail({ params }) {
                     </CardTitle>
                     <Badge
                       variant="outline"
-                      className={`text-[10px] font-medium py-0.5 px-2 ${
+                      className={`text-[10px] font-medium py-0.5 px-2 shrink-0 ${
                         penaltiesOwed > 0
                           ? "bg-red-100 text-red-700 border-red-200"
                           : "bg-slate-100 text-slate-700 border-slate-200"
@@ -460,7 +464,7 @@ export default function LoanAccountDetail({ params }) {
                 </CardHeader>
                 <CardContent className="px-4 sm:px-5 pb-4 space-y-3">
                   <div>
-                    <p className={`text-2xl sm:text-3xl font-bold tracking-tight ${
+                    <p className={`text-xl sm:text-2xl 2xl:text-3xl font-bold tracking-tight whitespace-nowrap ${
                       penaltiesOwed > 0 ? "text-red-600" : "text-slate-900"
                     }`}>
                       {formatCurrency(penaltiesOwed)}
