@@ -20,9 +20,12 @@ const LoanCard = ({ loan, memberPath }) => {
         </div>
         <div className="flex justify-between items-end">
           <div>
-            <p className="text-xs text-muted-foreground mb-0.5">Balance</p>
+            <p className="text-xs text-muted-foreground mb-0.5">Outstanding Balance</p>
             <p className="font-bold text-gray-900">
               {formatCurrency(loan.outstanding_balance)}
+            </p>
+            <p className="text-[11px] text-emerald-700 font-medium mt-0.5">
+              Principal: {formatCurrency(loan.outstanding_principal !== undefined ? loan.outstanding_principal : Math.max(0, parseFloat(loan.principal || 0) - parseFloat(loan.total_principal_paid || 0)))}
             </p>
           </div>
           <div className="text-right">

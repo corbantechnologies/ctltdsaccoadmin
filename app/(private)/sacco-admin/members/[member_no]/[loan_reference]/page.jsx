@@ -186,6 +186,16 @@ export default function LoanAccountDetail({ params }) {
   const paidProcessingFee = Math.max(0, totalProcessingFee - pendingProcessingFee);
 
   const principalAmount = parseFloat(loan.principal || 0);
+  const totalPrincipalPaid = parseFloat(loan.total_principal_paid || 0);
+  const outstandingPrincipal = parseFloat(
+    loan.outstanding_principal !== undefined
+      ? loan.outstanding_principal
+      : Math.max(0, principalAmount - totalPrincipalPaid)
+  );
+  const principalProgressPercent = principalAmount > 0
+    ? Math.min(100, Math.max(0, Math.round((totalPrincipalPaid / principalAmount) * 100)))
+    : 0;
+
   const totalInterest = parseFloat(loan.total_interest_accrued || 0);
   const outstandingBalance = parseFloat(loan.outstanding_balance || 0);
   const penaltiesOwed = parseFloat(loan.total_penalties_owed || 0);
@@ -331,10 +341,47 @@ export default function LoanAccountDetail({ params }) {
           {/* Main Left Column (Financial Summary & Tabbed Tables) */}
           <div className="xl:col-span-3 space-y-6 min-w-0">
             
-            {/* Unified 3-Card Financial Overview */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Unified 4-Card Financial Overview (2x2 on medium, 4 in a row on large screens) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4 gap-4">
               
-              {/* Card 1: Outstanding Balance & Repayment Progress */}
+              {/* Card 1: Outstanding Principal (Exact Principal Debt) */}
+              <Card className="border border-slate-200/80 shadow-sm bg-white overflow-hidden flex flex-col justify-between min-w-0">
+                <CardHeader className="pb-2 pt-4 px-4 sm:px-5">
+                  <div className="flex items-center justify-between gap-2">
+                    <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 shrink-0">
+                      <Banknote className="h-4 w-4 text-emerald-600" /> Outstanding Principal
+                    </CardTitle>
+                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 whitespace-nowrap">
+                      {principalProgressPercent}% Repaid
+                    </span>
+                  </div>
+                </CardHeader>
+                <CardContent className="px-4 sm:px-5 pb-4 space-y-3">
+                  <div>
+                    <p className="text-xl sm:text-2xl 2xl:text-3xl font-bold text-slate-900 tracking-tight whitespace-nowrap">
+                      {formatCurrency(outstandingPrincipal)}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Remaining principal to be repaid
+                    </p>
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                    <div
+                      className="bg-emerald-600 h-2 rounded-full transition-all duration-500"
+                      style={{ width: `${principalProgressPercent}%` }}
+                    />
+                  </div>
+
+                  <div className="flex justify-between items-center text-xs pt-1 border-t border-slate-100 text-slate-600 font-medium">
+                    <span>Initial: <strong>{formatCurrency(principalAmount)}</strong></span>
+                    <span>Paid: <strong className="text-emerald-700">{formatCurrency(totalPrincipalPaid)}</strong></span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Card 2: Outstanding Balance & Total Obligation */}
               <Card className="border border-slate-200/80 shadow-sm bg-white overflow-hidden flex flex-col justify-between min-w-0">
                 <CardHeader className="pb-2 pt-4 px-4 sm:px-5">
                   <div className="flex items-center justify-between gap-2">
@@ -342,7 +389,7 @@ export default function LoanAccountDetail({ params }) {
                       <TrendingDown className="h-4 w-4 text-[var(--accent)]" /> Outstanding Balance
                     </CardTitle>
                     <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 whitespace-nowrap">
-                      {progressPercent}% Repaid
+                      {progressPercent}% Total Paid
                     </span>
                   </div>
                 </CardHeader>
@@ -365,13 +412,13 @@ export default function LoanAccountDetail({ params }) {
                   </div>
 
                   <div className="flex justify-between items-center text-xs pt-1 border-t border-slate-100 text-slate-600 font-medium">
-                    <span>Principal: <strong>{formatCurrency(principalAmount)}</strong></span>
-                    <span>Interest: <strong>{formatCurrency(totalInterest)}</strong></span>
+                    <span>Accrued Int: <strong>{formatCurrency(totalInterest)}</strong></span>
+                    <span>Obligation: <strong>{formatCurrency(totalObligation)}</strong></span>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Card 2: Unified Processing Fee Component */}
+              {/* Card 3: Unified Processing Fee Component */}
               <Card className="border border-slate-200/80 shadow-sm bg-white flex flex-col justify-between min-w-0">
                 <CardHeader className="pb-2 pt-4 px-4 sm:px-5">
                   <div className="flex items-center justify-between gap-2">
@@ -436,7 +483,7 @@ export default function LoanAccountDetail({ params }) {
                 </CardContent>
               </Card>
 
-              {/* Card 3: Penalties & Compliance Status */}
+              {/* Card 4: Penalties & Compliance Status */}
               <Card className={`border shadow-sm flex flex-col justify-between min-w-0 ${
                 penaltiesOwed > 0 
                   ? "border-red-200 bg-red-50/20" 
@@ -988,6 +1035,15 @@ export default function LoanAccountDetail({ params }) {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3 pt-3">
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">Original Principal</span>
+                  <span className="font-semibold text-slate-800">{formatCurrency(principalAmount)}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">Outstanding Principal</span>
+                  <span className="font-bold text-emerald-700">{formatCurrency(outstandingPrincipal)}</span>
+                </div>
+                <Separator />
                 <div className="flex justify-between text-xs">
                   <span className="text-muted-foreground">Start Date</span>
                   <span className="font-medium text-slate-800">{loan.start_date || "N/A"}</span>
