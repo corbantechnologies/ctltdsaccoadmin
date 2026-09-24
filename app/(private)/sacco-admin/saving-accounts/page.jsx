@@ -77,12 +77,15 @@ export default function SavingAccountsPage() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState(null);
 
+    const savings = React.useMemo(() => {
+        return savingsData?.results || (Array.isArray(savingsData) ? savingsData : []);
+    }, [savingsData]);
+
     // Filter savings client-side
     const filteredSavings = React.useMemo(() => {
-        const rawSavings = savingsData?.results || savingsData || [];
         const term = searchInput.trim().toLowerCase();
         
-        return rawSavings.filter((acc) => {
+        return savings.filter((acc) => {
             const matchesSearch = 
                 !term || 
                 acc.member_name?.toLowerCase().includes(term) ||
@@ -95,7 +98,7 @@ export default function SavingAccountsPage() {
 
             return matchesSearch && matchesStatus;
         });
-    }, [savingsData, searchInput, statusFilter]);
+    }, [savings, searchInput, statusFilter]);
 
     // Group the FILTERED savings by member name
     const groupedSavings = React.useMemo(() => {
@@ -344,7 +347,7 @@ export default function SavingAccountsPage() {
                         setSelectedAccount(null);
                     }}
                     refetchMember={refetch}
-                    accounts={savings} 
+                    accounts={selectedAccount ? [selectedAccount] : savings} 
                 />
             )}
         </div>
