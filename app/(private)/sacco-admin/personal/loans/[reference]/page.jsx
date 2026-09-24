@@ -5,7 +5,7 @@ import { format, startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { useParams } from "next/navigation";
 import { useFetchLoanDetail, useFetchLoanPayOffAmount } from "@/hooks/loans/actions";
 import { useFetchMember } from "@/hooks/members/actions";
-import { Banknote, Calendar, History } from "lucide-react";
+import { Banknote, Calendar, History, TrendingDown } from "lucide-react";
 import MemberLoadingSpinner from "@/components/general/MemberLoadingSpinner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -180,33 +180,115 @@ function LoanDetail() {
                 <div className="space-y-6">
                     {activeTab === 'overview' && (
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                            {/* Summary Cards */}
-                            <div className="lg:col-span-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                                <Card className="border-l-4 border-l-[var(--accent)]">
-                                    <CardHeader className="pb-2"><CardTitle className="text-xs uppercase tracking-wider text-slate-500">Outstanding Balance</CardTitle></CardHeader>
-                                    <CardContent><p className="text-xl font-semibold text-[var(--accent)]">{formatCurrency(loan.outstanding_balance)}</p></CardContent>
-                                </Card>
-                                <Card className="border-l-4 border-l-green-600">
-                                    <CardHeader className="pb-2"><CardTitle className="text-xs uppercase tracking-wider text-slate-500">Principal</CardTitle></CardHeader>
-                                    <CardContent><p className="text-xl font-semibold">{formatCurrency(loan.principal)}</p></CardContent>
-                                </Card>
-                                <Card className="border-l-4 border-l-amber-500">
-                                    <CardHeader className="pb-2"><CardTitle className="text-xs uppercase tracking-wider text-slate-500">Interest Accrued</CardTitle></CardHeader>
-                                    <CardContent><p className="text-xl font-semibold">{formatCurrency(loan.total_interest_accrued)}</p></CardContent>
-                                </Card>
-                                <Card className="border-l-4 border-l-[#045e32]">
-                                    <CardHeader className="pb-2"><CardTitle className="text-xs uppercase tracking-wider text-slate-500">Total Loan Amount</CardTitle></CardHeader>
-                                    <CardContent><p className="text-xl font-semibold text-[#045e32]">{formatCurrency(loan.total_loan_amount)}</p></CardContent>
-                                </Card>
-                                <Card className="border-l-4 border-l-red-500">
-                                    <CardHeader className="pb-2"><CardTitle className="text-xs uppercase tracking-wider text-slate-500">Pending Fees</CardTitle></CardHeader>
-                                    <CardContent>
-                                        <p className="text-xl font-semibold text-red-600">
-                                            {formatCurrency((loan?.processing_fees || []).filter(f => f.status === 'Pending').reduce((acc, f) => acc + (parseFloat(f.amount) || 0) - (parseFloat(f.amount_paid) || 0), 0))}
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                            </div>
+                            {/* Summary List View */}
+                            <Card className="lg:col-span-12 border border-slate-200 shadow-sm bg-white overflow-hidden">
+                                <CardHeader className="py-3.5 px-4 sm:px-6 bg-slate-50/70 border-b border-slate-100 flex flex-row items-center justify-between">
+                                    <div>
+                                        <CardTitle className="text-sm font-semibold text-slate-900">
+                                            Loan Financial Summary
+                                        </CardTitle>
+                                        <CardDescription className="text-xs text-slate-500">
+                                            Balances, accrued interest, fees, and total loan obligation
+                                        </CardDescription>
+                                    </div>
+                                </CardHeader>
+                                <div className="divide-y divide-slate-100">
+                                    {/* Outstanding Balance */}
+                                    <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/40 transition-colors">
+                                        <div className="flex items-center gap-3.5">
+                                            <div className="p-2.5 rounded-xl bg-orange-50 text-[var(--accent)] shrink-0">
+                                                <TrendingDown className="h-5 w-5" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Outstanding Balance</p>
+                                                <p className="text-xs text-muted-foreground">Remaining balance including accrued interest</p>
+                                            </div>
+                                        </div>
+                                        <div className="text-left sm:text-right pl-12 sm:pl-0">
+                                            <p className="text-xl sm:text-2xl font-bold text-[var(--accent)]">{formatCurrency(loan.outstanding_balance)}</p>
+                                            <p className="text-[11px] text-muted-foreground">Current total owed</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Principal */}
+                                    <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/40 transition-colors">
+                                        <div className="flex items-center gap-3.5">
+                                            <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 shrink-0">
+                                                <Banknote className="h-5 w-5" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Principal</p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    Original: <span className="font-medium text-slate-700">{formatCurrency(loan.principal)}</span>
+                                                    {" "}• Paid: <span className="font-medium text-emerald-700">{formatCurrency(loan.total_principal_paid || 0)}</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="text-left sm:text-right pl-12 sm:pl-0">
+                                            <p className="text-xl sm:text-2xl font-bold text-green-700">
+                                                {formatCurrency(loan.outstanding_principal ?? (parseFloat(loan.principal || 0) - parseFloat(loan.total_principal_paid || 0)))}
+                                            </p>
+                                            <p className="text-[11px] text-muted-foreground">Principal remaining to repay</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Interest Accrued */}
+                                    <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/40 transition-colors">
+                                        <div className="flex items-center gap-3.5">
+                                            <div className="p-2.5 rounded-xl bg-amber-50 text-amber-600 shrink-0">
+                                                <Calendar className="h-5 w-5" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Interest Accrued</p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    Rate: {loan.product_details?.interest_rate}% {loan.product_details?.interest_period || "Monthly"}
+                                                    {" "}• Method: {loan.product_details?.interest_method === "Flat" ? "Flat-rate" : "Reducing Balance"}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="text-left sm:text-right pl-12 sm:pl-0">
+                                            <p className="text-xl sm:text-2xl font-bold text-slate-900">{formatCurrency(loan.total_interest_accrued)}</p>
+                                            <p className="text-[11px] text-muted-foreground">Total interest charged</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Total Loan Amount */}
+                                    <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/40 transition-colors">
+                                        <div className="flex items-center gap-3.5">
+                                            <div className="p-2.5 rounded-xl bg-emerald-50 text-[#045e32] shrink-0">
+                                                <History className="h-5 w-5" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Total Loan Amount</p>
+                                                <p className="text-xs text-muted-foreground">Full lifetime loan sum (Principal + Interest)</p>
+                                            </div>
+                                        </div>
+                                        <div className="text-left sm:text-right pl-12 sm:pl-0">
+                                            <p className="text-xl sm:text-2xl font-bold text-[#045e32]">{formatCurrency(loan.total_loan_amount)}</p>
+                                            <p className="text-[11px] text-muted-foreground">Total loan commitment</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Pending Fees */}
+                                    <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/40 transition-colors">
+                                        <div className="flex items-center gap-3.5">
+                                            <div className="p-2.5 rounded-xl bg-red-50 text-red-600 shrink-0">
+                                                <Banknote className="h-5 w-5" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Pending Fees</p>
+                                                <p className="text-xs text-muted-foreground">Processing and administrative fee balances</p>
+                                            </div>
+                                        </div>
+                                        <div className="text-left sm:text-right pl-12 sm:pl-0">
+                                            <p className="text-xl sm:text-2xl font-bold text-red-600">
+                                                {formatCurrency((loan?.processing_fees || []).filter(f => f.status === 'Pending').reduce((acc, f) => acc + (parseFloat(f.amount) || 0) - (parseFloat(f.amount_paid) || 0), 0))}
+                                            </p>
+                                            <p className="text-[11px] text-muted-foreground">Outstanding fee amount</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Card>
 
                             {/* Payoff Quote */}
                             <Card className="lg:col-span-5 border-green-200 bg-green-50/30">

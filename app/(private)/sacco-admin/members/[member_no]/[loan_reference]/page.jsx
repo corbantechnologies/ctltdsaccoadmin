@@ -341,196 +341,204 @@ export default function LoanAccountDetail({ params }) {
           {/* Main Left Column (Financial Summary & Tabbed Tables) */}
           <div className="xl:col-span-3 space-y-6 min-w-0">
             
-            {/* Unified 4-Card Financial Overview (2x2 on medium, 4 in a row on large screens) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4 gap-4">
-              
-              {/* Card 1: Outstanding Principal (Exact Principal Debt) */}
-              <Card className="border border-slate-200/80 shadow-sm bg-white overflow-hidden flex flex-col justify-between min-w-0">
-                <CardHeader className="pb-2 pt-4 px-4 sm:px-5">
-                  <div className="flex items-center justify-between gap-2">
-                    <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 shrink-0">
-                      <Banknote className="h-4 w-4 text-emerald-600" /> Outstanding Principal
-                    </CardTitle>
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 whitespace-nowrap">
-                      {principalProgressPercent}% Repaid
-                    </span>
+            {/* Financial Overview List View (Replaces cramped cards for clean, responsive layout) */}
+            <Card className="border border-slate-200/80 shadow-sm bg-white overflow-hidden">
+              <CardHeader className="py-3.5 px-4 sm:px-6 bg-slate-50/70 border-b border-slate-100 flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle className="text-sm font-semibold text-slate-900">
+                    Loan Financial Summary
+                  </CardTitle>
+                  <CardDescription className="text-xs text-slate-500">
+                    Principal debt, obligation balance, fee settlement, and compliance penalties
+                  </CardDescription>
+                </div>
+              </CardHeader>
+              <div className="divide-y divide-slate-100">
+                
+                {/* Row 1: Outstanding Principal */}
+                <div className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/40 transition-colors">
+                  <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                    <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 shrink-0 mt-0.5">
+                      <Banknote className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-slate-600">
+                          Outstanding Principal
+                        </span>
+                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">
+                          {principalProgressPercent}% Repaid
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Initial Disbursed: <span className="font-medium text-slate-700">{formatCurrency(principalAmount)}</span>
+                        {" "}• Paid Principal: <span className="font-medium text-emerald-700">{formatCurrency(totalPrincipalPaid)}</span>
+                      </p>
+                      <div className="w-full max-w-md bg-slate-100 rounded-full h-1.5 overflow-hidden mt-1.5">
+                        <div
+                          className="bg-emerald-600 h-1.5 rounded-full transition-all duration-500"
+                          style={{ width: `${principalProgressPercent}%` }}
+                        />
+                      </div>
+                    </div>
                   </div>
-                </CardHeader>
-                <CardContent className="px-4 sm:px-5 pb-4 space-y-3">
-                  <div>
-                    <p className="text-xl sm:text-2xl 2xl:text-3xl font-bold text-slate-900 tracking-tight whitespace-nowrap">
+                  <div className="text-left md:text-right shrink-0 pl-12 md:pl-0">
+                    <p className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                       {formatCurrency(outstandingPrincipal)}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Remaining principal to be repaid
-                    </p>
+                    <p className="text-[11px] text-muted-foreground">Remaining principal to be repaid</p>
                   </div>
+                </div>
 
-                  {/* Progress Bar */}
-                  <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                    <div
-                      className="bg-emerald-600 h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${principalProgressPercent}%` }}
-                    />
+                {/* Row 2: Outstanding Balance */}
+                <div className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/40 transition-colors">
+                  <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                    <div className="p-2.5 rounded-xl bg-orange-50 text-[var(--accent)] shrink-0 mt-0.5">
+                      <TrendingDown className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-slate-600">
+                          Outstanding Balance
+                        </span>
+                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                          {progressPercent}% Total Paid
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Accrued Interest: <span className="font-medium text-slate-700">{formatCurrency(totalInterest)}</span>
+                        {" "}• Obligation: <span className="font-medium text-slate-700">{formatCurrency(totalObligation)}</span>
+                      </p>
+                      <div className="w-full max-w-md bg-slate-100 rounded-full h-1.5 overflow-hidden mt-1.5">
+                        <div
+                          className="bg-primary h-1.5 rounded-full transition-all duration-500"
+                          style={{ width: `${progressPercent}%` }}
+                        />
+                      </div>
+                    </div>
                   </div>
-
-                  <div className="flex justify-between items-center text-xs pt-1 border-t border-slate-100 text-slate-600 font-medium">
-                    <span>Initial: <strong>{formatCurrency(principalAmount)}</strong></span>
-                    <span>Paid: <strong className="text-emerald-700">{formatCurrency(totalPrincipalPaid)}</strong></span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Card 2: Outstanding Balance & Total Obligation */}
-              <Card className="border border-slate-200/80 shadow-sm bg-white overflow-hidden flex flex-col justify-between min-w-0">
-                <CardHeader className="pb-2 pt-4 px-4 sm:px-5">
-                  <div className="flex items-center justify-between gap-2">
-                    <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 shrink-0">
-                      <TrendingDown className="h-4 w-4 text-[var(--accent)]" /> Outstanding Balance
-                    </CardTitle>
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 whitespace-nowrap">
-                      {progressPercent}% Total Paid
-                    </span>
-                  </div>
-                </CardHeader>
-                <CardContent className="px-4 sm:px-5 pb-4 space-y-3">
-                  <div>
-                    <p className="text-xl sm:text-2xl 2xl:text-3xl font-bold text-slate-900 tracking-tight whitespace-nowrap">
+                  <div className="text-left md:text-right shrink-0 pl-12 md:pl-0">
+                    <p className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                       {formatCurrency(outstandingBalance)}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Remaining principal + accrued interest
-                    </p>
+                    <p className="text-[11px] text-muted-foreground">Remaining principal + accrued interest</p>
                   </div>
+                </div>
 
-                  {/* Progress Bar */}
-                  <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                    <div
-                      className="bg-primary h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${progressPercent}%` }}
-                    />
-                  </div>
-
-                  <div className="flex justify-between items-center text-xs pt-1 border-t border-slate-100 text-slate-600 font-medium">
-                    <span>Accrued Int: <strong>{formatCurrency(totalInterest)}</strong></span>
-                    <span>Obligation: <strong>{formatCurrency(totalObligation)}</strong></span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Card 3: Unified Processing Fee Component */}
-              <Card className="border border-slate-200/80 shadow-sm bg-white flex flex-col justify-between min-w-0">
-                <CardHeader className="pb-2 pt-4 px-4 sm:px-5">
-                  <div className="flex items-center justify-between gap-2">
-                    <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 shrink-0">
-                      <Receipt className="h-4 w-4 text-indigo-500" /> Processing Fee
-                    </CardTitle>
-                    <Badge
-                      variant="outline"
-                      className={`text-[10px] font-medium py-0.5 px-2 shrink-0 ${
-                        totalProcessingFee === 0
-                          ? "bg-slate-100 text-slate-600 border-slate-200"
-                          : pendingProcessingFee === 0
-                          ? "bg-green-50 text-green-700 border-green-200"
-                          : paidProcessingFee > 0
-                          ? "bg-amber-50 text-amber-700 border-amber-200"
-                          : "bg-red-50 text-red-700 border-red-200"
-                      }`}
-                    >
-                      {totalProcessingFee === 0 ? (
-                        "No Fee"
-                      ) : pendingProcessingFee === 0 ? (
-                        <span className="flex items-center gap-1">
-                          <CheckCircle2 className="h-3 w-3 text-green-600" /> Paid in Full
+                {/* Row 3: Processing Fee */}
+                <div className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/40 transition-colors">
+                  <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                    <div className="p-2.5 rounded-xl bg-indigo-50 text-indigo-600 shrink-0 mt-0.5">
+                      <Receipt className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-slate-600">
+                          Processing Fee
                         </span>
-                      ) : paidProcessingFee > 0 ? (
-                        `Due ${formatCurrency(pendingProcessingFee)}`
-                      ) : (
-                        `Due ${formatCurrency(pendingProcessingFee)}`
-                      )}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="px-4 sm:px-5 pb-4 space-y-3">
-                  <div>
-                    <p className="text-xl sm:text-2xl 2xl:text-3xl font-bold text-slate-900 tracking-tight whitespace-nowrap">
-                      {formatCurrency(totalProcessingFee)}
-                    </p>
-                    <div className="flex justify-between items-center text-xs text-muted-foreground mt-0.5">
-                      <span>Total Assessed Fee</span>
-                      <span>Paid: <strong className="text-slate-800">{formatCurrency(paidProcessingFee)}</strong></span>
+                        <Badge
+                          variant="outline"
+                          className={`text-[10px] font-medium py-0 px-2 shrink-0 ${
+                            totalProcessingFee === 0
+                              ? "bg-slate-100 text-slate-600 border-slate-200"
+                              : pendingProcessingFee === 0
+                              ? "bg-green-50 text-green-700 border-green-200"
+                              : paidProcessingFee > 0
+                              ? "bg-amber-50 text-amber-700 border-amber-200"
+                              : "bg-red-50 text-red-700 border-red-200"
+                          }`}
+                        >
+                          {totalProcessingFee === 0 ? (
+                            "No Fee"
+                          ) : pendingProcessingFee === 0 ? (
+                            <span className="flex items-center gap-1">
+                              <CheckCircle2 className="h-3 w-3 text-green-600" /> Paid in Full
+                            </span>
+                          ) : (
+                            `Due ${formatCurrency(pendingProcessingFee)}`
+                          )}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Total Assessed: <span className="font-medium text-slate-700">{formatCurrency(totalProcessingFee)}</span>
+                        {" "}• Paid: <span className="font-medium text-slate-700">{formatCurrency(paidProcessingFee)}</span>
+                      </p>
                     </div>
                   </div>
-
-                  {/* Contextual Action Button if Fee is Pending */}
-                  {pendingProcessingFee > 0 ? (
-                    <Button
-                      size="sm"
-                      onClick={() => {
-                        setRepaymentType("Processing Fee Payment");
-                        setIsPaymentModalOpen(true);
-                      }}
-                      className="w-full h-8 text-xs bg-amber-600 hover:bg-amber-700 text-white font-medium shadow-sm transition-all"
-                    >
-                      Pay Processing Fee ({formatCurrency(pendingProcessingFee)})
-                    </Button>
-                  ) : (
-                    <div className="h-8 flex items-center gap-1.5 text-xs text-green-700 bg-green-50/70 rounded px-2 font-medium border border-green-100">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-green-600 shrink-0" />
-                      <span>Processing fee settled in full</span>
+                  <div className="flex items-center gap-3 self-start md:self-center shrink-0 pl-12 md:pl-0">
+                    {pendingProcessingFee > 0 ? (
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          setRepaymentType("Processing Fee Payment");
+                          setIsPaymentModalOpen(true);
+                        }}
+                        className="h-8 text-xs bg-amber-600 hover:bg-amber-700 text-white font-medium shadow-sm transition-all"
+                      >
+                        Pay Fee ({formatCurrency(pendingProcessingFee)})
+                      </Button>
+                    ) : (
+                      <div className="h-8 flex items-center gap-1.5 text-xs text-green-700 bg-green-50/70 rounded px-2.5 font-medium border border-green-100">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-green-600 shrink-0" />
+                        <span>Settled in full</span>
+                      </div>
+                    )}
+                    <div className="text-left md:text-right">
+                      <p className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                        {formatCurrency(totalProcessingFee)}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground">Assessed fee</p>
                     </div>
-                  )}
-                </CardContent>
-              </Card>
+                  </div>
+                </div>
 
-              {/* Card 4: Penalties & Compliance Status */}
-              <Card className={`border shadow-sm flex flex-col justify-between min-w-0 ${
-                penaltiesOwed > 0 
-                  ? "border-red-200 bg-red-50/20" 
-                  : "border-slate-200/80 bg-white"
-              }`}>
-                <CardHeader className="pb-2 pt-4 px-4 sm:px-5">
-                  <div className="flex items-center justify-between gap-2">
-                    <CardTitle className={`text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 shrink-0 ${
-                      penaltiesOwed > 0 ? "text-red-700" : "text-slate-500"
+                {/* Row 4: Loan Penalties */}
+                <div className={`p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors ${
+                  penaltiesOwed > 0 ? "bg-red-50/30 hover:bg-red-50/50" : "hover:bg-slate-50/40"
+                }`}>
+                  <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                    <div className={`p-2.5 rounded-xl shrink-0 mt-0.5 ${
+                      penaltiesOwed > 0 ? "bg-red-100 text-red-600" : "bg-slate-100 text-slate-500"
                     }`}>
-                      <AlertTriangle className={`h-4 w-4 ${penaltiesOwed > 0 ? "text-red-600" : "text-slate-400"}`} />
-                      Loan Penalties
-                    </CardTitle>
-                    <Badge
-                      variant="outline"
-                      className={`text-[10px] font-medium py-0.5 px-2 shrink-0 ${
-                        penaltiesOwed > 0
-                          ? "bg-red-100 text-red-700 border-red-200"
-                          : "bg-slate-100 text-slate-700 border-slate-200"
-                      }`}
-                    >
-                      {penaltiesOwed > 0 ? "Outstanding" : "Zero Penalties"}
-                    </Badge>
+                      <AlertTriangle className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className={`text-xs font-semibold uppercase tracking-wider ${
+                          penaltiesOwed > 0 ? "text-red-700" : "text-slate-600"
+                        }`}>
+                          Loan Penalties
+                        </span>
+                        <Badge
+                          variant="outline"
+                          className={`text-[10px] font-medium py-0 px-2 shrink-0 ${
+                            penaltiesOwed > 0
+                              ? "bg-red-100 text-red-700 border-red-200"
+                              : "bg-slate-100 text-slate-700 border-slate-200"
+                          }`}
+                        >
+                          {penaltiesOwed > 0 ? "Outstanding" : "Zero Penalties"}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Rate: <span className="font-medium text-slate-700">{loan.product_details?.interest_rate}% {loan.product_details?.interest_period || "Monthly"}</span>
+                        {" "}• Method: <span className="font-medium text-slate-700">{loan.product_details?.interest_method || "Reducing"}</span>
+                        {" "}• Status: <span className="font-medium text-slate-700">{penaltiesOwed > 0 ? `${penalties?.length || 0} active assessment(s)` : "No default penalties"}</span>
+                      </p>
+                    </div>
                   </div>
-                </CardHeader>
-                <CardContent className="px-4 sm:px-5 pb-4 space-y-3">
-                  <div>
-                    <p className={`text-xl sm:text-2xl 2xl:text-3xl font-bold tracking-tight whitespace-nowrap ${
+                  <div className="text-left md:text-right shrink-0 pl-12 md:pl-0">
+                    <p className={`text-xl sm:text-2xl font-bold tracking-tight ${
                       penaltiesOwed > 0 ? "text-red-600" : "text-slate-900"
                     }`}>
                       {formatCurrency(penaltiesOwed)}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {penaltiesOwed > 0
-                        ? `${penalties?.length || 0} active penalty assessment(s)`
-                        : "No outstanding default penalties"}
-                    </p>
+                    <p className="text-[11px] text-muted-foreground">Default penalties balance</p>
                   </div>
+                </div>
 
-                  <div className="flex justify-between items-center text-xs pt-1 border-t border-slate-100 text-slate-600 font-medium">
-                    <span>Rate: <strong>{loan.product_details?.interest_rate}% {loan.product_details?.interest_period || "p.a."}</strong></span>
-                    <span>Method: <strong>{loan.product_details?.interest_method || "Reducing"}</strong></span>
-                  </div>
-                </CardContent>
-              </Card>
-
-            </div>
+              </div>
+            </Card>
 
             {/* Tabbed Navigation Interface for Account Tables (Replaces Long Scroll) */}
             <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden">
