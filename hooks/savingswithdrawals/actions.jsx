@@ -16,7 +16,7 @@ export function useFetchSavingsWithdrawals() {
   });
 }
 
-export function useFetchSavingsWithdrawal() {
+export function useFetchSavingsWithdrawal(reference) {
   const token = useAxiosAuth();
 
   return useQuery({

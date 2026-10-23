@@ -1,6 +1,7 @@
 "use client";
 
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import { signOut } from "next-auth/react";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,8 +43,11 @@ function ChangePassword({ onClose, isOpen }) {
             try {
               setLoading(true);
               await changePassword(values, token);
-              toast?.success("Password changed successfully!");
+              // The API revokes the old session token on password change,
+              // so sign in again with the new password.
+              toast?.success("Password changed. Please log in again.");
               onClose();
+              signOut({ callbackUrl: "/login" });
             } catch (error) {
               if (error?.response?.data?.old_password[0]) {
                 toast?.error(error?.response?.data?.old_password[0]);

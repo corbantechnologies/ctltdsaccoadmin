@@ -59,6 +59,9 @@ const MENU_LINKS = [
     children: [
       { label: "All Accounts", href: "/sacco-admin/saving-accounts" },
       { label: "All Deposits", href: "/sacco-admin/saving-deposits" },
+      ...(SACCO_CONFIG.enableWithdrawals
+        ? [{ label: "Withdrawals", href: "/sacco-admin/withdrawals" }]
+        : []),
       { label: "Savings Types", href: "/sacco-admin/setup/saving-types" },
     ],
   },
@@ -85,6 +88,13 @@ const MENU_LINKS = [
     children: [
       { label: "Accounting Dashboard", href: "/sacco-admin/accounting" },
       { label: "Reports", href: "/sacco-admin/reports" },
+      { label: "Month-end & Provisions", href: "/sacco-admin/accounting/month-end" },
+      { label: "Suspense", href: "/sacco-admin/accounting/suspense" },
+      { label: "Periods & Year-end", href: "/sacco-admin/accounting/periods" },
+      { label: "Dividends", href: "/sacco-admin/accounting/dividends" },
+      { label: "Reconciliation", href: "/sacco-admin/accounting/reconciliation" },
+      { label: "Opening Balances", href: "/sacco-admin/accounting/opening-balances" },
+      { label: "Accounting Settings", href: "/sacco-admin/accounting/settings" },
       { label: "GL Accounts", href: "/sacco-admin/setup/gl-accounts" },
       { label: "Payment Accounts", href: "/sacco-admin/setup/payment-accounts" },
       { label: "Accounts & Transactions", href: "/sacco-admin/transactions" },
@@ -275,4 +285,4 @@ export default function SaccoAdminNavbar() {
       )}
     </>
   );
-}
+}

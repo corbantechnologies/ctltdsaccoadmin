@@ -1,5 +1,6 @@
 "use client";
 
+import { SACCO_CONFIG } from "@/lib/sacco-config";
 import React, { useState, useMemo } from "react";
 import { format, startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { useParams } from "next/navigation";
@@ -152,12 +153,14 @@ function LoanDetail() {
                         <p className="text-muted-foreground font-mono">{loan.account_number}</p>
                     </div>
 
-                    <Button
-                        className="bg-[#045e32] hover:bg-[#034625]"
-                        onClick={() => setIsMpesaModalOpen(true)}
-                    >
-                        Make Repayment
-                    </Button>
+                    {SACCO_CONFIG.enableMpesa && (
+                        <Button
+                            className="bg-[#045e32] hover:bg-[#034625]"
+                            onClick={() => setIsMpesaModalOpen(true)}
+                        >
+                            Make Repayment
+                        </Button>
+                    )}
                 </div>
 
                 {/* Tabs */}

@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import WithdrawalsTable from "@/components/withdrawals/WithdrawalsTable";
+import { SACCO_CONFIG } from "@/lib/sacco-config";
 
 const TableSkeleton = ({ rows = 5, cols = 5 }) => {
   return (
@@ -29,6 +30,25 @@ const TableSkeleton = ({ rows = 5, cols = 5 }) => {
 };
 
 function Withdrawals() {
+  if (!SACCO_CONFIG.enableWithdrawals) {
+    return (
+      <div className="min-h-screen bg-gray-100 p-6">
+        <Card className="shadow-md max-w-xl">
+          <CardHeader>
+            <CardTitle>Withdrawals are not enabled</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm text-gray-600">
+            This SACCO does not process savings withdrawals through the
+            platform.
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+  return <WithdrawalRequests />;
+}
+
+function WithdrawalRequests() {
   const {
     isLoading: isLoadingWithdrawals,
     data: withdrawals,

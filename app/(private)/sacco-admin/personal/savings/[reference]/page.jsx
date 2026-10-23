@@ -1,5 +1,6 @@
 "use client";
 
+import { SACCO_CONFIG } from "@/lib/sacco-config";
 import React, { useState, useMemo } from "react";
 import { format, startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { useParams } from "next/navigation";
@@ -221,14 +222,16 @@ const PersonalSavingDetailSkeleton = () => (
               {saving.account_number}
             </p>
           </div>
-          <div className="flex gap-3">
-            <Button
-              className="bg-[#045e32] hover:bg-[#034625]"
-              onClick={() => setDepositModalOpen(true)}
-            >
-              Deposit
-            </Button>
-          </div>
+          {SACCO_CONFIG.enableMpesa && (
+            <div className="flex gap-3">
+              <Button
+                className="bg-[#045e32] hover:bg-[#034625]"
+                onClick={() => setDepositModalOpen(true)}
+              >
+                Deposit
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Tabs */}

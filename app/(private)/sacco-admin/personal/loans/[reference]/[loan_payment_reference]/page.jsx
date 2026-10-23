@@ -5,6 +5,7 @@
 // Navigate back to the savings account detail page
 
 
+import { SACCO_CONFIG } from "@/lib/sacco-config";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { useFetchSavingsDepositDetail } from "@/hooks/savingsdeposits/actions";
 import { useParams, useRouter } from "next/navigation";
@@ -192,7 +193,7 @@ const PaymentSkeleton = () => (
                     )}
 
                     {/* Confirmation Form */}
-                    {!isPolling && loan_payment.payment_status !== "COMPLETED" && (
+                    {SACCO_CONFIG.enableMpesa && !isPolling && loan_payment.payment_status !== "COMPLETED" && (
                         <Formik
                             initialValues={{
                                 phone_number: loan_payment.phone_number || "",
@@ -208,7 +209,7 @@ const PaymentSkeleton = () => (
                                         loan_payment_reference: values.loan_payment_reference,
                                     };
 
-                                    await generateLoanSTKPush(payload);
+                                    await generateLoanSTKPush(payload, token);
                                     setPaymentMessage(
                                         "STK Push sent! Please check your phone to complete the payment."
                                     );
