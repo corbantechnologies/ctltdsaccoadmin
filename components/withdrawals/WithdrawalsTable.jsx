@@ -119,7 +119,13 @@ function WithdrawalsTable({ withdrawals, refetchWithdrawals }) {
       refetchWithdrawals();
       setIsModalOpen(false);
     } catch (error) {
-      toast.error("Failed to approve withdrawal. Please try again.");
+      const data = error?.response?.data;
+      toast.error(
+        data?.detail ||
+          data?.transaction_status?.[0] ||
+          data?.payment_method?.[0] ||
+          "Failed to approve withdrawal. Please try again."
+      );
     }
   };
 
@@ -134,7 +140,13 @@ function WithdrawalsTable({ withdrawals, refetchWithdrawals }) {
       refetchWithdrawals();
       setIsModalOpen(false);
     } catch (error) {
-      toast.error("Failed to reject withdrawal. Please try again.");
+      const data = error?.response?.data;
+      toast.error(
+        data?.detail ||
+          data?.transaction_status?.[0] ||
+          data?.payment_method?.[0] ||
+          "Failed to reject withdrawal. Please try again."
+      );
     }
   };
 

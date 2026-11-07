@@ -80,6 +80,7 @@ export default function AdminLoanApplications() {
 
   const [activeTab, setActiveTab] = useState("all"); // 'all' | 'mine'
   const [statusFilter, setStatusFilter] = useState("all");
+  const [productKind, setProductKind] = useState("all"); // 'all' | 'new' | 'onboarding'
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
 
@@ -98,6 +99,14 @@ export default function AdminLoanApplications() {
   // 2. Filter by Status
   if (statusFilter !== "all") {
     filteredApps = filteredApps.filter((app) => app.status === statusFilter);
+  }
+
+  // 3. New loans vs existing loans brought in through Onboarding
+  if (productKind !== "all") {
+    const wantOnboarding = productKind === "onboarding";
+    filteredApps = filteredApps.filter(
+      (app) => !!app.product_details?.is_onboarding_only === wantOnboarding
+    );
   }
 
   // 3. Pagination Logic
@@ -285,6 +294,24 @@ export default function AdminLoanApplications() {
                   </SelectContent>
                 </Select>
               </div>
+              <div className="w-full sm:w-[200px]">
+                <Select
+                  value={productKind}
+                  onValueChange={(val) => {
+                    setProductKind(val);
+                    setCurrentPage(1);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Product type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All products</SelectItem>
+                    <SelectItem value="new">New loan products</SelectItem>
+                    <SelectItem value="onboarding">Onboarding products</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <Card>
@@ -381,6 +408,11 @@ export default function AdminLoanApplications() {
                                 <div>
                                   <div className="font-medium text-gray-900">
                                     {app.product}
+                                    {app.product_details?.is_onboarding_only && (
+                                <Badge className="ml-2 bg-amber-50 text-amber-800 border-amber-200 font-normal">
+                                  Onboarding
+                                </Badge>
+                              )}
                                   </div>
                                   {app.admin_created ? (
                                     <Badge
@@ -438,6 +470,11 @@ export default function AdminLoanApplications() {
                             </TableCell>
                             <TableCell className="hidden sm:table-cell font-medium">
                               {app.product}
+                              {app.product_details?.is_onboarding_only && (
+                                <Badge className="ml-2 bg-amber-50 text-amber-800 border-amber-200 font-normal">
+                                  Onboarding
+                                </Badge>
+                              )}
                             </TableCell>
                             <TableCell className="hidden sm:table-cell">
                               {app.admin_created ? (

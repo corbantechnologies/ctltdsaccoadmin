@@ -428,6 +428,11 @@ const LoanApplicationDetailSkeleton = () => (
               <h1 className="text-xl font-semibold text-gray-900">
                 {application.product} Application
               </h1>
+              {application.product_details?.is_onboarding_only && (
+                <Badge className="bg-amber-50 text-amber-800 border-amber-200 font-normal">
+                  Onboarding product (existing loan)
+                </Badge>
+              )}
             </div>
             <p className="text-muted-foreground font-mono mt-1">
               Ref: {application.reference}{" "}
