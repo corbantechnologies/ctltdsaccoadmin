@@ -21,8 +21,7 @@ function BulkMemberCreate({ closeModal, openModal }) {
         middle_name: "",
         last_name: "",
         email: "",
-        employer: "",
-        payroll_no: "",
+        payroll_number: "",
         phone: "",
         gender: "",
         password: "",
@@ -292,39 +291,20 @@ function BulkMemberCreate({ closeModal, openModal }) {
 
                                         <div className="space-y-2">
                                             <Label
-                                                htmlFor={`members-${index}-employer`}
+                                                htmlFor={`members-${index}-payroll_number`}
                                                 className="text-base text-black font-medium"
                                             >
-                                                Employer
+                                                Payroll Number (Optional)
                                             </Label>
                                             <Input
                                                 type="text"
-                                                id={`members-${index}-employer`}
-                                                placeholder="Enter employer name"
-                                                value={member.employer}
-                                                onChange={(e) => handleInputChange(index, "employer", e.target.value)}
+                                                id={`members-${index}-payroll_number`}
+                                                placeholder="e.g. 12345"
+                                                value={member.payroll_number}
+                                                onChange={(e) => handleInputChange(index, "payroll_number", e.target.value)}
                                                 className="border-black rounded text-base py-2"
                                             />
                                         </div>
-
-                                        {Boolean(member.employer && member.employer.trim() !== "") && (
-                                            <div className="space-y-2">
-                                                <Label
-                                                    htmlFor={`members-${index}-payroll_no`}
-                                                    className="text-base text-black font-medium"
-                                                >
-                                                    Payroll Number
-                                                </Label>
-                                                <Input
-                                                    type="text"
-                                                    id={`members-${index}-payroll_no`}
-                                                    placeholder="e.g. 12345"
-                                                    value={member.payroll_no}
-                                                    onChange={(e) => handleInputChange(index, "payroll_no", e.target.value)}
-                                                    className="border-black rounded text-base py-2"
-                                                />
-                                            </div>
-                                        )}
 
                                         <div className="space-y-2">
                                             <Label
