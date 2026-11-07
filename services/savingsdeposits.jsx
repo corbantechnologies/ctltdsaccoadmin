@@ -52,10 +52,8 @@ export const bulkUploadSavingsDeposits = async (values, token) => {
 };
 
 export const downloadSavingsDepositsTemplate = async (token, savingType = "", transactionDate = "") => {
-  const config = {
-    headers: { Authorization: `Bearer ${token}` },
-    responseType: "blob",
-  };
+  // `token` is the useAxiosAuth() config ({ headers: { Authorization: "Token ..." } }).
+  const config = { ...token, responseType: "blob" };
   
   const params = new URLSearchParams();
   if (savingType) params.append("saving_type", savingType);
@@ -82,10 +80,8 @@ export const downloadSavingsDepositsTemplate = async (token, savingType = "", tr
 
 // Bulk Update Dates
 export const downloadBulkUpdateTemplate = async (token, depositType = "") => {
-  const config = {
-    headers: { Authorization: `Bearer ${token}` },
-    responseType: "blob",
-  };
+  // `token` is the useAxiosAuth() config ({ headers: { Authorization: "Token ..." } }).
+  const config = { ...token, responseType: "blob" };
   const url = depositType 
     ? `/api/v1/savingsdeposits/bulk/update/template/?deposit_type=${encodeURIComponent(depositType)}` 
     : `/api/v1/savingsdeposits/bulk/update/template/`;

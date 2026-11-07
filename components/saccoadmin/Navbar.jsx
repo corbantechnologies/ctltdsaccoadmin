@@ -88,13 +88,17 @@ const MENU_LINKS = [
     children: [
       { label: "Accounting Dashboard", href: "/sacco-admin/accounting" },
       { label: "Reports", href: "/sacco-admin/reports" },
-      { label: "Month-end & Provisions", href: "/sacco-admin/accounting/month-end" },
-      { label: "Suspense", href: "/sacco-admin/accounting/suspense" },
-      { label: "Periods & Year-end", href: "/sacco-admin/accounting/periods" },
-      { label: "Dividends", href: "/sacco-admin/accounting/dividends" },
-      { label: "Reconciliation", href: "/sacco-admin/accounting/reconciliation" },
-      { label: "Opening Balances", href: "/sacco-admin/accounting/opening-balances" },
-      { label: "Accounting Settings", href: "/sacco-admin/accounting/settings" },
+      ...(SACCO_CONFIG.enableAccounting
+        ? [
+            { label: "Accounting Settings", href: "/sacco-admin/accounting/settings" },
+            { label: "Reconciliation", href: "/sacco-admin/accounting/reconciliation" },
+            { label: "Month-end & Provisions", href: "/sacco-admin/accounting/month-end" },
+            { label: "Suspense", href: "/sacco-admin/accounting/suspense" },
+            { label: "Periods & Year-end", href: "/sacco-admin/accounting/periods" },
+            { label: "Dividends", href: "/sacco-admin/accounting/dividends" },
+            { label: "Opening Balances", href: "/sacco-admin/accounting/opening-balances" },
+          ]
+        : []),
       { label: "GL Accounts", href: "/sacco-admin/setup/gl-accounts" },
       { label: "Payment Accounts", href: "/sacco-admin/setup/payment-accounts" },
       { label: "Accounts & Transactions", href: "/sacco-admin/transactions" },
@@ -285,4 +289,4 @@ export default function SaccoAdminNavbar() {
       )}
     </>
   );
-}
+}

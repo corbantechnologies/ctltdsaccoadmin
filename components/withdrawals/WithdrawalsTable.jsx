@@ -474,7 +474,7 @@ function WithdrawalsTable({ withdrawals, refetchWithdrawals }) {
             {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems}{" "}
             entries
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}

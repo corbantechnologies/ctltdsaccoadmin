@@ -21,9 +21,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { generateMigrationChecklist } from "@/lib/pdf-generator";
+import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import toast from "react-hot-toast";
 
 export default function MigrationHub() {
     const router = useRouter();
+    // Templates are admin-only on the API, so every download must send the login token.
+    const auth = useAxiosAuth();
 
     const handleDownloadChecklist = () => {
         generateMigrationChecklist();
@@ -185,7 +189,8 @@ export default function MigrationHub() {
                                 className="flex items-center justify-between p-3 rounded border hover:bg-slate-50 cursor-pointer transition-colors"
                                 onClick={async () => {
                                     try {
-                                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/auth/new-members/bulk-create/template/download/`);
+                                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/auth/new-members/bulk-create/template/download/`, { headers: auth.headers });
+                                        if (!response.ok) throw new Error(`Template download failed (${response.status})`);
                                         const blob = await response.blob();
                                         const url = window.URL.createObjectURL(blob);
                                         const a = document.createElement('a');
@@ -196,6 +201,7 @@ export default function MigrationHub() {
                                         window.URL.revokeObjectURL(url);
                                     } catch (error) {
                                         console.error("Failed to download template", error);
+                                        toast.error("Could not download the template. Please sign in again and retry.");
                                     }
                                 }}
                             >
@@ -209,7 +215,8 @@ export default function MigrationHub() {
                                 className="flex items-center justify-between p-3 rounded border hover:bg-slate-50 cursor-pointer transition-colors"
                                 onClick={async () => {
                                     try {
-                                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/savingsdeposits/bulk/template/`);
+                                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/savingsdeposits/bulk/template/`, { headers: auth.headers });
+                                        if (!response.ok) throw new Error(`Template download failed (${response.status})`);
                                         const blob = await response.blob();
                                         const url = window.URL.createObjectURL(blob);
                                         const a = document.createElement('a');
@@ -220,6 +227,7 @@ export default function MigrationHub() {
                                         window.URL.revokeObjectURL(url);
                                     } catch (error) {
                                         console.error("Failed to download template", error);
+                                        toast.error("Could not download the template. Please sign in again and retry.");
                                     }
                                 }}
                             >
@@ -233,7 +241,8 @@ export default function MigrationHub() {
                                 className="flex items-center justify-between p-3 rounded border hover:bg-slate-50 cursor-pointer transition-colors"
                                 onClick={async () => {
                                     try {
-                                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/feepayments/bulk/template/`);
+                                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/feepayments/bulk/template/`, { headers: auth.headers });
+                                        if (!response.ok) throw new Error(`Template download failed (${response.status})`);
                                         const blob = await response.blob();
                                         const url = window.URL.createObjectURL(blob);
                                         const a = document.createElement('a');
@@ -244,6 +253,7 @@ export default function MigrationHub() {
                                         window.URL.revokeObjectURL(url);
                                     } catch (error) {
                                         console.error("Failed to download template", error);
+                                        toast.error("Could not download the template. Please sign in again and retry.");
                                     }
                                 }}
                             >
@@ -257,7 +267,8 @@ export default function MigrationHub() {
                                 className="flex items-center justify-between p-3 rounded border hover:bg-slate-50 cursor-pointer transition-colors"
                                 onClick={async () => {
                                     try {
-                                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/loanapplications/admin/bulk/template/`);
+                                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/loanapplications/admin/bulk/template/`, { headers: auth.headers });
+                                        if (!response.ok) throw new Error(`Template download failed (${response.status})`);
                                         const blob = await response.blob();
                                         const url = window.URL.createObjectURL(blob);
                                         const a = document.createElement('a');
@@ -268,6 +279,7 @@ export default function MigrationHub() {
                                         window.URL.revokeObjectURL(url);
                                     } catch (error) {
                                         console.error("Failed to download template", error);
+                                        toast.error("Could not download the template. Please sign in again and retry.");
                                     }
                                 }}
                             >
@@ -281,7 +293,8 @@ export default function MigrationHub() {
                                 className="flex items-center justify-between p-3 rounded border hover:bg-slate-50 cursor-pointer transition-colors"
                                 onClick={async () => {
                                     try {
-                                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/existingloans/bulk/template/`);
+                                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/existingloans/bulk/template/`, { headers: auth.headers });
+                                        if (!response.ok) throw new Error(`Template download failed (${response.status})`);
                                         const blob = await response.blob();
                                         const url = window.URL.createObjectURL(blob);
                                         const a = document.createElement('a');
@@ -292,6 +305,7 @@ export default function MigrationHub() {
                                         window.URL.revokeObjectURL(url);
                                     } catch (error) {
                                         console.error("Failed to download template", error);
+                                        toast.error("Could not download the template. Please sign in again and retry.");
                                     }
                                 }}
                             >

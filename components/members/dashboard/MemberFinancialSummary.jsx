@@ -72,7 +72,7 @@ export default function MemberFinancialSummary({ summary, memberNo, summaryYear,
           </CardDescription>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           {summaryYear && setSummaryYear && (
             <Select 
               value={summaryYear.toString()} 
@@ -95,7 +95,7 @@ export default function MemberFinancialSummary({ summary, memberNo, summaryYear,
             size="sm"
             onClick={handleDownload}
             disabled={isDownloading}
-            className="flex items-center gap-2 w-full sm:w-auto"
+            className="flex items-center gap-2 flex-1 sm:flex-none"
           >
             {isDownloading ? (
               <Loader2 className="h-4 w-4 animate-spin" />

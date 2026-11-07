@@ -53,7 +53,10 @@ export default function ReversePaymentModal({ isOpen, onClose, refetch, paymentR
     };
     
     fetchTransactionDetails();
-  }, [isOpen, paymentRef, type, token]);
+    // Depend on the header string: useAxiosAuth() returns a new object each
+    // render, which re-ran this effect (and re-fetched) in a loop while open.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, paymentRef, type, token?.headers?.Authorization]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

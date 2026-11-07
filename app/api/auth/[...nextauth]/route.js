@@ -53,6 +53,9 @@ export const authOptions = {
     },
   },
   pages: { signIn: "/login" },
+  // Match the API token lifetime (TOKEN_TTL_HOURS, 7 days by default) so the
+  // portal never shows a user as signed in with an expired API token.
+  session: { maxAge: 60 * 60 * 24 * 7 },
 };
 
 const handler = NextAuth(authOptions);
