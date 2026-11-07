@@ -39,3 +39,12 @@ export const updateWithdrawal = async (identity, values, token) => {
   );
   return response?.data;
 };
+
+// The signed-in admin's own withdrawals, as a member (Personal pages).
+export const getMyWithdrawals = async (token) => {
+  const response = await apiActions?.get("/api/v1/savingswithdrawals/", {
+    ...token,
+    params: { ...(token?.params || {}), portal: "member", page_size: 1000 },
+  });
+  return response?.data?.results || [];
+};

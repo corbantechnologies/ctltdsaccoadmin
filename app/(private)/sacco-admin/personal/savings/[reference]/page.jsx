@@ -35,6 +35,8 @@ import {
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import MpesaCreateDepositForm from "@/forms/savingsdeposits/MpesaCreateDepositForm";
+import RequestWithdrawal from "@/forms/savingswithdrawals/RequestWithdrawal";
+import { useFetchMyWithdrawals } from "@/hooks/savingswithdrawals/actions";
 
 function SavingsDetail() {
   const { reference } = useParams();
@@ -43,6 +45,10 @@ function SavingsDetail() {
   const [statusFilter, setStatusFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [depositModalOpen, setDepositModalOpen] = useState(false);
+  const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
+  const { data: allWithdrawals, refetch: refetchWithdrawals } = useFetchMyWithdrawals(
+    SACCO_CONFIG.enableWithdrawals
+  );
   const itemsPerPage = 50;
 
   const {
@@ -68,7 +74,10 @@ function SavingsDetail() {
       status: deposit.transaction_status || "Completed",
       date: deposit.created_at,
     }));
-    const withdrawals = (saving.withdrawals || []).map((withdrawal) => ({
+    const ownWithdrawals = (allWithdrawals || []).filter(
+      (w) => w.savings_account === saving.account_number
+    );
+    const withdrawals = ownWithdrawals.map((withdrawal) => ({
       ...withdrawal,
       type: "Withdrawal",
       balance: saving.balance,
@@ -79,7 +88,7 @@ function SavingsDetail() {
     return [...deposits, ...withdrawals].sort(
       (a, b) => new Date(b.date) - new Date(a.date)
     );
-  }, [saving]);
+  }, [saving, allWithdrawals]);
 
   const filteredTransactions = useMemo(() => {
     return allTransactions.filter((t) => {
@@ -222,14 +231,21 @@ const PersonalSavingDetailSkeleton = () => (
               {saving.account_number}
             </p>
           </div>
-          {SACCO_CONFIG.enableMpesa && (
-            <div className="flex gap-3">
-              <Button
-                className="bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
-                onClick={() => setDepositModalOpen(true)}
-              >
-                Deposit
-              </Button>
+          {(SACCO_CONFIG.enableMpesa || SACCO_CONFIG.enableWithdrawals) && (
+            <div className="flex flex-wrap gap-3">
+              {SACCO_CONFIG.enableMpesa && (
+                <Button
+                  className="bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
+                  onClick={() => setDepositModalOpen(true)}
+                >
+                  Deposit
+                </Button>
+              )}
+              {SACCO_CONFIG.enableWithdrawals && saving.is_active !== false && (
+                <Button variant="outline" onClick={() => setWithdrawModalOpen(true)}>
+                  Request Withdrawal
+                </Button>
+              )}
             </div>
           )}
         </div>
@@ -428,6 +444,17 @@ const PersonalSavingDetailSkeleton = () => (
         onClose={() => setDepositModalOpen(false)}
         savings_account={saving}
       />
+      {SACCO_CONFIG.enableWithdrawals && (
+        <RequestWithdrawal
+          isOpen={withdrawModalOpen}
+          onClose={() => setWithdrawModalOpen(false)}
+          account={saving}
+          refetchAccount={() => {
+            refetchSaving();
+            refetchWithdrawals();
+          }}
+        />
+      )}
     </div>
   );
 }
