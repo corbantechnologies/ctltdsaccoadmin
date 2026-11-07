@@ -68,6 +68,8 @@ import {
   TrendingUp,
   RotateCcw,
   Undo2,
+  Users,
+  FileX,
 } from "lucide-react";
 import CreateLoanPayment, { getPendingProcessingFee } from "@/forms/loanrepayments/CreateLoanPayment";
 import { useFetchLoanPenaltiesByLoanAccountReference } from "@/hooks/loanpenalties/actions";
@@ -78,6 +80,12 @@ import CreateTopUpModal from "@/forms/loans/CreateTopUpModal";
 import ReversePaymentModal from "@/forms/loans/ReversePaymentModal";
 import ResetLoanModal from "@/forms/loans/ResetLoanModal";
 import ReverseTopUpModal from "@/forms/loans/ReverseTopUpModal";
+import {
+  ArrearsBadge,
+  GuarantorRecoveryModal,
+  WriteOffModal,
+  WrittenOffRecoveryModal,
+} from "@/forms/loans/LoanRecoveryModals";
 
 const LoanDetailSkeleton = () => (
   <div className="mx-auto p-4 sm:p-6 space-y-6 animate-pulse">
@@ -126,6 +134,9 @@ export default function LoanAccountDetail({ params }) {
   const [isReverseModalOpen, setIsReverseModalOpen] = useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isReverseTopUpModalOpen, setIsReverseTopUpModalOpen] = useState(false);
+  const [isGuarantorRecoveryOpen, setIsGuarantorRecoveryOpen] = useState(false);
+  const [isWriteOffOpen, setIsWriteOffOpen] = useState(false);
+  const [isRecoveryOpen, setIsRecoveryOpen] = useState(false);
   const [selectedPaymentForReversal, setSelectedPaymentForReversal] = useState(null);
   const [selectedTopUpForReversal, setSelectedTopUpForReversal] = useState(null);
   const [selectedPenalty, setSelectedPenalty] = useState(null);
@@ -216,6 +227,7 @@ export default function LoanAccountDetail({ params }) {
         return "bg-slate-100 text-slate-700 border-slate-200";
       case "In Arrears":
       case "Defaulted":
+      case "Written Off":
         return "bg-red-100 text-red-700 border-red-200";
       default:
         return "bg-blue-100 text-blue-700 border-blue-200";
@@ -256,6 +268,7 @@ export default function LoanAccountDetail({ params }) {
               <Badge className={getStatusBadge(loan.status)} variant="outline">
                 {loan.status}
               </Badge>
+              <ArrearsBadge loan={loan} />
             </div>
             <p className="text-xs sm:text-sm text-slate-500 font-mono">
               Account No: <span className="font-semibold text-slate-700">{loan.account_number}</span> • Member: <Link href={`/sacco-admin/members/${member_no}`} className="text-primary hover:underline font-semibold">{loan.member}</Link>
@@ -265,7 +278,16 @@ export default function LoanAccountDetail({ params }) {
           {/* Streamlined Action Buttons */}
           <div className="flex items-center gap-2 w-full md:w-auto">
             {/* Primary Action Button */}
-            {(outstandingBalance > 0 || pendingProcessingFee > 0) && (
+            {loan.status === "Written Off" && (
+              <Button
+                onClick={() => setIsRecoveryOpen(true)}
+                className="bg-primary hover:bg-[var(--primary-hover)] text-white flex-1 md:flex-initial shadow-sm font-medium h-10 px-4 flex items-center gap-2"
+              >
+                <Banknote className="h-4 w-4" />
+                <span>Record Recovery</span>
+              </Button>
+            )}
+            {loan.status !== "Written Off" && (outstandingBalance > 0 || pendingProcessingFee > 0) && (
               <Button
                 onClick={() => {
                   setRepaymentType("Regular Repayment");
@@ -279,7 +301,7 @@ export default function LoanAccountDetail({ params }) {
             )}
 
             {/* Secondary Actions Popover Menu */}
-            {loan.status !== "Closed" && (
+            {loan.status !== "Closed" && loan.status !== "Written Off" && (
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -318,6 +340,25 @@ export default function LoanAccountDetail({ params }) {
                   >
                     <AlertTriangle className="mr-2 h-3.5 w-3.5 text-amber-600" />
                     Apply Penalty
+                  </Button>
+                  <div className="border-t border-slate-100 my-1" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsGuarantorRecoveryOpen(true)}
+                    className="w-full justify-start text-xs font-medium h-9 text-slate-700 hover:text-slate-900"
+                  >
+                    <Users className="mr-2 h-3.5 w-3.5 text-slate-500" />
+                    Recover from Guarantors
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsWriteOffOpen(true)}
+                    className="w-full justify-start text-xs font-medium h-9 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <FileX className="mr-2 h-3.5 w-3.5 text-red-600" />
+                    Write Off Loan
                   </Button>
                   <div className="border-t border-slate-100 my-1" />
                   <Button
@@ -1166,6 +1207,21 @@ export default function LoanAccountDetail({ params }) {
           onClose={() => setIsResetModalOpen(false)}
           refetchLoan={refetchAll}
           loan={loan}
+        />
+
+        {/* Bad loan: guarantor recovery, write-off, recovery afterwards */}
+        <GuarantorRecoveryModal
+          isOpen={isGuarantorRecoveryOpen}
+          onClose={() => setIsGuarantorRecoveryOpen(false)}
+          loan={loan}
+          onDone={refetch}
+        />
+        <WriteOffModal isOpen={isWriteOffOpen} onClose={() => setIsWriteOffOpen(false)} loan={loan} onDone={refetch} />
+        <WrittenOffRecoveryModal
+          isOpen={isRecoveryOpen}
+          onClose={() => setIsRecoveryOpen(false)}
+          loan={loan}
+          onDone={refetch}
         />
 
         {/* Reverse Top-Up Modal */}

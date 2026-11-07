@@ -16,7 +16,7 @@
 //      1. Member accepting or cancelling amendment.
 //      2. Admin approving or declining loan application.
 
-import { apiActions, apiMultipartActions } from "@/tools/axios"
+import { getAllPages, apiActions, apiMultipartActions } from "@/tools/axios"
 
 export const createLoanApplication = async (values, token) => {
     const response = await apiActions?.post("/api/v1/loanapplications/", values, token)
@@ -24,8 +24,7 @@ export const createLoanApplication = async (values, token) => {
 }
 
 export const getLoanApplications = async (token) => {
-    const response = await apiActions?.get("/api/v1/loanapplications/", token)
-    return response?.data?.results || []
+    return getAllPages("/api/v1/loanapplications/", token)
 }
 
 export const getLoanApplicationDetail = async (reference, token) => {

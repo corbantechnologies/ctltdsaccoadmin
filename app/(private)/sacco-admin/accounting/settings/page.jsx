@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { useFetchAccountingSettings } from "@/hooks/accounting/actions";
@@ -22,12 +23,15 @@ const GL_FIELDS = [
   ["withholding_tax_gl", "Withholding tax payable", "LIABILITY"],
   ["deposit_interest_expense_gl", "Interest on member deposits", "EXPENSE"],
   ["opening_balance_equity_gl", "Opening balance equity", "EQUITY"],
+  ["bad_debts_recovered_gl", "Bad debts recovered (income on written-off loans)", "REVENUE"],
+  ["guarantor_recovery_gl", "Guarantor recovery clearing", "LIABILITY"],
 ];
 
 function AccountingSettings() {
   const token = useAxiosAuth();
   const { data: settings, isLoading, refetch } = useFetchAccountingSettings();
-  const { data: glAccounts } = useFetchGLAccounts();
+  const { data: glAccounts, refetch: refetchGL } = useFetchGLAccounts();
+  const queryClient = useQueryClient();
   const { data: savingTypes } = useFetchSavingsTypes();
   const [form, setForm] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -39,6 +43,8 @@ function AccountingSettings() {
         accrual_start_date: settings.accrual_start_date || "",
         non_accrual_days: settings.non_accrual_days,
         withholding_tax_rate: settings.withholding_tax_rate,
+        arrears_after_days: settings.arrears_after_days ?? 1,
+        default_after_days: settings.default_after_days ?? 90,
         non_withdrawable_saving_types: settings.non_withdrawable_saving_types || [],
         provisioning_rates: settings.provisioning_rates || [],
       });
@@ -51,7 +57,14 @@ function AccountingSettings() {
     setBusy(true);
     try {
       const r = await setupAccounting({ enable_accrual: enableAccrual }, token);
-      toast.success(r.created_accounts.length ? `Created ${r.created_accounts.length} GL accounts` : "Settings are complete");
+      toast.success(
+        r.created_accounts.length
+          ? `Created ${r.created_accounts.length} GL accounts and linked them below`
+          : "Every account is already linked"
+      );
+      // The new accounts must be in the dropdowns before the boxes can show them.
+      await queryClient.invalidateQueries({ queryKey: ["glaccounts"] });
+      await refetchGL();
       refetch();
     } catch (err) {
       toast.error(apiError(err));
@@ -149,7 +162,7 @@ function AccountingSettings() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Interest and tax</CardTitle>
+            <CardTitle>Interest, arrears and tax</CardTitle>
           </CardHeader>
           <CardContent className="grid md:grid-cols-3 gap-4">
             <Field label="Accrue installments due from" hint="Older arrears are not booked as income.">
@@ -157,6 +170,12 @@ function AccountingSettings() {
             </Field>
             <Field label="Stop accruing after (days in arrears)">
               <input type="number" min="0" className={inputClass} value={form.non_accrual_days} onChange={set("non_accrual_days")} />
+            </Field>
+            <Field label="In Arrears after (days overdue)" hint="Days the oldest unpaid installment is late before the loan shows In Arrears.">
+              <input type="number" min="1" className={inputClass} value={form.arrears_after_days} onChange={set("arrears_after_days")} />
+            </Field>
+            <Field label="Defaulted after (days overdue)" hint="Defaulted loans can be recovered from guarantors or written off.">
+              <input type="number" min="1" className={inputClass} value={form.default_after_days} onChange={set("default_after_days")} />
             </Field>
             <Field label="Default withholding tax (%)">
               <input type="number" step="0.01" min="0" className={inputClass} value={form.withholding_tax_rate} onChange={set("withholding_tax_rate")} />

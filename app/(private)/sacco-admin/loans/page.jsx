@@ -36,6 +36,7 @@ import {
     ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
+import { ArrearsBadge } from "@/forms/loans/LoanRecoveryModals";
 
 import BulkLoanDisbursementCreate from "@/forms/loandisbursements/BulkLoanDisbursementCreate";
 import BulkLoanDisbursementUploadCreate from "@/forms/loandisbursements/BulkLoanDisbursementUploadCreate";
@@ -91,15 +92,12 @@ export default function LoansManagementPage() {
             const balance = parseFloat(loan.outstanding_balance || 0);
             const status = String(loan.status || "").toLowerCase();
 
-            if (status !== "closed") {
+            const open = status === "active" || status === "funded";
+            if (open) {
                 totalPortfolioValue += principal;
                 totalOutstanding += balance;
-            }
-
-            if (status === "active" || status === "funded") {
                 activeCount++;
-            } else if (status.includes("arrear") || status.includes("default")) {
-                arrearsCount++;
+                if (loan.arrears_stage && loan.arrears_stage !== "Current") arrearsCount++;
             }
         });
 
@@ -127,7 +125,13 @@ export default function LoansManagementPage() {
                 statusFilter === "all" ||
                 status.toLowerCase() === statusFilter.toLowerCase() ||
                 (statusFilter === "active" && (status === "Active" || status === "Funded")) ||
-                (statusFilter === "arrears" && (status.includes("Arrear") || status.includes("Default")));
+                (statusFilter === "arrears" &&
+                    (status === "Active" || status === "Funded") &&
+                    (loan.arrears_stage === "In Arrears" || loan.arrears_stage === "Defaulted")) ||
+                (statusFilter === "defaulted" &&
+                    (status === "Active" || status === "Funded") &&
+                    loan.arrears_stage === "Defaulted") ||
+                (statusFilter === "written off" && status === "Written Off");
 
             const matchesProduct =
                 productFilter === "all" || loan.product === productFilter;
@@ -146,6 +150,7 @@ export default function LoansManagementPage() {
                 return "bg-slate-100 text-slate-700 border-slate-200";
             case "In Arrears":
             case "Defaulted":
+            case "Written Off":
                 return "bg-red-100 text-red-700 border-red-200";
             default:
                 return "bg-blue-100 text-blue-700 border-blue-200";
@@ -292,6 +297,8 @@ export default function LoansManagementPage() {
                                 { label: "All", value: "all" },
                                 { label: "Active", value: "active" },
                                 { label: "In Arrears", value: "arrears" },
+                                { label: "Defaulted", value: "defaulted" },
+                                { label: "Written Off", value: "written off" },
                                 { label: "Closed", value: "closed" },
                             ].map((tab) => (
                                 <button
@@ -390,6 +397,7 @@ export default function LoansManagementPage() {
                                                         <Badge className={getStatusColor(loan.status)} variant="outline">
                                                             {loan.status}
                                                         </Badge>
+                                                        <div className="mt-1"><ArrearsBadge loan={loan} /></div>
                                                     </TableCell>
                                                     <TableCell className="text-right">
                                                         <Link href={`/sacco-admin/members/${loan.member}/${loan.reference}`}>
@@ -437,6 +445,7 @@ export default function LoansManagementPage() {
                                             <Badge className={getStatusColor(loan.status)} variant="outline">
                                                 {loan.status}
                                             </Badge>
+                                            <ArrearsBadge loan={loan} />
                                         </div>
 
                                         <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-xs">
