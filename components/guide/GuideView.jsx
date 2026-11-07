@@ -4,7 +4,7 @@ import React, { useMemo } from "react";
 
 // Renders the in-portal guide, written in a small subset of Markdown:
 // # / ## / ### headings, paragraphs, - and 1. lists (two-space nesting),
-// | tables |, and **bold**. Kept dependency-free on purpose.
+// | tables |, **bold** and `code`. Kept dependency-free on purpose.
 
 const slug = (text) =>
   String(text)
@@ -14,16 +14,22 @@ const slug = (text) =>
     .replace(/(^-|-$)/g, "");
 
 function Inline({ text }) {
-  const parts = String(text).split(/(\*\*[^*]+\*\*)/g);
-  return parts.map((part, i) =>
-    part.startsWith("**") && part.endsWith("**") ? (
-      <strong key={i} className="font-semibold text-slate-900">
-        {part.slice(2, -2)}
-      </strong>
-    ) : (
-      <React.Fragment key={i}>{part}</React.Fragment>
-    )
-  );
+  const parts = String(text).split(/(\*\*[^*]+\*\*|`[^`]+`)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**"))
+      return (
+        <strong key={i} className="font-semibold text-slate-900">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    if (part.startsWith("`") && part.endsWith("`") && part.length > 1)
+      return (
+        <code key={i} className="rounded bg-slate-100 px-1 py-0.5 text-[12px] text-slate-800">
+          {part.slice(1, -1)}
+        </code>
+      );
+    return <React.Fragment key={i}>{part}</React.Fragment>;
+  });
 }
 
 function parse(markdown) {
@@ -99,7 +105,6 @@ function List({ items, depth = 0 }) {
 
 export default function GuideView({ markdown }) {
   const blocks = useMemo(() => parse(markdown), [markdown]);
-  const title = blocks.find((b) => b.type === "h" && b.level === 1);
   const sections = blocks.filter((b) => b.type === "h" && b.level === 2);
 
   return (
@@ -169,7 +174,6 @@ export default function GuideView({ markdown }) {
             </p>
           );
         })}
-        {!title && null}
       </article>
     </div>
   );
