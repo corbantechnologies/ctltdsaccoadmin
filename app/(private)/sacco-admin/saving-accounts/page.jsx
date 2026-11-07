@@ -311,7 +311,7 @@ export default function SavingAccountsPage() {
                                     <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">
                                         Showing Page {page} of {totalPages}
                                     </p>
-                                    <div className="flex gap-2">
+                                    <div className="flex flex-wrap gap-2">
                                         <Button
                                             variant="outline"
                                             size="sm"

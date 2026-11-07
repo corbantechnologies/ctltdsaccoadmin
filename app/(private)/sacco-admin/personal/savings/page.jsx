@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useFetchSavings } from "@/hooks/savings/actions";
+import { useFetchMember } from "@/hooks/members/actions";
 import MemberLoadingSpinner from "@/components/general/MemberLoadingSpinner";
 import SavingsCard from "@/components/members/dashboard/SavingsCard";
 import {
@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/breadcrumb";
 
 function SavingsPage() {
-    const { data: savings, isLoading, isError } = useFetchSavings();
+    // Only the signed-in admin's own accounts (the savings list endpoint returns every member's for admins).
+    const { data: member, isLoading, isError } = useFetchMember();
 
 const PersonalSavingsSkeleton = () => (
   <div className="w-full px-4 sm:px-6 py-6 space-y-6 animate-pulse">
@@ -37,7 +38,7 @@ const PersonalSavingsSkeleton = () => (
     }
     if (isError) return <div className="p-8 text-center text-red-500">Failed to load savings accounts.</div>;
 
-    const savingsList = Array.isArray(savings) ? savings : (savings?.results || []);
+    const savingsList = member?.savings || [];
 
     return (
         <div className="min-h-screen bg-gray-50/50">

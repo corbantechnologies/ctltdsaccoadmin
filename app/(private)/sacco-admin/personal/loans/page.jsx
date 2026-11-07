@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useFetchLoans } from "@/hooks/loans/actions";
+import { useFetchMember } from "@/hooks/members/actions";
 import MemberLoadingSpinner from "@/components/general/MemberLoadingSpinner";
 import LoanCard from "@/components/members/dashboard/LoanCard";
 import {
@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/breadcrumb";
 
 function LoansPage() {
-    const { data: loans, isLoading, isError } = useFetchLoans();
+    // Only the signed-in admin's own accounts (the loans list endpoint returns every member's for admins).
+    const { data: member, isLoading, isError } = useFetchMember();
 
 const PersonalLoansSkeleton = () => (
   <div className="w-full px-4 sm:px-6 py-6 space-y-6 animate-pulse">
@@ -38,7 +39,7 @@ const PersonalLoansSkeleton = () => (
     if (isError) return <div className="p-8 text-center text-red-500">Failed to load loans.</div>;
 
     // Check if loans is an array, if not it might be an empty state or object wrapper
-    const loanList = Array.isArray(loans) ? loans : (loans?.results || []);
+    const loanList = member?.loan_accounts || [];
 
     return (
         <div className="min-h-screen bg-gray-50/50">

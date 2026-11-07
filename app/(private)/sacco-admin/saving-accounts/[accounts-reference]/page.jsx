@@ -48,7 +48,7 @@ const SavingAccountDetailSkeleton = () => (
         <div className="h-4 w-40 bg-slate-200 rounded" />
       </div>
     </div>
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <div className="h-24 bg-slate-200 rounded-lg" />
       <div className="h-24 bg-slate-200 rounded-lg" />
       <div className="h-24 bg-slate-200 rounded-lg" />
@@ -148,7 +148,7 @@ export default function SavingAccountReferencePage() {
             </div>
 
             {/* Account Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card className="border-none shadow-sm bg-white">
                     <CardContent className="p-6">
                         <div className="flex items-center gap-4">

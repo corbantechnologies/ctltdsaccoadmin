@@ -171,3 +171,13 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Responsive guard (grid-blowout): grid and flex children default to
+   min-width:auto, so one wide table or long word pushes the whole page wider
+   than a phone screen. Let them shrink; wide tables scroll inside their own
+   overflow-x-auto wrapper instead. */
+@layer base {
+  .grid > * {
+    min-width: 0;
+  }
+}

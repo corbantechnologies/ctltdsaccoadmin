@@ -208,7 +208,7 @@ function SaccoMembersTable({ members }) {
                 {Math.min(currentPage * itemsPerPage, filteredMembers.length)}{" "}
                 of {filteredMembers.length} members
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button
                   variant="outline"
                   size="sm"
