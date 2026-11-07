@@ -36,6 +36,9 @@ import {
     ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import { refreshArrears } from "@/services/loanaccounts";
 import { ArrearsBadge } from "@/forms/loans/LoanRecoveryModals";
 
 import BulkLoanDisbursementCreate from "@/forms/loandisbursements/BulkLoanDisbursementCreate";
@@ -58,6 +61,25 @@ const TableSkeleton = ({ rows = 5, cols = 8 }) => {
 export default function LoansManagementPage() {
     const router = useRouter();
     const { data: loans, isLoading, refetch } = useFetchLoans();
+    const token = useAxiosAuth();
+    const [refreshing, setRefreshing] = useState(false);
+
+    // Re-check every open loan's arrears stage now, e.g. after entering
+    // payments that members made earlier. It also runs once a day by itself.
+    const handleRefreshArrears = async () => {
+        setRefreshing(true);
+        try {
+            const r = await refreshArrears(token);
+            toast.success(
+                `Updated: ${r?.Current ?? 0} current, ${r?.["In Arrears"] ?? 0} in arrears, ${r?.Defaulted ?? 0} defaulted.`
+            );
+            refetch();
+        } catch (error) {
+            toast.error(error?.response?.data?.detail || "Could not refresh loan stages.");
+        } finally {
+            setRefreshing(false);
+        }
+    };
 
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
@@ -181,7 +203,16 @@ export default function LoansManagementPage() {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 w-full md:w-auto">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto">
+                    <Button
+                        variant="outline"
+                        onClick={handleRefreshArrears}
+                        disabled={refreshing}
+                        title="Re-check which loans are current, in arrears or defaulted, using the payments recorded so far"
+                        className="w-full sm:w-auto border-slate-200 text-slate-700 hover:bg-white text-xs h-9"
+                    >
+                        {refreshing ? "Refreshing..." : "Refresh arrears"}
+                    </Button>
                     <Link href="/sacco-admin/loan-applications" className="w-full sm:w-auto">
                         <Button variant="outline" className="w-full sm:w-auto border-slate-200 text-slate-700 hover:bg-white text-xs h-9">
                             View Applications
