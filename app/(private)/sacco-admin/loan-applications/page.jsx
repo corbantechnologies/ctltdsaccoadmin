@@ -80,6 +80,7 @@ export default function AdminLoanApplications() {
 
   const [activeTab, setActiveTab] = useState("all"); // 'all' | 'mine'
   const [statusFilter, setStatusFilter] = useState("all");
+  const [productKind, setProductKind] = useState("all"); // 'all' | 'new' | 'onboarding'
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
 
@@ -98,6 +99,14 @@ export default function AdminLoanApplications() {
   // 2. Filter by Status
   if (statusFilter !== "all") {
     filteredApps = filteredApps.filter((app) => app.status === statusFilter);
+  }
+
+  // 3. New loans vs existing loans brought in through Onboarding
+  if (productKind !== "all") {
+    const wantOnboarding = productKind === "onboarding";
+    filteredApps = filteredApps.filter(
+      (app) => !!app.product_details?.is_onboarding_only === wantOnboarding
+    );
   }
 
   // 3. Pagination Logic
@@ -171,7 +180,7 @@ export default function AdminLoanApplications() {
 
           <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
             <PopoverTrigger asChild>
-              <Button className="bg-[#045e32] hover:bg-[#034625] shadow-sm">
+              <Button className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] shadow-sm">
                 <Plus className="mr-2 h-4 w-4" />
                 New Application
               </Button>
@@ -285,6 +294,24 @@ export default function AdminLoanApplications() {
                   </SelectContent>
                 </Select>
               </div>
+              <div className="w-full sm:w-[200px]">
+                <Select
+                  value={productKind}
+                  onValueChange={(val) => {
+                    setProductKind(val);
+                    setCurrentPage(1);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Product type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All products</SelectItem>
+                    <SelectItem value="new">New loan products</SelectItem>
+                    <SelectItem value="onboarding">Onboarding products</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <Card>
@@ -381,6 +408,11 @@ export default function AdminLoanApplications() {
                                 <div>
                                   <div className="font-medium text-gray-900">
                                     {app.product}
+                                    {app.product_details?.is_onboarding_only && (
+                                <Badge className="ml-2 bg-amber-50 text-amber-800 border-amber-200 font-normal">
+                                  Onboarding
+                                </Badge>
+                              )}
                                   </div>
                                   {app.admin_created ? (
                                     <Badge
@@ -414,7 +446,7 @@ export default function AdminLoanApplications() {
                                   asChild
                                   variant="outline"
                                   size="sm"
-                                  className="h-7 text-xs border-[#045e32] text-[#045e32]"
+                                  className="h-7 text-xs border-[var(--primary)] text-[var(--primary)]"
                                 >
                                   <Link
                                     href={`/sacco-admin/loan-applications/${app.reference}`}
@@ -438,6 +470,11 @@ export default function AdminLoanApplications() {
                             </TableCell>
                             <TableCell className="hidden sm:table-cell font-medium">
                               {app.product}
+                              {app.product_details?.is_onboarding_only && (
+                                <Badge className="ml-2 bg-amber-50 text-amber-800 border-amber-200 font-normal">
+                                  Onboarding
+                                </Badge>
+                              )}
                             </TableCell>
                             <TableCell className="hidden sm:table-cell">
                               {app.admin_created ? (
@@ -475,7 +512,7 @@ export default function AdminLoanApplications() {
                                   href={`/sacco-admin/loan-applications/${app.reference}`}
                                   className="flex items-center justify-center"
                                 >
-                                  <ChevronRight className="h-4 w-4 text-gray-400 hover:text-[#045e32]" />
+                                  <ChevronRight className="h-4 w-4 text-gray-400 hover:text-[var(--primary)]" />
                                 </Link>
                               </Button>
                             </TableCell>

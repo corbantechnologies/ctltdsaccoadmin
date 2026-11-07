@@ -162,7 +162,7 @@ function BulkMemberUploadCreate({ closeModal, openModal }) {
                         </Button>
                         <Button
                             onClick={handleDone}
-                            className="bg-[#ea1315] hover:bg-[#c71012] text-white w-full sm:w-auto text-base py-2 px-4"
+                            className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white w-full sm:w-auto text-base py-2 px-4"
                         >
                             Done
                         </Button>
@@ -251,7 +251,7 @@ function BulkMemberUploadCreate({ closeModal, openModal }) {
                         </Button>
                         <Button
                             type="submit"
-                            className="bg-[#ea1315] hover:bg-[#c71012] text-white text-base py-2 px-4 w-full sm:w-auto"
+                            className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-base py-2 px-4 w-full sm:w-auto"
                             disabled={loading || !file}
                         >
                             {loading ? "Uploading..." : "Upload Members"}

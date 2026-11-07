@@ -62,7 +62,7 @@ export default function CreateGuaranteeRequest({ loanApplication, onSuccess }) {
             <button
               type="submit"
               disabled={loading || isSubmitting}
-              className="inline-flex items-center justify-center rounded text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-[#045e32] text-primary-foreground hover:bg-[#045e32]/90 h-10 px-4 py-2 w-full sm:w-auto"
+              className="inline-flex items-center justify-center rounded text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-[var(--primary)] text-primary-foreground hover:bg-[var(--primary)]/90 h-10 px-4 py-2 w-full sm:w-auto"
             >
               {loading ? "Submitting..." : "Send Request"}
             </button>

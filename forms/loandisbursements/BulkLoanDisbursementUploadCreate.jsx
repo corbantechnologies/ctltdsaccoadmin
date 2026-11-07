@@ -152,7 +152,7 @@ function BulkLoanDisbursementUpload({ onBatchSuccess }) {
                 <div className="flex justify-center pt-4">
                     <Button
                         type="submit"
-                        className="bg-[#ea1315] hover:bg-[#c71012] text-white px-12 h-12 rounded font-semibold text-xl shadow shadow-rose-100 transition-all active:scale-95 disabled:opacity-30"
+                        className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white px-12 h-12 rounded font-semibold text-xl shadow shadow-rose-100 transition-all active:scale-95 disabled:opacity-30"
                         disabled={loading || !file}
                     >
                         {loading ? "Processing Upload..." : "Start Batch Disbursement"}

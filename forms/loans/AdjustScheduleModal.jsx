@@ -145,7 +145,7 @@ export default function AdjustScheduleModal({ isOpen, onClose, refetchLoan, loan
                 <Button variant="outline" type="button" onClick={onClose} disabled={loading}>
                   Cancel
                 </Button>
-                <Button type="submit" disabled={loading} className="bg-primary hover:bg-[#022007] text-white">
+                <Button type="submit" disabled={loading} className="bg-primary hover:bg-[var(--primary-hover)] text-white">
                   {loading ? "Adjusting..." : "Adjust Schedule"}
                 </Button>
               </DialogFooter>

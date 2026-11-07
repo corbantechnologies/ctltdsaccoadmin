@@ -71,7 +71,7 @@ function NextOfKinFormDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle className="text-[#045e32] text-2xl">
+          <DialogTitle className="text-[var(--primary)] text-2xl">
             {isEdit ? "Update" : "Add"} Next of Kin
           </DialogTitle>
         </DialogHeader>
@@ -146,7 +146,7 @@ function NextOfKinFormDialog({
             <DialogFooter>
               <Button
                 type="submit"
-                className="bg-[#045e32] hover:bg-[#022007] text-white w-full sm:w-auto"
+                className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white w-full sm:w-auto"
                 disabled={loading}
               >
                 {loading ? "Saving..." : isEdit ? "Update" : "Add"}

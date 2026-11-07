@@ -291,7 +291,7 @@ function BulkJournalBatchCreate({ onBatchSuccess, preselectedAccount }) {
             <Button 
                 type="submit"
                 disabled={loading}
-                className="w-full md:w-auto bg-[#ea1315] hover:bg-[#c71012] text-white px-16 h-14 rounded font-bold shadow-xl shadow-rose-100 transition-all"
+                className="w-full md:w-auto bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white px-16 h-14 rounded font-bold shadow-xl shadow-rose-100 transition-all"
             >
                 {loading ? "Processing..." : "Commit All Batches"}
             </Button>

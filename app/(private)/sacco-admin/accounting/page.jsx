@@ -133,7 +133,7 @@ export default function AccountingPage() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-xl font-semibold tracking-tight text-slate-900 flex items-center gap-2">
-                        <BookOpen className="w-6 h-6 text-[#ea1315]" />
+                        <BookOpen className="w-6 h-6 text-[var(--accent)]" />
                         Accounting Dashboard
                     </h1>
                     <p className="text-slate-500 text-sm">
@@ -144,7 +144,7 @@ export default function AccountingPage() {
                     {activeTab === "gl-accounts" && (
                         <Button
                             onClick={() => setCreateGLOpen(true)}
-                            className="bg-[#ea1315] hover:bg-[#c71012] text-white flex items-center gap-2"
+                            className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white flex items-center gap-2"
                         >
                             <Plus className="w-4 h-4" />
                             New GL Account
@@ -193,7 +193,7 @@ export default function AccountingPage() {
                                         />
                                     </div>
                                     {glSearch && (
-                                        <Button variant="ghost" size="sm" onClick={() => setGlSearch("")} className="h-9 text-xs text-[#ea1315] w-full sm:w-auto">
+                                        <Button variant="ghost" size="sm" onClick={() => setGlSearch("")} className="h-9 text-xs text-[var(--accent)] w-full sm:w-auto">
                                             Clear
                                         </Button>
                                     )}
@@ -229,7 +229,7 @@ export default function AccountingPage() {
                                                 </TableCell>
                                                 <TableCell>
                                                     <Link href={`/sacco-admin/accounting/${acc.reference}`} target="_blank">
-                                                        <Button variant="ghost" size="sm" className="text-[#ea1315] hover:bg-[#ea1315]/10 flex items-center gap-1 font-semibold group">
+                                                        <Button variant="ghost" size="sm" className="text-[var(--accent)] hover:bg-[var(--accent)]/10 flex items-center gap-1 font-semibold group">
                                                             <Eye className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
                                                             View
                                                         </Button>
@@ -301,7 +301,7 @@ export default function AccountingPage() {
                                                     setBatchDateFrom("");
                                                     setBatchDateTo("");
                                                     setBatchCurrentPage(1);
-                                                }} className="h-9 text-xs text-[#ea1315] w-full sm:w-auto">
+                                                }} className="h-9 text-xs text-[var(--accent)] w-full sm:w-auto">
                                                     Clear
                                                 </Button>
                                             )}
@@ -310,19 +310,19 @@ export default function AccountingPage() {
                                     <div className="flex bg-slate-100 p-1 rounded w-full sm:w-fit xl:ml-auto overflow-x-auto no-scrollbar justify-start items-center">
                                         <button
                                             onClick={() => setBatchViewMode("list")}
-                                        className={`whitespace-nowrap px-4 py-1.5 text-xs font-semibold rounded transition-all ${batchViewMode === "list" ? "bg-white text-[#ea1315] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                                        className={`whitespace-nowrap px-4 py-1.5 text-xs font-semibold rounded transition-all ${batchViewMode === "list" ? "bg-white text-[var(--accent)] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
                                     >
                                         List View
                                     </button>
                                     <button
                                         onClick={() => setBatchViewMode("form")}
-                                        className={`whitespace-nowrap px-4 py-1.5 text-xs font-semibold rounded transition-all ${batchViewMode === "form" ? "bg-white text-[#ea1315] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                                        className={`whitespace-nowrap px-4 py-1.5 text-xs font-semibold rounded transition-all ${batchViewMode === "form" ? "bg-white text-[var(--accent)] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
                                     >
                                         Bulk Form
                                     </button>
                                     <button
                                         onClick={() => setBatchViewMode("upload")}
-                                        className={`whitespace-nowrap px-4 py-1.5 text-xs font-semibold rounded transition-all ${batchViewMode === "upload" ? "bg-white text-[#ea1315] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                                        className={`whitespace-nowrap px-4 py-1.5 text-xs font-semibold rounded transition-all ${batchViewMode === "upload" ? "bg-white text-[var(--accent)] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
                                     >
                                         Bulk Upload
                                     </button>
@@ -365,7 +365,7 @@ export default function AccountingPage() {
                                                             <Button
                                                                 variant="ghost"
                                                                 size="icon"
-                                                                className="h-8 w-8 text-[#ea1315]"
+                                                                className="h-8 w-8 text-[var(--accent)]"
                                                                 onClick={() => {
                                                                     setSelectedBatch(batch);
                                                                     setBatchDetailsOpen(true);
@@ -511,7 +511,7 @@ export default function AccountingPage() {
                                             setSelectedGL("all");
                                             setSelectedBatchFilter("all");
                                             setPage(1);
-                                        }} className="h-9 text-xs text-[#ea1315] w-full sm:w-auto">
+                                        }} className="h-9 text-xs text-[var(--accent)] w-full sm:w-auto">
                                             Clear
                                         </Button>
                                     )}

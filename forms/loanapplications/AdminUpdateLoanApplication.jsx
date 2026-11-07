@@ -63,7 +63,7 @@ export function AdminUpdateLoanApplication({
                 name="requested_amount"
                 type="number"
                 placeholder="e.g. 50000"
-                className="h-11 border-slate-300 focus:border-[#045e32] focus:ring-[#045e32]"
+                className="h-11 border-slate-300 focus:border-[var(--primary)] focus:ring-[var(--primary)]"
               />
               <p className="text-xs text-muted-foreground italic">
                 Updating the amount here allows you to preview the new repayment schedule before finalizing.
@@ -84,7 +84,7 @@ export function AdminUpdateLoanApplication({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-[#045e32] hover:bg-[#034625] h-11 px-8 text-white font-medium transition-all flex items-center gap-2"
+              className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] h-11 px-8 text-white font-medium transition-all flex items-center gap-2"
             >
               {isSubmitting ? (
                 <>

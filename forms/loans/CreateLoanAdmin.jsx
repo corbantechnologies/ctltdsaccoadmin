@@ -102,7 +102,7 @@ function CreateLoanAccountAdmin({
               <DialogFooter>
                 <Button
                   type="submit"
-                  className="bg-[#ea1315] text-white hover:bg-[#ea1315] disabled:opacity-50"
+                  className="bg-[var(--accent)] text-white hover:bg-[var(--accent)] disabled:opacity-50"
                   disabled={loading}
                 >
                   {loading ? "Creating..." : "Create Loan"}

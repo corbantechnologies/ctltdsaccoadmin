@@ -61,3 +61,23 @@ export const apiMultipartActions = withSessionHandling(
     withCredentials: true,
   })
 );
+
+// Lists are paged at 1,000 rows by the API. For lists a page needs in full
+// (members, savings accounts, loans), read every page. Pages are requested
+// by number rather than through the `next` link, which can come back as
+// http:// behind the hosting proxy.
+export async function getAllPages(url, token, params = {}) {
+  const pageSize = 1000;
+  const all = [];
+  for (let page = 1; page < 200; page++) {
+    const response = await apiActions.get(url, {
+      ...token,
+      params: { ...params, page, page_size: pageSize },
+    });
+    const data = response?.data;
+    const rows = Array.isArray(data) ? data : data?.results || [];
+    all.push(...rows);
+    if (Array.isArray(data) || !data?.next || rows.length < pageSize) break;
+  }
+  return all;
+}

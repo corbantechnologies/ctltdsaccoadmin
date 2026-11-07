@@ -394,7 +394,7 @@ function UpdateAccount({ member, isOpen, onClose, refetchMember }) {
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-primary hover:bg-[#022007] text-white text-base py-2 px-6 w-full sm:w-auto"
+                  className="bg-primary hover:bg-[var(--primary-hover)] text-white text-base py-2 px-6 w-full sm:w-auto"
                   disabled={loading}
                 >
                   {loading ? "Updating..." : "Update"}

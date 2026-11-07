@@ -150,7 +150,7 @@ function CreateLoanDisbursementModal({ isOpen, onClose, refetch, application }) 
                                 <Button
                                     type="submit"
                                     disabled={loading}
-                                    className="bg-[#045e32] hover:bg-[#034625] text-white"
+                                    className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white"
                                 >
                                     {loading ? "Disbursing..." : "Disburse Loan"}
                                 </Button>

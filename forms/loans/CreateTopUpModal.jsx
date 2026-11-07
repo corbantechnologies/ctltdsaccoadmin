@@ -380,7 +380,7 @@ export default function CreateTopUpModal({ isOpen, onClose, refetchLoan, loan })
                 <Button
                   type="submit"
                   disabled={loading || !values.top_up_amount || !values.new_term_months || !values.payment_method}
-                  className="h-9 text-xs font-semibold bg-primary hover:bg-[#022007] text-white gap-1.5 shadow-sm"
+                  className="h-9 text-xs font-semibold bg-primary hover:bg-[var(--primary-hover)] text-white gap-1.5 shadow-sm"
                 >
                   {loading ? (
                     <>

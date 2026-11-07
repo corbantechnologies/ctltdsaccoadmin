@@ -125,7 +125,7 @@ export function MemberUpdateLoanApplication({
                             setFieldValue("term_months", "");
                           }
                         }}
-                        className="flex h-11 w-full rounded border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-colors focus:outline-none focus:ring-2 focus:ring-[#045e32] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex h-11 w-full rounded border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <option value="">Select mode</option>
                         <option value="fixed_term">Fixed Term</option>
@@ -200,7 +200,7 @@ export function MemberUpdateLoanApplication({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-[#045e32] hover:bg-[#034625] h-11 px-8 text-white font-medium transition-all flex items-center gap-2"
+              className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] h-11 px-8 text-white font-medium transition-all flex items-center gap-2"
             >
               {isSubmitting ? (
                 <>

@@ -148,7 +148,7 @@ function LoginForm() {
 
           <Button
             type="submit"
-            className="w-full h-11 text-base font-bold bg-gradient-to-r from-primary to-[#045e32] hover:bg-gradient-to-l hover:from-primary hover:to-[#045e32] shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
+            className="w-full h-11 text-base font-bold bg-gradient-to-r from-primary to-[var(--primary)] hover:bg-gradient-to-l hover:from-primary hover:to-[var(--primary)] shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
             disabled={loading}
           >
             {loading ? "Logging in..." : "Login"}

@@ -30,10 +30,11 @@ export const ACCOUNTING_GUIDES = {
   "/sacco-admin/accounting/settings": {
     when: "Do this once, before using any other accounting page.",
     steps: [
-      "Click \"Create missing accounts\" (or ask your system administrator to run setup_accounting). This adds the GL accounts these features need, such as Suspense, Loan Loss Provision and Retained Earnings. Existing accounts are never changed.",
+      "Click \"Create missing accounts\". It adds the GL accounts these features need (Suspense, Loan Loss Provision, Retained Earnings, Bad Debts Recovered, Guarantor Recovery Clearing and others) and fills in every box below. Existing accounts are never changed.",
       "If your chart of accounts already has a suitable account (for example your own Suspense account), pick it in the matching box instead and save.",
       "Leave interest accrual off unless your accountant wants interest booked when it falls due rather than when it is paid.",
       "Mark share capital as non-withdrawable so it can never be paid out as a withdrawal.",
+      "Set when a late loan counts as In Arrears and as Defaulted. Loans update daily; Defaulted loans can be recovered from guarantors or written off from the loan's Actions menu.",
     ],
     caution: "Changing an account here only affects postings made from now on.",
   },

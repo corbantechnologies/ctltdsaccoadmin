@@ -20,7 +20,7 @@ export function CreateLoanApplication({ onSuccess, memberPath }) {
   if (productsLoading) {
     return (
       <div className="flex justify-center p-12">
-        <Loader2 className="h-8 w-8 animate-spin text-[#045e32]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[var(--primary)]" />
       </div>
     );
   }
@@ -88,7 +88,7 @@ export function CreateLoanApplication({ onSuccess, memberPath }) {
                   <select
                     {...field}
                     id="product"
-                    className="flex h-11 w-full items-center justify-between rounded border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-colors focus:outline-none focus:ring-2 focus:ring-[#045e32] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex h-11 w-full items-center justify-between rounded border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     onChange={(e) => {
                       field.onChange(e);
                       const selectedProd = availableProducts.find(
@@ -175,7 +175,7 @@ export function CreateLoanApplication({ onSuccess, memberPath }) {
                             setFieldValue("term_months", "");
                           }
                         }}
-                        className="flex h-11 w-full rounded border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-colors focus:outline-none focus:ring-2 focus:ring-[#045e32] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex h-11 w-full rounded border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <option value="">Select mode</option>
                         <option value="fixed_term">Fixed Term</option>
@@ -241,7 +241,7 @@ export function CreateLoanApplication({ onSuccess, memberPath }) {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-[#045e32] hover:bg-[#034625] h-12 w-full text-white font-medium transition-all shadow-sm flex items-center justify-center gap-2"
+              className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] h-12 w-full text-white font-medium transition-all shadow-sm flex items-center justify-center gap-2"
             >
               {isSubmitting ? (
                 <>

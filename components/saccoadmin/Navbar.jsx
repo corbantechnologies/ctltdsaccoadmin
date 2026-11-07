@@ -121,6 +121,7 @@ const MENU_LINKS = [
       { label: "Guarantor Profile", href: "/sacco-admin/personal/guarantorprofile" },
     ],
   },
+  { label: "Help & Guide", href: "/sacco-admin/guide" },
 ];
 
 // ─── Nav Item ─────────────────────────────────────────────────────────────────

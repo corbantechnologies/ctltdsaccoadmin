@@ -85,7 +85,7 @@ function TransactionsPage() {
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
               <PopoverTrigger asChild>
-                <Button className="bg-primary hover:bg-[#022007] text-white text-sm sm:text-base py-2 px-3 sm:px-4 flex-1 sm:flex-none">
+                <Button className="bg-primary hover:bg-[var(--primary-hover)] text-white text-sm sm:text-base py-2 px-3 sm:px-4 flex-1 sm:flex-none">
                   <FileDown className="h-4 w-4 mr-2" /> Download <ChevronDown className="ml-2 h-4 w-4" />
                 </Button>
               </PopoverTrigger>

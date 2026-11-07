@@ -76,7 +76,6 @@ export default function MigrationHub() {
             icon: HandCoins,
             steps: [
                 { title: "Bulk Loan Apps", icon: HandCoins, href: "/sacco-admin/loan-applications", desc: "Best for automation and member tracking." },
-                { title: "Legacy Migration", icon: HelpCircle, href: "/sacco-admin/onboarding/existing-loans", desc: "Manual records for non-standard loans." },
             ]
         },
         {
@@ -289,32 +288,7 @@ export default function MigrationHub() {
                                 </div>
                                 <Download className="w-4 h-4 text-slate-400" />
                             </div>
-                            <div 
-                                className="flex items-center justify-between p-3 rounded border hover:bg-slate-50 cursor-pointer transition-colors"
-                                onClick={async () => {
-                                    try {
-                                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/existingloans/bulk/template/`, { headers: auth.headers });
-                                        if (!response.ok) throw new Error(`Template download failed (${response.status})`);
-                                        const blob = await response.blob();
-                                        const url = window.URL.createObjectURL(blob);
-                                        const a = document.createElement('a');
-                                        a.href = url;
-                                        a.download = 'existing_loans_bulk_template.csv';
-                                        document.body.appendChild(a);
-                                        a.click();
-                                        window.URL.revokeObjectURL(url);
-                                    } catch (error) {
-                                        console.error("Failed to download template", error);
-                                        toast.error("Could not download the template. Please sign in again and retry.");
-                                    }
-                                }}
-                            >
-                                <div className="flex items-center gap-3">
-                                    <FileSpreadsheet className="w-5 h-5 text-green-600" />
-                                    <span className="text-sm font-medium">Legacy Loans</span>
-                                </div>
-                                <Download className="w-4 h-4 text-slate-400" />
-                            </div>
+
 
 
                         </CardContent>

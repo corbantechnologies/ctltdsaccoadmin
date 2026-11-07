@@ -79,7 +79,7 @@ function BulkFeeTypeUpload({ onBatchSuccess }) {
             <div className="bg-slate-50 rounded p-6 border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
                 <div className="flex items-center gap-4">
                     <div className="bg-white p-3 rounded shadow-sm border border-slate-50">
-                        <Download className="w-6 h-6 text-[#ea1315]" />
+                        <Download className="w-6 h-6 text-[var(--accent)]" />
                     </div>
                     <div>
                         <p className="text-sm font-semibold text-black">Download Fee Template</p>
@@ -100,7 +100,7 @@ function BulkFeeTypeUpload({ onBatchSuccess }) {
                 <div
                     className={`border-2 border-dashed rounded p-16 flex flex-col items-center justify-center text-center transition-all cursor-pointer ${file
                         ? "border-green-500 bg-green-50/30"
-                        : "border-slate-200 bg-white hover:border-[#ea1315] hover:bg-slate-50 shadow-sm"
+                        : "border-slate-200 bg-white hover:border-[var(--accent)] hover:bg-slate-50 shadow-sm"
                         }`}
                     onClick={() => !file && fileInputRef.current?.click()}
                 >
@@ -137,7 +137,7 @@ function BulkFeeTypeUpload({ onBatchSuccess }) {
                         </div>
                     ) : (
                         <div className="flex flex-col items-center space-y-5">
-                            <div className="p-6 bg-slate-50 rounded text-[#ea1315]/40 border-4 border-white shadow-inner">
+                            <div className="p-6 bg-slate-50 rounded text-[var(--accent)]/40 border-4 border-white shadow-inner">
                                 <FileUp className="w-12 h-12" />
                             </div>
                             <div className="space-y-2">
@@ -155,7 +155,7 @@ function BulkFeeTypeUpload({ onBatchSuccess }) {
                 <div className="flex justify-center pt-2">
                     <Button
                         type="submit"
-                        className="bg-[#ea1315] hover:bg-[#c71012] text-white px-20 h-14 rounded font-semibold text-lg shadow-xl shadow-rose-200 transition-all active:scale-95 disabled:opacity-30 flex items-center gap-3"
+                        className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white px-20 h-14 rounded font-semibold text-lg shadow-xl shadow-rose-200 transition-all active:scale-95 disabled:opacity-30 flex items-center gap-3"
                         disabled={loading || !file}
                     >
                         {loading ? "Processing Upload..." : "Import Fees"}

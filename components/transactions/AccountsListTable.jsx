@@ -514,7 +514,7 @@ const AccountsListTable = ({ accountsList }) => {
               size="sm"
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="bg-[#ea1315] hover:bg-[#c71012] text-white border-none"
+              className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white border-none"
             >
               Previous
             </Button>
@@ -538,8 +538,8 @@ const AccountsListTable = ({ accountsList }) => {
                     variant={currentPage === pageNum ? "default" : "outline"}
                     size="sm"
                     className={`${currentPage === pageNum
-                      ? "bg-[#ea1315] text-white"
-                      : "border-[#ea1315] text-[#ea1315] hover:bg-[#ea1315] hover:text-white"
+                      ? "bg-[var(--accent)] text-white"
+                      : "border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white"
                       } h-8 w-8 p-0`}
                   >
                     {pageNum}
@@ -552,7 +552,7 @@ const AccountsListTable = ({ accountsList }) => {
               size="sm"
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="bg-[#ea1315] hover:bg-[#c71012] text-white border-none"
+              className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white border-none"
             >
               Next
             </Button>

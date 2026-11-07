@@ -348,7 +348,7 @@ export default function SaccoAdminDashboard() {
           <div className="flex justify-end">
             <Popover open={memberPopoverOpen} onOpenChange={setMemberPopoverOpen}>
               <PopoverTrigger asChild>
-                <Button className="bg-primary hover:bg-[#022007] text-white shadow-sm font-medium h-9 text-xs flex items-center gap-1.5">
+                <Button className="bg-primary hover:bg-[var(--primary-hover)] text-white shadow-sm font-medium h-9 text-xs flex items-center gap-1.5">
                   <Plus className="h-4 w-4" /> Add Member <ChevronDown className="h-3.5 w-3.5 opacity-70" />
                 </Button>
               </PopoverTrigger>

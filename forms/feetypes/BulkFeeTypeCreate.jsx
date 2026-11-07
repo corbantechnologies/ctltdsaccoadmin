@@ -128,7 +128,7 @@ function BulkFeeTypeCreate({ onBatchSuccess }) {
                                         placeholder=""
                                         value={fee.amount}
                                         onChange={(e) => handleInputChange(index, "amount", e.target.value)}
-                                        className="h-10 text-sm border-slate-200 focus:border-[var(--accent)] font-semibold text-[#ea1315]"
+                                        className="h-10 text-sm border-slate-200 focus:border-[var(--accent)] font-semibold text-[var(--accent)]"
                                     />
                                 </div>
 
@@ -190,7 +190,7 @@ function BulkFeeTypeCreate({ onBatchSuccess }) {
                 <div className="flex justify-end pt-4">
                     <Button
                         type="submit"
-                        className="bg-[#ea1315] hover:bg-[#c71012] text-white px-12 h-12 flex items-center gap-2 font-semibold shadow-lg shadow-rose-100 rounded"
+                        className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white px-12 h-12 flex items-center gap-2 font-semibold shadow-lg shadow-rose-100 rounded"
                         disabled={loading || isLoadingGL}
                     >
                         {loading ? "Saving Batch..." : <><Save className="w-4 h-4" /> Commit Batch</>}

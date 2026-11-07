@@ -1,6 +1,6 @@
 "use client";
 
-import { apiActions } from "@/tools/axios";
+import { getAllPages, apiActions } from "@/tools/axios";
 
 // For all members
 export const createSavingAccount = async (values, token) => {
@@ -9,8 +9,8 @@ export const createSavingAccount = async (values, token) => {
 };
 
 export const getSavings = async (token) => {
-  const response = await apiActions?.get("/api/v1/savings/", token);
-  return response?.data;
+  const results = await getAllPages("/api/v1/savings/", token);
+  return { count: results.length, results };
 };
 
 export const getSaving = async (reference, token) => {

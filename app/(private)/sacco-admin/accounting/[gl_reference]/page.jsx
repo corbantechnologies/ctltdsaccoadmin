@@ -99,7 +99,7 @@ export default function GLAccountReferencePage() {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center min-h-[400px]">
-                <div className="animate-spin rounded h-8 w-8 border-b-2 border-[#ea1315]"></div>
+                <div className="animate-spin rounded h-8 w-8 border-b-2 border-[var(--accent)]"></div>
             </div>
         );
     }
@@ -161,7 +161,7 @@ export default function GLAccountReferencePage() {
                 {/* Add Journal Entry Button */}
                 <Button
                     onClick={() => setIsAddEntryOpen(true)}
-                    className="bg-[#ea1315] hover:bg-[#c40f11] text-white shrink-0"
+                    className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white shrink-0"
                 >
                     <Plus className="w-4 h-4 mr-2" />
                     Add Journal Entry
@@ -179,8 +179,8 @@ export default function GLAccountReferencePage() {
                                     KES {Number(account.balance).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </h3>
                             </div>
-                            <div className="w-12 h-12 rounded bg-slate-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-[#ea1315]/10 transition-colors">
-                                <Wallet className="w-6 h-6 text-[#ea1315]" />
+                            <div className="w-12 h-12 rounded bg-slate-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-[var(--accent)]/10 transition-colors">
+                                <Wallet className="w-6 h-6 text-[var(--accent)]" />
                             </div>
                         </div>
                     </CardContent>
@@ -240,7 +240,7 @@ export default function GLAccountReferencePage() {
                 <CardHeader className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 border-b dark:border-slate-700">
                     <div className="space-y-1">
                         <CardTitle className="text-lg flex items-center gap-2 dark:text-slate-100">
-                            <Activity className="w-5 h-5 text-[#ea1315]" />
+                            <Activity className="w-5 h-5 text-[var(--accent)]" />
                             Transaction Ledger
                         </CardTitle>
                         <CardDescription>
@@ -254,7 +254,7 @@ export default function GLAccountReferencePage() {
                                 placeholder="Search ledger..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-10 h-10 bg-slate-50 dark:bg-slate-800 border-none rounded text-sm placeholder:text-slate-500 focus-visible:ring-1 focus-visible:ring-[#ea1315]"
+                                className="pl-10 h-10 bg-slate-50 dark:bg-slate-800 border-none rounded text-sm placeholder:text-slate-500 focus-visible:ring-1 focus-visible:ring-[var(--accent)]"
                             />
                         </div>
                     </div>
@@ -306,8 +306,8 @@ export default function GLAccountReferencePage() {
                                             <div className="text-sm text-slate-700 dark:text-slate-300 leading-tight">
                                                 {entry.batch_details?.description || "No description provided"}
                                             </div>
-                                            <div className="text-[10px] text-[#ea1315] mt-1 uppercase tracking-wider flex items-center gap-1">
-                                                <span className="w-1 h-1 rounded bg-[#ea1315]"></span>
+                                            <div className="text-[10px] text-[var(--accent)] mt-1 uppercase tracking-wider flex items-center gap-1">
+                                                <span className="w-1 h-1 rounded bg-[var(--accent)]"></span>
                                                 {entry.created_by || "System"}
                                             </div>
                                         </TableCell>

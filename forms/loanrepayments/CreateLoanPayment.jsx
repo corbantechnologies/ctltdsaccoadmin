@@ -297,7 +297,7 @@ function CreateLoanPayment({
                   type="submit"
                   size="sm"
                   disabled={loading}
-                  className="bg-primary hover:bg-[#022007] text-white"
+                  className="bg-primary hover:bg-[var(--primary-hover)] text-white"
                 >
                   {loading ? "Logging..." : "Log Repayment"}
                 </Button>

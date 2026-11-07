@@ -164,7 +164,7 @@ function BulkAccountsUpload({ closeModal, openModal, onSuccess }) {
                         </Button>
                         <Button
                             type="submit"
-                            className="bg-primary hover:bg-[#022007] text-white text-base py-2 px-4 w-full sm:w-auto flex items-center justify-center gap-2"
+                            className="bg-primary hover:bg-[var(--primary-hover)] text-white text-base py-2 px-4 w-full sm:w-auto flex items-center justify-center gap-2"
                             disabled={loading || !file}
                         >
                             {loading ? (

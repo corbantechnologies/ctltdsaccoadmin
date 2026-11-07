@@ -157,7 +157,7 @@ export function AdminEditApprovedApplication({
                         <Button
                             type="submit"
                             disabled={isSubmitting}
-                            className="bg-[#045e32] hover:bg-[#034625]"
+                            className="bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
                         >
                             {isSubmitting ? (
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

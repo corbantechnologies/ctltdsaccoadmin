@@ -73,7 +73,7 @@ export default function ForgotPassword() {
 
                         <Button
                             type="submit"
-                            className="w-full h-11 text-base font-bold bg-primary hover:bg-[#045e32] shadow-lg shadow-primary/20 transition-all"
+                            className="w-full h-11 text-base font-bold bg-primary hover:bg-[var(--primary)] shadow-lg shadow-primary/20 transition-all"
                             disabled={loading}
                         >
                             {loading ? "Sending..." : "Send Reset Code"}
