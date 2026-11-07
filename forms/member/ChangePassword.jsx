@@ -176,7 +176,7 @@ function ChangePassword({ onClose, isOpen }) {
             <DialogFooter>
               <Button
                 type="submit"
-                className="bg-primary hover:bg-[#022007] text-white text-base py-2 px-4 w-full sm:w-auto"
+                className="bg-primary hover:bg-[var(--primary-hover)] text-white text-base py-2 px-4 w-full sm:w-auto"
                 disabled={loading}
               >
                 Change Password

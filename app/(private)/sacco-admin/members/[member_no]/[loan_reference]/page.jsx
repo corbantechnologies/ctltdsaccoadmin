@@ -293,7 +293,7 @@ export default function LoanAccountDetail({ params }) {
                   setRepaymentType("Regular Repayment");
                   setIsPaymentModalOpen(true);
                 }}
-                className="bg-primary hover:bg-[#022007] text-white flex-1 md:flex-initial shadow-sm font-medium h-10 px-4 flex items-center gap-2"
+                className="bg-primary hover:bg-[var(--primary-hover)] text-white flex-1 md:flex-initial shadow-sm font-medium h-10 px-4 flex items-center gap-2"
               >
                 <Banknote className="h-4 w-4" />
                 <span>Log Payment</span>
@@ -814,7 +814,7 @@ export default function LoanAccountDetail({ params }) {
                     <Button
                       size="sm"
                       onClick={() => setIsPenaltyModalOpen(true)}
-                      className="bg-primary hover:bg-[#022007] text-white text-xs h-8"
+                      className="bg-primary hover:bg-[var(--primary-hover)] text-white text-xs h-8"
                     >
                       <Plus className="mr-1.5 h-3.5 w-3.5" /> Apply Penalty
                     </Button>

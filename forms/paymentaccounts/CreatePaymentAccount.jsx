@@ -118,7 +118,7 @@ const CreatePaymentAccountModal = ({ isOpen, onClose, refetchPaymentAccounts }) 
                                 </Button>
                                 <Button
                                     type="submit"
-                                    className="bg-[#ea1315] hover:bg-[#c71012] text-white"
+                                    className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white"
                                     disabled={loading || isLoadingGL}
                                 >
                                     {loading ? "Creating..." : "Create"}

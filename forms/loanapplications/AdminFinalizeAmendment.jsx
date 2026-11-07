@@ -49,7 +49,7 @@ export function AdminFinalizeAmendment({
         <Form className="space-y-6">
           <div className="bg-slate-50 p-4 rounded border border-slate-200 space-y-3">
             <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-[#045e32]" /> Finalizing Terms
+              <CheckCircle2 className="h-4 w-4 text-[var(--primary)]" /> Finalizing Terms
             </h3>
             <div className="flex justify-between items-center text-sm">
               <span className="text-slate-500">Requested Amount:</span>
@@ -71,7 +71,7 @@ export function AdminFinalizeAmendment({
               id="amendment_note"
               name="amendment_note"
               placeholder="Provide a reason for the final terms or any relevant notes..."
-              className={`flex min-h-[100px] w-full rounded border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#045e32] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.amendment_note && touched.amendment_note
+              className={`flex min-h-[100px] w-full rounded border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.amendment_note && touched.amendment_note
                 ? "border-red-500"
                 : "border-slate-300"
                 }`}
@@ -96,7 +96,7 @@ export function AdminFinalizeAmendment({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-[#045e32] hover:bg-[#034625] h-11 px-8 text-white font-medium transition-all flex items-center gap-2"
+              className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] h-11 px-8 text-white font-medium transition-all flex items-center gap-2"
             >
               {isSubmitting ? (
                 <>

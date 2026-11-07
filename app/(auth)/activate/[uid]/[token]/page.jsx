@@ -92,7 +92,7 @@ function AccountActivation() {
               <Button
                 type="submit"
                 disabled={resending}
-                className="w-full h-11 text-base font-bold bg-primary hover:bg-[#045e32] text-white flex items-center justify-center gap-2"
+                className="w-full h-11 text-base font-bold bg-primary hover:bg-[var(--primary)] text-white flex items-center justify-center gap-2"
               >
                 <Send className="w-4 h-4" />
                 {resending ? "Sending Link..." : "Send Fresh Activation Link"}
@@ -219,7 +219,7 @@ function AccountActivation() {
 
                     <Button
                       type="submit"
-                      className="w-full h-11 text-base font-bold bg-primary hover:bg-[#045e32] shadow-lg shadow-primary/20 transition-all mt-2"
+                      className="w-full h-11 text-base font-bold bg-primary hover:bg-[var(--primary)] shadow-lg shadow-primary/20 transition-all mt-2"
                       disabled={loading}
                     >
                       {loading ? "Activating..." : "Activate Account"}

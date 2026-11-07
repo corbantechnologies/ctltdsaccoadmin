@@ -478,7 +478,7 @@ function WithdrawalsTable({ withdrawals, refetchWithdrawals }) {
             <Button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="bg-[#ea1315] hover:bg-[#c71012] text-white text-sm disabled:opacity-50"
+              className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-sm disabled:opacity-50"
             >
               Previous
             </Button>
@@ -488,8 +488,8 @@ function WithdrawalsTable({ withdrawals, refetchWithdrawals }) {
                 onClick={() => handlePageChange(page)}
                 variant={currentPage === page ? "default" : "outline"}
                 className={`${currentPage === page
-                    ? "bg-[#ea1315] text-white"
-                    : "border-[#ea1315]  hover:bg-[#ea1315] hover:text-white"
+                    ? "bg-[var(--accent)] text-white"
+                    : "border-[var(--accent)]  hover:bg-[var(--accent)] hover:text-white"
                   } text-sm`}
               >
                 {page}
@@ -498,7 +498,7 @@ function WithdrawalsTable({ withdrawals, refetchWithdrawals }) {
             <Button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="bg-[#ea1315] hover:bg-[#c71012] text-white text-sm disabled:opacity-50"
+              className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-sm disabled:opacity-50"
             >
               Next
             </Button>

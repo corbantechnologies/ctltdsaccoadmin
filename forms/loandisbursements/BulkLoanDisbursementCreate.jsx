@@ -216,7 +216,7 @@ function BulkLoanDisbursementCreate({ onBatchSuccess }) {
                     <div className="flex flex-col sm:flex-row gap-3">
                         <Button
                             type="submit"
-                            className="bg-[#ea1315] hover:bg-[#c71012] text-white text-base p-4 w-full sm:w-auto font-bold shadow-xl shadow-rose-100 transition-all rounded"
+                            className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-base p-4 w-full sm:w-auto font-bold shadow-xl shadow-rose-100 transition-all rounded"
                             disabled={loading || isLoadingLoans || isLoadingPayments}
                         >
                             {loading ? "Processing..." : "Execute Batch Disbursement"}

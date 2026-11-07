@@ -188,7 +188,7 @@ function CreateFeePayment({ isOpen, onClose, refetchMember, accounts }) {
                   type="submit"
                   size={"sm"}
                   disabled={loading}
-                  className="bg-primary hover:bg-[#022007] text-white text-sm sm:text-base py-2 px-3 sm:px-4 flex-1 sm:flex-none"
+                  className="bg-primary hover:bg-[var(--primary-hover)] text-white text-sm sm:text-base py-2 px-3 sm:px-4 flex-1 sm:flex-none"
                 >
                   {loading ? "Logging Payment..." : "Log Payment"}
                 </Button>

@@ -213,7 +213,7 @@ const PersonalSavingDetailSkeleton = () => (
               </h1>
               <Badge
                 variant={saving.is_active ? "default" : "secondary"}
-                className={saving.is_active ? "bg-[#045e32]" : ""}
+                className={saving.is_active ? "bg-[var(--primary)]" : ""}
               >
                 {saving.is_active ? "Active" : "Inactive"}
               </Badge>
@@ -225,7 +225,7 @@ const PersonalSavingDetailSkeleton = () => (
           {SACCO_CONFIG.enableMpesa && (
             <div className="flex gap-3">
               <Button
-                className="bg-[#045e32] hover:bg-[#034625]"
+                className="bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
                 onClick={() => setDepositModalOpen(true)}
               >
                 Deposit
@@ -243,7 +243,7 @@ const PersonalSavingDetailSkeleton = () => (
               className={`
                                 w-full rounded py-2.5 px-6 text-sm font-medium leading-5 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2
                                 ${activeTab === tab
-                  ? "bg-white text-[#045e32] shadow"
+                  ? "bg-white text-[var(--primary)] shadow"
                   : "text-gray-600 hover:bg-white/[0.12] hover:text-gray-800"
                 }
                             `}
@@ -259,7 +259,7 @@ const PersonalSavingDetailSkeleton = () => (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-[#045e32]">
+                  <CardTitle className="text-[var(--primary)]">
                     Account Overview
                   </CardTitle>
                 </CardHeader>
@@ -268,7 +268,7 @@ const PersonalSavingDetailSkeleton = () => (
                     <span className="text-muted-foreground">
                       Available Balance
                     </span>
-                    <span className="font-semibold text-xl text-[#045e32]">
+                    <span className="font-semibold text-xl text-[var(--primary)]">
                       {formatCurrency(saving.balance)}
                     </span>
                   </div>
@@ -289,7 +289,7 @@ const PersonalSavingDetailSkeleton = () => (
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-[#045e32]">
+                  <CardTitle className="text-[var(--primary)]">
                     Account Details
                   </CardTitle>
                 </CardHeader>

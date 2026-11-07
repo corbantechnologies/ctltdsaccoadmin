@@ -131,7 +131,7 @@ function UpdateLoanPenalty({ isOpen, onClose, refetchLoan, penalty }) {
                   type="submit"
                   size="sm"
                   disabled={loading || !canWaive}
-                  className="bg-primary hover:bg-[#022007] text-white"
+                  className="bg-primary hover:bg-[var(--primary-hover)] text-white"
                 >
                   {loading ? "Updating..." : "Update Status"}
                 </Button>

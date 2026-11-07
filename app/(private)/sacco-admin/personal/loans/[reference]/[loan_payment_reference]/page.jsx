@@ -137,7 +137,7 @@ const PaymentSkeleton = () => (
                         >
                             <ArrowLeft className="h-4 w-4" />
                         </Button>
-                        <CardTitle className="text-xl font-semibold text-[#045e32]">
+                        <CardTitle className="text-xl font-semibold text-[var(--primary)]">
                             Complete Loan Payment
                         </CardTitle>
                     </div>
@@ -254,7 +254,7 @@ const PaymentSkeleton = () => (
                                     <Button
                                         type="submit"
                                         disabled={loading}
-                                        className="w-full bg-[#045e32] hover:bg-[#034625] h-12 text-lg"
+                                        className="w-full bg-[var(--primary)] hover:bg-[var(--primary-hover)] h-12 text-lg"
                                     >
                                         {loading ? (
                                             <>
@@ -272,7 +272,7 @@ const PaymentSkeleton = () => (
 
                     {isPolling && (
                         <div className="flex flex-col items-center justify-center py-6 space-y-4">
-                            <Loader2 className="h-12 w-12 text-[#045e32] animate-spin" />
+                            <Loader2 className="h-12 w-12 text-[var(--primary)] animate-spin" />
                             <p className="text-sm text-gray-500 text-center px-4">
                                 Waiting for M-Pesa confirmation. This usually takes 10-20
                                 seconds after you enter your PIN.

@@ -266,7 +266,7 @@ const GuarantorProfileSkeleton = () => (
                         <Button
                           size="sm"
                           onClick={() => handleReviewClick(request)}
-                          className="bg-[#045e32] hover:bg-[#034625]"
+                          className="bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
                         >
                           Review
                         </Button>
@@ -430,7 +430,7 @@ const GuarantorProfileSkeleton = () => (
                                     <TableCell className="text-xs">
                                       {formatCurrency(row.interest_due)}
                                     </TableCell>
-                                    <TableCell className="text-xs font-semibold text-[#045e32]">
+                                    <TableCell className="text-xs font-semibold text-[var(--primary)]">
                                       {formatCurrency(row.total_due)}
                                     </TableCell>
                                     <TableCell className="text-xs text-right text-muted-foreground">
@@ -527,7 +527,7 @@ const GuarantorProfileSkeleton = () => (
                       }
                       className={
                         actionType === "accept"
-                          ? "bg-[#045e32] hover:bg-[#034625]"
+                          ? "bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
                           : ""
                       }
                       onClick={handleSubmit}

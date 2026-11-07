@@ -94,7 +94,7 @@ const CreateGLAccountModal = ({ isOpen, onClose, refetchGLAccounts }) => {
                                         id="name"
                                         name="name"
                                         placeholder="e.g. Cash at Bank"
-                                        className="border-slate-200 focus:border-[#ea1315] focus:ring-[#ea1315] h-10"
+                                        className="border-slate-200 focus:border-[var(--accent)] focus:ring-[var(--accent)] h-10"
                                         required
                                     />
                                 </div>
@@ -129,7 +129,7 @@ const CreateGLAccountModal = ({ isOpen, onClose, refetchGLAccounts }) => {
                                         id="code"
                                         name="code"
                                         placeholder="e.g. 1001"
-                                        className="border-slate-200 focus:border-[#ea1315] focus:ring-[#ea1315] h-10 font-mono"
+                                        className="border-slate-200 focus:border-[var(--accent)] focus:ring-[var(--accent)] h-10 font-mono"
                                         required
                                     />
                                 </div>
@@ -138,7 +138,7 @@ const CreateGLAccountModal = ({ isOpen, onClose, refetchGLAccounts }) => {
                                         id="is_active"
                                         checked={values.is_active}
                                         onCheckedChange={(checked) => setFieldValue("is_active", checked)}
-                                        className="border-slate-300 data-[state=checked]:bg-[#ea1315] data-[state=checked]:border-[#ea1315]"
+                                        className="border-slate-300 data-[state=checked]:bg-[var(--accent)] data-[state=checked]:border-[var(--accent)]"
                                     />
                                     <Label htmlFor="is_active" className="text-sm font-medium text-slate-700 cursor-pointer">
                                         Is this account active?
@@ -149,7 +149,7 @@ const CreateGLAccountModal = ({ isOpen, onClose, refetchGLAccounts }) => {
                                         id="is_current_account"
                                         checked={values.is_current_account}
                                         onCheckedChange={(checked) => setFieldValue("is_current_account", checked)}
-                                        className="border-slate-300 data-[state=checked]:bg-[#ea1315] data-[state=checked]:border-[#ea1315]"
+                                        className="border-slate-300 data-[state=checked]:bg-[var(--accent)] data-[state=checked]:border-[var(--accent)]"
                                     />
                                     <Label htmlFor="is_current_account" className="text-sm font-medium text-slate-700 cursor-pointer">
                                         Is this a current account?
@@ -167,7 +167,7 @@ const CreateGLAccountModal = ({ isOpen, onClose, refetchGLAccounts }) => {
                                     </Button>
                                     <Button
                                         type="submit"
-                                        className="bg-[#ea1315] hover:bg-[#c71012] text-white font-bold h-10 px-8 rounded shadow-lg shadow-[#ea1315]/20 animate-in fade-in slide-in-from-bottom-2 duration-300"
+                                        className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-bold h-10 px-8 rounded shadow-lg shadow-[var(--accent)]/20 animate-in fade-in slide-in-from-bottom-2 duration-300"
                                         disabled={loading}
                                     >
                                         {loading ? "Creating..." : "Create Account"}

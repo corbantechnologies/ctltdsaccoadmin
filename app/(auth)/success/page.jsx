@@ -52,7 +52,7 @@ function SuccessPage() {
               </Button>
               <Button
                 asChild
-                className="w-full h-12 text-base font-bold bg-primary hover:bg-[#045e32] shadow-lg shadow-primary/20 transition-all"
+                className="w-full h-12 text-base font-bold bg-primary hover:bg-[var(--primary)] shadow-lg shadow-primary/20 transition-all"
               >
                 <Link href="/login" aria-label="Go to login">
                   Login Page

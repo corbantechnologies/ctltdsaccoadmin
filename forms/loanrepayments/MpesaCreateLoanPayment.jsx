@@ -102,7 +102,7 @@ export default function MpesaCreateLoanPaymentForm({
                             <Button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-[#045e32] hover:bg-[#034625]"
+                                className="w-full bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
                             >
                                 {loading ? (
                                     <>

@@ -124,7 +124,7 @@ export default function JournalBatchDetails({ isOpen, onClose, batch, refetch })
                         <Button
                             onClick={handlePost}
                             disabled={loading}
-                            className="bg-[#ea1315] hover:bg-[#c71012] text-white font-bold h-9 px-8 rounded text-xs transition-all active:scale-95"
+                            className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-bold h-9 px-8 rounded text-xs transition-all active:scale-95"
                         >
                             {loading ? "Posting..." : "Post Batch"}
                         </Button>

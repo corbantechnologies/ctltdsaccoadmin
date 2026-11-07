@@ -166,7 +166,7 @@ export default function AdminLoanApplicationDetail({ params }) {
             </Button>
             <Button
               size="sm"
-              className="h-8 bg-[#045e32] hover:bg-[#034625]"
+              className="h-8 bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
               onClick={async () => {
                 toast.dismiss(t.id);
                 setIsSubmitting(true);
@@ -209,7 +209,7 @@ export default function AdminLoanApplicationDetail({ params }) {
             </Button>
             <Button
               size="sm"
-              className="h-8 bg-[#045e32] hover:bg-[#034625]"
+              className="h-8 bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
               onClick={async () => {
                 toast.dismiss(t.id);
                 setIsSubmitting(true);
@@ -473,7 +473,7 @@ const LoanApplicationDetailSkeleton = () => (
                       size="sm"
                       onClick={handleSubmitForAmendment}
                       disabled={isSubmitting}
-                      className="bg-[#045e32] hover:bg-[#034625] text-white h-9"
+                      className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white h-9"
                     >
                       {isSubmitting ? (
                         <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
@@ -499,7 +499,7 @@ const LoanApplicationDetailSkeleton = () => (
                       size="sm"
                       onClick={handleAcceptAmendment}
                       disabled={isSubmitting}
-                      className="bg-[#045e32] hover:bg-[#034625] text-white h-9"
+                      className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white h-9"
                     >
                       Accept Amendment
                     </Button>
@@ -510,7 +510,7 @@ const LoanApplicationDetailSkeleton = () => (
                     size="sm"
                     onClick={handleSubmitLoanApplication}
                     disabled={isSubmitting}
-                    className="bg-[#045e32] hover:bg-[#034625] text-white h-9"
+                    className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white h-9"
                   >
                     {isSubmitting ? (
                       <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
@@ -542,7 +542,7 @@ const LoanApplicationDetailSkeleton = () => (
                     size="sm"
                     onClick={handleApprove}
                     disabled={isSubmitting}
-                    className="bg-[#045e32] hover:bg-[#034625] text-white h-9 px-4 font-medium flex items-center gap-1.5"
+                    className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white h-9 px-4 font-medium flex items-center gap-1.5"
                   >
                     <ThumbsUp className="h-4 w-4" />
                     Approve Application
@@ -673,7 +673,7 @@ const LoanApplicationDetailSkeleton = () => (
             {/* Financial Overview */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-[#045e32]">
+                <CardTitle className="text-[var(--primary)]">
                   Application Summary
                 </CardTitle>
               </CardHeader>
@@ -777,7 +777,7 @@ const LoanApplicationDetailSkeleton = () => (
                           <TableCell>
                             {formatCurrency(row.interest_due)}
                           </TableCell>
-                          <TableCell className="font-semibold text-[#045e32]">
+                          <TableCell className="font-semibold text-[var(--primary)]">
                             {formatCurrency(row.total_due)}
                           </TableCell>
                           <TableCell>
@@ -822,7 +822,7 @@ const LoanApplicationDetailSkeleton = () => (
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[#045e32]" />
+                  <CheckCircle2 className="h-5 w-5 text-[var(--primary)]" />
                   Coverage Status
                 </CardTitle>
               </CardHeader>
