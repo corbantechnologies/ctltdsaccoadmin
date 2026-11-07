@@ -3,7 +3,18 @@
 import { apiActions } from "@/tools/axios";
 
 export const createSavingsWithdrawals = async (values, token) => {
-  await apiActions?.post("/api/v1/savingswithdrawals/", values, token);
+  const response = await apiActions?.post("/api/v1/savingswithdrawals/", values, token);
+  return response?.data;
+};
+
+// How much can be withdrawn from an account right now (balance less pending
+// requests, guarantee commitments and non-withdrawable saving types).
+export const getWithdrawableAmount = async (accountNumber, token) => {
+  const response = await apiActions?.get(
+    `/api/v1/savingswithdrawals/available/${accountNumber}/`,
+    token
+  );
+  return response?.data;
 };
 
 export const getSavingsWithdrawals = async (token) => {

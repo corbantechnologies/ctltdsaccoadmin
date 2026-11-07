@@ -23,10 +23,13 @@ import {
     Wallet,
     Edit,
     Plus,
-    TrendingUp
+    TrendingUp,
+    TrendingDown
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import CreateDepositAdmin from "@/forms/savingsdeposits/CreateDepositAdmin";
+import CreateWithdrawal from "@/forms/savingswithdrawals/CreateWithdrawal";
+import { SACCO_CONFIG } from "@/lib/sacco-config";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import ReversePaymentModal from "@/forms/loans/ReversePaymentModal";
 import { Label } from "@/components/ui/label";
@@ -70,6 +73,7 @@ export default function SavingAccountReferencePage() {
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [isReverseDialogOpen, setIsReverseDialogOpen] = useState(false);
     const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+    const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
     const [selectedDepositForReversal, setSelectedDepositForReversal] = useState(null);
     const [selectedDeposit, setSelectedDeposit] = useState(null);
     const [newDate, setNewDate] = useState("");
@@ -137,13 +141,22 @@ export default function SavingAccountReferencePage() {
                     </div>
                 </div>
 
-                <div className="flex gap-2 w-full sm:w-auto">
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                     <Button
                         onClick={() => setIsDepositModalOpen(true)}
                         className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 h-10 shadow-sm gap-1.5 w-full sm:w-auto"
                     >
                         <TrendingUp className="w-4 h-4" /> Log Deposit
                     </Button>
+                    {SACCO_CONFIG.enableWithdrawals && account.is_active && (
+                        <Button
+                            onClick={() => setIsWithdrawModalOpen(true)}
+                            variant="outline"
+                            className="border-rose-300 text-rose-700 hover:bg-rose-50 text-xs font-semibold px-4 h-10 shadow-sm gap-1.5 w-full sm:w-auto"
+                        >
+                            <TrendingDown className="w-4 h-4" /> Record Withdrawal
+                        </Button>
+                    )}
                 </div>
             </div>
 
@@ -374,6 +387,17 @@ export default function SavingAccountReferencePage() {
                     onClose={() => setIsDepositModalOpen(false)}
                     refetchMember={() => queryClient.invalidateQueries({ queryKey: ["savingDetail", reference] })}
                     accounts={[account]}
+                />
+            )}
+            {SACCO_CONFIG.enableWithdrawals && isWithdrawModalOpen && (
+                <CreateWithdrawal
+                    isOpen={isWithdrawModalOpen}
+                    onClose={() => setIsWithdrawModalOpen(false)}
+                    account={account}
+                    refetchAccount={() => {
+                        queryClient.invalidateQueries({ queryKey: ["savingDetail", reference] });
+                        queryClient.invalidateQueries({ queryKey: ["withdrawals"] });
+                    }}
                 />
             )}
         </div>
