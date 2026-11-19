@@ -75,7 +75,8 @@ export default function MigrationHub() {
             description: "Moving active loans into the system.",
             icon: HandCoins,
             steps: [
-                { title: "Bulk Loan Apps", icon: HandCoins, href: "/sacco-admin/loan-applications", desc: "Best for automation and member tracking." },
+                { title: "Onboard Existing Loans", icon: HandCoins, href: "/sacco-admin/onboarding/loans", desc: "Three methods: full history, original loan plus total paid to date, or balance forward. Check the file before saving." },
+                { title: "Post Loan Opening Balances", icon: ShieldCheck, href: "/sacco-admin/onboarding/loans", desc: "For paid-to-date and balance-forward loans: brings the principal owed at the cut-off into the GL, against Opening Balance Equity." },
             ]
         },
         {
@@ -284,7 +285,33 @@ export default function MigrationHub() {
                             >
                                 <div className="flex items-center gap-3">
                                     <FileSpreadsheet className="w-5 h-5 text-green-600" />
-                                    <span className="text-sm font-medium">Bulk Loan Apps</span>
+                                    <span className="text-sm font-medium">Existing Loans (methods 1 and 2)</span>
+                                </div>
+                                <Download className="w-4 h-4 text-slate-400" />
+                            </div>
+                            <div
+                                className="flex items-center justify-between p-3 rounded border hover:bg-slate-50 cursor-pointer transition-colors"
+                                onClick={async () => {
+                                    try {
+                                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/loanapplications/admin/balance-forward/template/`, { headers: auth.headers });
+                                        if (!response.ok) throw new Error(`Template download failed (${response.status})`);
+                                        const blob = await response.blob();
+                                        const url = window.URL.createObjectURL(blob);
+                                        const a = document.createElement('a');
+                                        a.href = url;
+                                        a.download = 'loan_balance_forward_template.csv';
+                                        document.body.appendChild(a);
+                                        a.click();
+                                        window.URL.revokeObjectURL(url);
+                                    } catch (error) {
+                                        console.error("Failed to download template", error);
+                                        toast.error("Could not download the template. Please sign in again and retry.");
+                                    }
+                                }}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <FileSpreadsheet className="w-5 h-5 text-green-600" />
+                                    <span className="text-sm font-medium">Loan Balances Forward (method 3)</span>
                                 </div>
                                 <Download className="w-4 h-4 text-slate-400" />
                             </div>
