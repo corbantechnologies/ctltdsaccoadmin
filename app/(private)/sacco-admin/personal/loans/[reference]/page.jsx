@@ -208,7 +208,7 @@ function LoanDetail() {
                                             </div>
                                         </div>
                                         <div className="text-left sm:text-right pl-12 sm:pl-0">
-                                            <p className="text-xl sm:text-2xl font-bold text-[var(--accent)]">{formatCurrency(loan.outstanding_balance)}</p>
+                                            <p className="text-lg sm:text-xl xl:text-2xl font-bold break-words text-[var(--accent)]">{formatCurrency(loan.outstanding_balance)}</p>
                                             <p className="text-[11px] text-muted-foreground">Current total owed</p>
                                         </div>
                                     </div>
@@ -228,7 +228,7 @@ function LoanDetail() {
                                             </div>
                                         </div>
                                         <div className="text-left sm:text-right pl-12 sm:pl-0">
-                                            <p className="text-xl sm:text-2xl font-bold text-green-700">
+                                            <p className="text-lg sm:text-xl xl:text-2xl font-bold break-words text-green-700">
                                                 {formatCurrency(loan.outstanding_principal ?? (parseFloat(loan.principal || 0) - parseFloat(loan.total_principal_paid || 0)))}
                                             </p>
                                             <p className="text-[11px] text-muted-foreground">Principal remaining to repay</p>
@@ -250,7 +250,7 @@ function LoanDetail() {
                                             </div>
                                         </div>
                                         <div className="text-left sm:text-right pl-12 sm:pl-0">
-                                            <p className="text-xl sm:text-2xl font-bold text-slate-900">{formatCurrency(loan.total_interest_accrued)}</p>
+                                            <p className="text-lg sm:text-xl xl:text-2xl font-bold break-words text-slate-900">{formatCurrency(loan.total_interest_accrued)}</p>
                                             <p className="text-[11px] text-muted-foreground">Total interest charged</p>
                                         </div>
                                     </div>
@@ -267,7 +267,7 @@ function LoanDetail() {
                                             </div>
                                         </div>
                                         <div className="text-left sm:text-right pl-12 sm:pl-0">
-                                            <p className="text-xl sm:text-2xl font-bold text-[var(--primary)]">{formatCurrency(loan.total_loan_amount)}</p>
+                                            <p className="text-lg sm:text-xl xl:text-2xl font-bold break-words text-[var(--primary)]">{formatCurrency(loan.total_loan_amount)}</p>
                                             <p className="text-[11px] text-muted-foreground">Total loan commitment</p>
                                         </div>
                                     </div>
@@ -284,7 +284,7 @@ function LoanDetail() {
                                             </div>
                                         </div>
                                         <div className="text-left sm:text-right pl-12 sm:pl-0">
-                                            <p className="text-xl sm:text-2xl font-bold text-red-600">
+                                            <p className="text-lg sm:text-xl xl:text-2xl font-bold break-words text-red-600">
                                                 {formatCurrency((loan?.processing_fees || []).filter(f => f.status === 'Pending').reduce((acc, f) => acc + (parseFloat(f.amount) || 0) - (parseFloat(f.amount_paid) || 0), 0))}
                                             </p>
                                             <p className="text-[11px] text-muted-foreground">Outstanding fee amount</p>

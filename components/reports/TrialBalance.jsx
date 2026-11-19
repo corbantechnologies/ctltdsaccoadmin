@@ -29,7 +29,7 @@ export default function TrialBalance() {
                     <CardTitle>Trial Balance</CardTitle>
                     <CardDescription>As of {new Date(as_of).toLocaleDateString()}</CardDescription>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                     <Label htmlFor="asOfDate" className="whitespace-nowrap text-sm text-muted-foreground">As Of Date:</Label>
                     <Input
                         type="date"

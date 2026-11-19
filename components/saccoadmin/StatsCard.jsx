@@ -13,7 +13,7 @@ const StatsCard = ({ title, value, Icon, description }) => {
           <Icon className="h-4 w-4 text-primary" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-foreground">{value}</div>
+          <div className="text-lg sm:text-xl xl:text-2xl font-bold text-foreground break-words">{value}</div>
           {description && (
             <p className="text-xs text-muted-foreground mt-1">{description}</p>
           )}

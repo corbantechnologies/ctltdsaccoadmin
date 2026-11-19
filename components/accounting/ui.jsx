@@ -53,6 +53,7 @@ export const ACCOUNTING_GUIDES = {
       "Choose the go-live date at the top. All opening balances are dated that day.",
       "Load member savings first, per member. This creates an \"Opening Balance\" deposit on each member's account, so their statement and the GL agree.",
       "Load everything else (bank, fixed assets, payables, reserves) as GL lines. The balancing side goes to Opening Balance Equity.",
+      "Loans are not loaded here. Onboard them under Setup & Configuration, Onboarding, Onboard Existing Loans, and post their opening balance from tab 4 on that page.",
       "Run Reconciliation afterwards to confirm the control accounts agree.",
     ],
     caution: "Opening balances post real entries. Do not use this page for a SACCO that is already live; use a journal instead.",

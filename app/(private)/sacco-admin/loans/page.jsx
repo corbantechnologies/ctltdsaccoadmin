@@ -222,14 +222,14 @@ export default function LoansManagementPage() {
             </div>
 
             {/* Accurate Executive Portfolio KPI Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
                 <Card className="border border-slate-200/80 shadow-sm bg-white">
                     <CardHeader className="p-4 sm:p-5 pb-2">
                         <CardDescription className="text-slate-400 font-semibold uppercase tracking-wider text-[10px] flex items-center justify-between">
                             <span>Total Loan Book</span>
                             <Wallet className="h-4 w-4 text-[var(--accent)]" />
                         </CardDescription>
-                        <CardTitle className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight pt-1">
+                        <CardTitle className="text-lg sm:text-xl xl:text-2xl font-bold break-words text-slate-900 tracking-tight pt-1">
                             {formatCurrency(stats.totalPortfolioValue)}
                         </CardTitle>
                     </CardHeader>
@@ -244,7 +244,7 @@ export default function LoansManagementPage() {
                             <span>Outstanding Balance</span>
                             <TrendingDown className="h-4 w-4 text-emerald-600" />
                         </CardDescription>
-                        <CardTitle className="text-xl sm:text-2xl font-bold text-emerald-700 tracking-tight pt-1">
+                        <CardTitle className="text-lg sm:text-xl xl:text-2xl font-bold break-words text-emerald-700 tracking-tight pt-1">
                             {formatCurrency(stats.totalOutstanding)}
                         </CardTitle>
                     </CardHeader>
@@ -259,7 +259,7 @@ export default function LoansManagementPage() {
                             <span>Active Accounts</span>
                             <CheckCircle2 className="h-4 w-4 text-blue-600" />
                         </CardDescription>
-                        <CardTitle className="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight pt-1">
+                        <CardTitle className="text-lg sm:text-xl xl:text-2xl font-bold break-words text-slate-800 tracking-tight pt-1">
                             {stats.activeCount} <span className="text-xs text-muted-foreground font-normal">/ {loans?.length || 0} total</span>
                         </CardTitle>
                     </CardHeader>
@@ -274,7 +274,7 @@ export default function LoansManagementPage() {
                             <span>In Arrears</span>
                             <ShieldAlert className="h-4 w-4 text-red-500" />
                         </CardDescription>
-                        <CardTitle className={`text-xl sm:text-2xl font-bold tracking-tight pt-1 ${stats.arrearsCount > 0 ? "text-red-600" : "text-slate-800"}`}>
+                        <CardTitle className={`text-lg sm:text-xl xl:text-2xl font-bold break-words tracking-tight pt-1 ${stats.arrearsCount > 0 ? "text-red-600" : "text-slate-800"}`}>
                             {stats.arrearsCount}
                         </CardTitle>
                     </CardHeader>

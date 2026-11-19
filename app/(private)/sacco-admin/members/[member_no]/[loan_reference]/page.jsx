@@ -262,7 +262,7 @@ export default function LoanAccountDetail({ params }) {
         <div className="sticky top-16 z-20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/95 backdrop-blur-md p-4 sm:p-5 rounded-xl border border-slate-200/80 shadow-sm transition-all">
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2.5">
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+              <h1 className="text-lg sm:text-xl xl:text-2xl font-bold break-words tracking-tight text-slate-900">
                 {loan.product} Account
               </h1>
               <Badge className={getStatusBadge(loan.status)} variant="outline">
@@ -424,7 +424,7 @@ export default function LoanAccountDetail({ params }) {
                     </div>
                   </div>
                   <div className="text-left md:text-right shrink-0 pl-12 md:pl-0">
-                    <p className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                    <p className="text-lg sm:text-xl xl:text-2xl font-bold break-words text-slate-900 tracking-tight">
                       {formatCurrency(outstandingPrincipal)}
                     </p>
                     <p className="text-[11px] text-muted-foreground">Remaining principal to be repaid</p>
@@ -459,7 +459,7 @@ export default function LoanAccountDetail({ params }) {
                     </div>
                   </div>
                   <div className="text-left md:text-right shrink-0 pl-12 md:pl-0">
-                    <p className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                    <p className="text-lg sm:text-xl xl:text-2xl font-bold break-words text-slate-900 tracking-tight">
                       {formatCurrency(outstandingBalance)}
                     </p>
                     <p className="text-[11px] text-muted-foreground">Remaining principal + accrued interest</p>
@@ -525,7 +525,7 @@ export default function LoanAccountDetail({ params }) {
                       </div>
                     )}
                     <div className="text-left md:text-right">
-                      <p className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                      <p className="text-lg sm:text-xl xl:text-2xl font-bold break-words text-slate-900 tracking-tight">
                         {formatCurrency(totalProcessingFee)}
                       </p>
                       <p className="text-[11px] text-muted-foreground">Assessed fee</p>
@@ -569,7 +569,7 @@ export default function LoanAccountDetail({ params }) {
                     </div>
                   </div>
                   <div className="text-left md:text-right shrink-0 pl-12 md:pl-0">
-                    <p className={`text-xl sm:text-2xl font-bold tracking-tight ${
+                    <p className={`text-lg sm:text-xl xl:text-2xl font-bold break-words tracking-tight ${
                       penaltiesOwed > 0 ? "text-red-600" : "text-slate-900"
                     }`}>
                       {formatCurrency(penaltiesOwed)}
@@ -1085,7 +1085,9 @@ export default function LoanAccountDetail({ params }) {
               </CardHeader>
               <CardContent className="space-y-3 pt-3">
                 <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Original Principal</span>
+                  <span className="text-muted-foreground">
+                    {loan.onboarding_method === "balance_forward" ? "Principal at cut-off" : "Original Principal"}
+                  </span>
                   <span className="font-semibold text-slate-800">{formatCurrency(principalAmount)}</span>
                 </div>
                 <div className="flex justify-between text-xs">
@@ -1101,6 +1103,37 @@ export default function LoanAccountDetail({ params }) {
                   <span className="text-muted-foreground">Maturity Date</span>
                   <span className="font-medium text-slate-800">{loan.end_date || "N/A"}</span>
                 </div>
+                {loan.onboarding_method && (
+                  <>
+                    <Separator />
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground">Onboarded by</span>
+                      <span className="font-medium text-slate-800">
+                        {{ full_history: "Full history", paid_to_date: "Paid to date", balance_forward: "Balance forward" }[loan.onboarding_method]}
+                      </span>
+                    </div>
+                    {loan.cut_off_date && (
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">Cut-off date</span>
+                        <span className="font-medium text-slate-800">{loan.cut_off_date}</span>
+                      </div>
+                    )}
+                    {loan.opening_principal && loan.onboarding_method !== "balance_forward" && (
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">Principal at cut-off</span>
+                        <span className="font-medium text-slate-800">{formatCurrency(loan.opening_principal)}</span>
+                      </div>
+                    )}
+                    {loan.original_principal && (
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">Original loan (reference)</span>
+                        <span className="font-medium text-slate-800">
+                          {formatCurrency(loan.original_principal)}{loan.original_start_date ? ` on ${loan.original_start_date}` : ""}
+                        </span>
+                      </div>
+                    )}
+                  </>
+                )}
                 <Separator />
                 <div className="flex justify-between text-xs">
                   <span className="text-muted-foreground">Interest Rate</span>

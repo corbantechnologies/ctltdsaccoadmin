@@ -190,7 +190,7 @@ export default function SaccoAdminDashboard() {
       </div>
 
       {/* Top 4 Executive KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {/* Card 1: Members */}
         <Link href="/sacco-admin/members" className="block group">
           <Card className="border border-slate-200/80 shadow-sm bg-white hover:border-[var(--accent)] hover:shadow-md transition-all h-full flex flex-col justify-between">
@@ -199,7 +199,7 @@ export default function SaccoAdminDashboard() {
                 <span>Total Members</span>
                 <Users className="h-4 w-4 text-[var(--accent)]" />
               </CardDescription>
-              <CardTitle className="text-2xl font-bold text-slate-900 tracking-tight pt-1 group-hover:text-[var(--accent)] transition-colors">
+              <CardTitle className="text-xl xl:text-2xl font-bold text-slate-900 tracking-tight pt-1 break-words group-hover:text-[var(--accent)] transition-colors">
                 {isLoadingMembers ? <span className="text-sm font-normal text-muted-foreground animate-pulse">Loading...</span> : executiveMetrics.totalMembers}
               </CardTitle>
             </CardHeader>
@@ -219,7 +219,7 @@ export default function SaccoAdminDashboard() {
                 <span>Savings Portfolio</span>
                 <Wallet className="h-4 w-4 text-green-600" />
               </CardDescription>
-              <CardTitle className="text-2xl font-bold text-slate-900 tracking-tight pt-1 group-hover:text-green-700 transition-colors">
+              <CardTitle className="text-xl xl:text-2xl font-bold text-slate-900 tracking-tight pt-1 break-words group-hover:text-green-700 transition-colors">
                 {isLoadingSavings ? <span className="text-sm font-normal text-muted-foreground animate-pulse">Loading...</span> : formatCurrency(executiveMetrics.totalSavings)}
               </CardTitle>
             </CardHeader>
@@ -237,7 +237,7 @@ export default function SaccoAdminDashboard() {
                 <span>Active Loan Book</span>
                 <HandCoins className="h-4 w-4 text-blue-600" />
               </CardDescription>
-              <CardTitle className="text-2xl font-bold text-slate-900 tracking-tight pt-1 group-hover:text-blue-700 transition-colors">
+              <CardTitle className="text-xl xl:text-2xl font-bold text-slate-900 tracking-tight pt-1 break-words group-hover:text-blue-700 transition-colors">
                 {isLoadingLoans ? <span className="text-sm font-normal text-muted-foreground animate-pulse">Loading...</span> : formatCurrency(executiveMetrics.totalLoansOutstanding)}
               </CardTitle>
             </CardHeader>
@@ -263,7 +263,7 @@ export default function SaccoAdminDashboard() {
                 </span>
                 <Clock className={`h-4 w-4 ${executiveMetrics.pendingApps.length > 0 ? "text-amber-600" : "text-slate-400"}`} />
               </CardDescription>
-              <CardTitle className={`text-2xl font-bold tracking-tight pt-1 ${
+              <CardTitle className={`text-xl xl:text-2xl font-bold tracking-tight pt-1 break-words ${
                 executiveMetrics.pendingApps.length > 0 ? "text-amber-700" : "text-slate-900"
               }`}>
                 {isLoadingApplications ? <span className="text-sm font-normal text-muted-foreground animate-pulse">Loading...</span> : executiveMetrics.pendingApps.length}
