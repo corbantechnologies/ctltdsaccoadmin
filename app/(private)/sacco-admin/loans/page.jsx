@@ -213,6 +213,11 @@ export default function LoansManagementPage() {
                     >
                         {refreshing ? "Refreshing..." : "Refresh arrears"}
                     </Button>
+                    <Link href="/sacco-admin/onboarding/loans" className="w-full sm:w-auto">
+                        <Button variant="outline" className="w-full sm:w-auto border-slate-200 text-slate-700 hover:bg-white text-xs h-9">
+                            Onboard Existing Loans
+                        </Button>
+                    </Link>
                     <Link href="/sacco-admin/loan-applications" className="w-full sm:w-auto">
                         <Button variant="outline" className="w-full sm:w-auto border-slate-200 text-slate-700 hover:bg-white text-xs h-9">
                             View Applications

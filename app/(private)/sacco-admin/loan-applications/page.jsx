@@ -178,9 +178,15 @@ export default function AdminLoanApplications() {
             </p>
           </div>
 
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+          <Link href="/sacco-admin/onboarding/loans" className="w-full sm:w-auto">
+            <Button variant="outline" className="w-full sm:w-auto shadow-sm">
+              Onboard Existing Loans
+            </Button>
+          </Link>
           <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
             <PopoverTrigger asChild>
-              <Button className="bg-[var(--primary)] hover:bg-[var(--primary-hover)] shadow-sm">
+              <Button className="w-full sm:w-auto bg-[var(--primary)] hover:bg-[var(--primary-hover)] shadow-sm">
                 <Plus className="mr-2 h-4 w-4" />
                 New Application
               </Button>
@@ -236,6 +242,7 @@ export default function AdminLoanApplications() {
               </div>
             </PopoverContent>
           </Popover>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
