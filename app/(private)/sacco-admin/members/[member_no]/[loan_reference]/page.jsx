@@ -262,7 +262,7 @@ export default function LoanAccountDetail({ params }) {
         <div className="sticky top-16 z-20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/95 backdrop-blur-md p-4 sm:p-5 rounded-xl border border-slate-200/80 shadow-sm transition-all">
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2.5">
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+              <h1 className="text-lg sm:text-xl xl:text-2xl font-bold break-words tracking-tight text-slate-900">
                 {loan.product} Account
               </h1>
               <Badge className={getStatusBadge(loan.status)} variant="outline">
@@ -424,7 +424,7 @@ export default function LoanAccountDetail({ params }) {
                     </div>
                   </div>
                   <div className="text-left md:text-right shrink-0 pl-12 md:pl-0">
-                    <p className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                    <p className="text-lg sm:text-xl xl:text-2xl font-bold break-words text-slate-900 tracking-tight">
                       {formatCurrency(outstandingPrincipal)}
                     </p>
                     <p className="text-[11px] text-muted-foreground">Remaining principal to be repaid</p>
@@ -459,7 +459,7 @@ export default function LoanAccountDetail({ params }) {
                     </div>
                   </div>
                   <div className="text-left md:text-right shrink-0 pl-12 md:pl-0">
-                    <p className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                    <p className="text-lg sm:text-xl xl:text-2xl font-bold break-words text-slate-900 tracking-tight">
                       {formatCurrency(outstandingBalance)}
                     </p>
                     <p className="text-[11px] text-muted-foreground">Remaining principal + accrued interest</p>
@@ -525,7 +525,7 @@ export default function LoanAccountDetail({ params }) {
                       </div>
                     )}
                     <div className="text-left md:text-right">
-                      <p className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                      <p className="text-lg sm:text-xl xl:text-2xl font-bold break-words text-slate-900 tracking-tight">
                         {formatCurrency(totalProcessingFee)}
                       </p>
                       <p className="text-[11px] text-muted-foreground">Assessed fee</p>
@@ -569,7 +569,7 @@ export default function LoanAccountDetail({ params }) {
                     </div>
                   </div>
                   <div className="text-left md:text-right shrink-0 pl-12 md:pl-0">
-                    <p className={`text-xl sm:text-2xl font-bold tracking-tight ${
+                    <p className={`text-lg sm:text-xl xl:text-2xl font-bold break-words tracking-tight ${
                       penaltiesOwed > 0 ? "text-red-600" : "text-slate-900"
                     }`}>
                       {formatCurrency(penaltiesOwed)}

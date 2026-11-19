@@ -245,7 +245,7 @@ function SummaryTabContent({ data, type, emptyMessage }) {
       )}
 
       {/* Totals Summary Cards */}
-      <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-${type === 'savings' ? 4 : 5} gap-4`}>
+      <div className={`grid grid-cols-1 sm:grid-cols-2 ${type === 'savings' ? 'xl:grid-cols-4' : 'xl:grid-cols-5'} gap-4`}>
         {type === "savings" && (() => {
           const openingBalance = selectedAccount.monthly_summary?.[0]?.opening_balance || 0;
           const closingBalance = selectedAccount.monthly_summary?.[11]?.closing_balance || 0;
@@ -257,7 +257,7 @@ function SummaryTabContent({ data, type, emptyMessage }) {
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                   Opening Balance
                 </p>
-                <p className="font-bold text-2xl">
+                <p className="font-bold text-lg xl:text-2xl tabular-nums break-words">
                   {formatCurrency(openingBalance)}
                 </p>
               </div>
@@ -265,7 +265,7 @@ function SummaryTabContent({ data, type, emptyMessage }) {
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                   Total Deposits
                 </p>
-                <p className="font-bold text-2xl text-green-700">
+                <p className="font-bold text-lg xl:text-2xl tabular-nums break-words text-green-700">
                   {formatCurrency(selectedAccount.totals?.total_deposits || 0)}
                 </p>
               </div>
@@ -273,7 +273,7 @@ function SummaryTabContent({ data, type, emptyMessage }) {
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                   Total Withdrawals
                 </p>
-                <p className="font-bold text-2xl text-red-700">
+                <p className="font-bold text-lg xl:text-2xl tabular-nums break-words text-red-700">
                   {formatCurrency(totalWithdrawals)}
                 </p>
               </div>
@@ -281,7 +281,7 @@ function SummaryTabContent({ data, type, emptyMessage }) {
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                   Closing Balance
                 </p>
-                <p className="font-bold text-2xl text-blue-700">
+                <p className="font-bold text-lg xl:text-2xl tabular-nums break-words text-blue-700">
                   {formatCurrency(closingBalance)}
                 </p>
               </div>
@@ -299,7 +299,7 @@ function SummaryTabContent({ data, type, emptyMessage }) {
               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                 Opening Balance
               </p>
-              <p className="font-bold text-2xl">
+              <p className="font-bold text-lg xl:text-2xl tabular-nums break-words">
                 {formatCurrency(openingBalance)}
               </p>
             </div>
@@ -307,7 +307,7 @@ function SummaryTabContent({ data, type, emptyMessage }) {
               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                 Principal
               </p>
-              <p className="font-bold text-2xl">
+              <p className="font-bold text-lg xl:text-2xl tabular-nums break-words">
                 {formatCurrency(selectedAccount.initial_principal || 0)}
               </p>
             </div>
@@ -315,7 +315,7 @@ function SummaryTabContent({ data, type, emptyMessage }) {
               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                 Disbursed
               </p>
-              <p className="font-bold text-2xl text-blue-700">
+              <p className="font-bold text-lg xl:text-2xl tabular-nums break-words text-blue-700">
                 {formatCurrency(selectedAccount.totals?.total_disbursed || 0)}
               </p>
             </div>
@@ -323,7 +323,7 @@ function SummaryTabContent({ data, type, emptyMessage }) {
               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                 Repaid
               </p>
-              <p className="font-bold text-2xl text-green-700">
+              <p className="font-bold text-lg xl:text-2xl tabular-nums break-words text-green-700">
                 {formatCurrency(selectedAccount.totals?.total_repaid || 0)}
               </p>
             </div>
@@ -331,7 +331,7 @@ function SummaryTabContent({ data, type, emptyMessage }) {
               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                 Closing Balance
               </p>
-              <p className="font-bold text-2xl text-red-700">
+              <p className="font-bold text-lg xl:text-2xl tabular-nums break-words text-red-700">
                 {formatCurrency(closingBalance)}
               </p>
             </div>
@@ -347,7 +347,7 @@ function SummaryTabContent({ data, type, emptyMessage }) {
               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                 Opening Balance
               </p>
-              <p className="font-bold text-2xl">
+              <p className="font-bold text-lg xl:text-2xl tabular-nums break-words">
                 {formatCurrency(openingBalance)}
               </p>
             </div>
@@ -355,7 +355,7 @@ function SummaryTabContent({ data, type, emptyMessage }) {
               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                 Target Amount
               </p>
-              <p className="font-bold text-2xl">
+              <p className="font-bold text-lg xl:text-2xl tabular-nums break-words">
                 {formatCurrency(selectedAccount.totals?.target_amount || 0)}
               </p>
             </div>
@@ -363,7 +363,7 @@ function SummaryTabContent({ data, type, emptyMessage }) {
               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                 Paid (Year)
               </p>
-              <p className="font-bold text-2xl text-green-700">
+              <p className="font-bold text-lg xl:text-2xl tabular-nums break-words text-green-700">
                 {formatCurrency(selectedAccount.totals?.total_paid_yearly || 0)}
               </p>
             </div>
@@ -371,7 +371,7 @@ function SummaryTabContent({ data, type, emptyMessage }) {
               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                 Total Paid
               </p>
-              <p className="font-bold text-2xl text-green-700">
+              <p className="font-bold text-lg xl:text-2xl tabular-nums break-words text-green-700">
                 {formatCurrency(selectedAccount.totals?.total_paid_to_date || 0)}
               </p>
             </div>
@@ -379,7 +379,7 @@ function SummaryTabContent({ data, type, emptyMessage }) {
               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                 Remaining
               </p>
-              <p className="font-bold text-2xl text-red-700">
+              <p className="font-bold text-lg xl:text-2xl tabular-nums break-words text-red-700">
                 {formatCurrency(selectedAccount.totals?.balance_remaining || 0)}
               </p>
             </div>

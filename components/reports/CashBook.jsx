@@ -31,7 +31,7 @@ export default function CashBook() {
                     <CardTitle>Cash Book</CardTitle>
                     <CardDescription>As of {new Date(as_of).toLocaleDateString()}</CardDescription>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                     <Label htmlFor="asOfDate" className="whitespace-nowrap text-sm text-muted-foreground">As Of Date:</Label>
                     <Input
                         type="date"
@@ -46,7 +46,7 @@ export default function CashBook() {
             <CardContent>
                 <div className="text-right mb-4">
                     <p className="text-sm text-muted-foreground">Total Cash & Bank</p>
-                    <p className="text-2xl font-bold text-primary">{formatCurrency(total_cash)}</p>
+                    <p className="text-lg sm:text-xl xl:text-2xl font-bold text-primary break-words">{formatCurrency(total_cash)}</p>
                 </div>
 
                 <Table>

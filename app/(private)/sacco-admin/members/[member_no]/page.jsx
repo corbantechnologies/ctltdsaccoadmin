@@ -450,7 +450,7 @@ function MemberDetail() {
         </div>
 
         {/* Quick Action Cards */}
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <section className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {/* Savings Accounts */}
           <Card className="shadow-sm border border-slate-200 bg-white">
             <CardHeader className="pb-3">
@@ -479,7 +479,7 @@ function MemberDetail() {
                       href={`/sacco-admin/saving-accounts/${account.reference}`}
                       className="block transition-transform hover:scale-[1.01]"
                     >
-                      <div className="p-3 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-100 transition-colors flex items-center justify-between">
+                      <div className="p-3 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-100 transition-colors flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                         <div>
                           <p className="font-semibold text-xs text-slate-800">{account.account_type}</p>
                           <p className="font-mono text-[11px] text-muted-foreground">{account.account_number}</p>
@@ -536,7 +536,7 @@ function MemberDetail() {
                       key={account.reference}
                       className="p-3 rounded-lg bg-slate-50 border border-slate-100 space-y-1.5"
                     >
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
                         <span className="font-semibold text-xs text-slate-800">
                           {account.fee_type}
                         </span>
@@ -544,7 +544,7 @@ function MemberDetail() {
                           {account.account_number}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center text-xs pt-1 border-t border-slate-200/50">
+                      <div className="flex flex-wrap justify-between items-center gap-x-3 gap-y-1 text-xs pt-1 border-t border-slate-200/50">
                         <span className="text-muted-foreground">
                           Due: <strong className="text-red-600 font-semibold">{formatCurrency(account.outstanding_balance)}</strong>
                         </span>
@@ -593,7 +593,7 @@ function MemberDetail() {
                       className="block transition-transform hover:scale-[1.01]"
                     >
                       <div className="p-3 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-100 transition-colors space-y-1">
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
                           <span className="font-semibold text-xs text-slate-800">
                             {account.product}
                           </span>
@@ -601,7 +601,7 @@ function MemberDetail() {
                             {account.status || "Active"}
                           </Badge>
                         </div>
-                        <div className="flex justify-between items-center text-xs pt-1 border-t border-slate-200/50">
+                        <div className="flex flex-wrap justify-between items-center gap-x-3 gap-y-1 text-xs pt-1 border-t border-slate-200/50">
                           <span className="font-mono text-[11px] text-muted-foreground">{account.account_number}</span>
                           <span className="font-bold text-slate-900 font-mono">{formatCurrency(account.outstanding_balance)}</span>
                         </div>
@@ -629,8 +629,8 @@ function MemberDetail() {
         </section>
 
         {/* Main Content */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
+        <div className="grid xl:grid-cols-3 gap-8">
+          <div className="xl:col-span-2 space-y-8">
             <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl">
@@ -802,7 +802,7 @@ function MemberDetail() {
             {member?.guarantor_profile && (
               <Card className="shadow-md border-l-4 border-l-indigo-500">
                 <CardHeader>
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
+                  <div className="flex flex-wrap justify-between items-center gap-3">
                     <CardTitle className="flex items-center gap-2 text-xl">
                       <Shield className="h-6 w-6 text-primary" />
                       Guarantor Profile
@@ -918,7 +918,7 @@ function MemberDetail() {
 
             <Card className="shadow-md">
               <CardHeader>
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
+                <div className="flex flex-wrap justify-between items-center gap-3">
                   <CardTitle className="flex items-center gap-2 text-xl">
                     <Settings className="h-5 w-5 text-primary" />
                     Roles & Permissions
@@ -927,7 +927,7 @@ function MemberDetail() {
                     onClick={() => setRoleModal(true)}
                     size="sm"
                     variant="outline"
-                    className="h-8 w-full sm:w-auto border-primary text-primary hover:bg-primary/5"
+                    className="h-8 border-primary text-primary hover:bg-primary/5"
                   >
                     Edit Roles
                   </Button>
