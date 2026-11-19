@@ -19,6 +19,8 @@ import {
 import CreateMember from "@/forms/members/CreateMember";
 import BulkMemberCreate from "@/forms/members/BulkMemberCreate";
 import BulkMemberUploadCreate from "@/forms/members/BulkMemberUploadCreate";
+import ResendActivationToAll from "@/forms/members/ResendActivationToAll";
+import toast from "react-hot-toast";
 import { useFetchMembers } from "@/hooks/members/actions";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { downloadBulkMembersTemplate } from "@/services/members";
@@ -102,6 +104,7 @@ function Members() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <ResendActivationToAll token={token} />
             <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
               <PopoverTrigger asChild>
                 <Button className="bg-primary hover:bg-[var(--primary-hover)] text-white text-sm sm:text-base py-2 px-3 sm:px-4 flex-1 sm:flex-none">
