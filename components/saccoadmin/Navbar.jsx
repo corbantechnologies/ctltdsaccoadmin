@@ -80,6 +80,7 @@ const MENU_LINKS = [
       { label: "Active Loans", href: "/sacco-admin/loans" },
       { label: "Loan Applications", href: "/sacco-admin/loan-applications" },
       { label: "Loan Products", href: "/sacco-admin/setup/loan-products" },
+      { label: "Onboard Existing Loans", href: "/sacco-admin/onboarding/loans" },
     ],
   },
   {
