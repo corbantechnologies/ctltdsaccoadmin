@@ -39,7 +39,6 @@ function UpdateAccount({ member, isOpen, onClose, refetchMember }) {
             middle_name: member?.middle_name || "",
             last_name: member?.last_name || "",
             dob: member?.dob || "",
-            avatar: null,
             gender: member?.gender || "",
             id_type: member?.id_type || "",
             id_number: member?.id_number || "",
@@ -55,9 +54,6 @@ function UpdateAccount({ member, isOpen, onClose, refetchMember }) {
             try {
               const formData = new FormData();
 
-              if (values.avatar) {
-                formData.append("avatar", values.avatar);
-              }
 
               formData.append("salutation", values.salutation);
               formData.append("email", values.email);
@@ -112,21 +108,6 @@ function UpdateAccount({ member, isOpen, onClose, refetchMember }) {
                   </Field>
                 </div>
 
-                <div className="space-y-3">
-                  <Label
-                    htmlFor="avatar"
-                    className="text-base text-black font-medium"
-                  >
-                    Avatar
-                  </Label>
-                  <input
-                    type="file"
-                    name="avatar"
-                    id="avatar"
-                    onChange={(e) => setFieldValue("avatar", e.target.files[0])}
-                    className="w-full border border-black rounded px-3 py-2 text-base focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                  />
-                </div>
 
                 <div className="space-y-3">
                   <Label

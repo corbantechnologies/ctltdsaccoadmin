@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Always light: `dark:` styles apply only under a .dark class, which the
+   portal never sets. (Tailwind 4 otherwise follows the computer's dark
+   mode, which turned only some pages dark.) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @font-face {
   font-family: 'Google Sans';
   src: url('/fonts/GoogleSans-VariableFont.ttf') format('truetype');
