@@ -26,7 +26,8 @@ export const bulkCreateFeePayments = async (values, token) => {
 };
 
 export const bulkUploadFeePayments = async (values, token) => {
-    await apiMultipartActions?.post("/api/v1/feepayments/bulk/upload/", values, token);
+    const response = await apiMultipartActions?.post("/api/v1/feepayments/bulk/upload/", values, token);
+    return response?.data;
 };
 
 export const downloadFeePaymentsTemplate = async (token, feeType = "", transactionDate = "") => {

@@ -7,10 +7,12 @@ import { bulkUploadLoanDisbursements, downloadLoanDisbursementsTemplate } from "
 import { FileUp, X, Download, FileCheck } from "lucide-react";
 import React, { useState, useRef } from "react";
 import toast from "react-hot-toast";
+import BulkUploadResult, { BulkUploadDateHint, hasBulkCounts, toastBulkResult } from "@/components/general/BulkUploadResult";
 
 function BulkLoanDisbursementUpload({ onBatchSuccess }) {
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState(null);
+    const [result, setResult] = useState(null);
     const fileInputRef = useRef(null);
     const token = useAxiosAuth();
 
@@ -51,16 +53,24 @@ function BulkLoanDisbursementUpload({ onBatchSuccess }) {
 
         try {
             setLoading(true);
+            setResult(null);
             const formData = new FormData();
             formData.append("file", file);
 
-            await bulkUploadLoanDisbursements(formData, token);
-            toast.success("Disbursements uploaded successfully!");
+            const data = await bulkUploadLoanDisbursements(formData, token);
+            setResult(data);
+            if (!toastBulkResult(data, "disbursements")) toast.success("Upload complete.");
             clearFile();
             if (onBatchSuccess) onBatchSuccess();
         } catch (error) {
             console.error("Upload error:", error.response?.data);
-            toast.error(error?.response?.data?.message || "Failed to upload disbursements.");
+            const data = error?.response?.data;
+            if (hasBulkCounts(data)) {
+                setResult(data);
+                toastBulkResult(data, "disbursements");
+            } else {
+                toast.error(error?.response?.data?.message || "Failed to upload disbursements.");
+            }
         } finally {
             setLoading(false);
         }
@@ -159,6 +169,8 @@ function BulkLoanDisbursementUpload({ onBatchSuccess }) {
                     </Button>
                 </div>
             </form>
+            <BulkUploadDateHint />
+            <BulkUploadResult result={result} />
         </div>
     );
 }

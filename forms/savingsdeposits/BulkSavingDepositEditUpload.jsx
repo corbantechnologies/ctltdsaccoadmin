@@ -7,10 +7,12 @@ import { bulkUpdateSavingsDepositsCSV, downloadBulkUpdateTemplate } from "@/serv
 import { FileUp, X, Download, FileCheck } from "lucide-react";
 import React, { useState, useRef } from "react";
 import toast from "react-hot-toast";
+import BulkUploadResult, { BulkUploadDateHint, hasBulkCounts, toastBulkResult } from "@/components/general/BulkUploadResult";
 
 function BulkSavingDepositEditUpload({ onBatchSuccess }) {
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState(null);
+    const [result, setResult] = useState(null);
     const [depositType, setDepositType] = useState("");
     const fileInputRef = useRef(null);
     const token = useAxiosAuth();
@@ -52,16 +54,24 @@ function BulkSavingDepositEditUpload({ onBatchSuccess }) {
 
         try {
             setLoading(true);
+            setResult(null);
             const formData = new FormData();
             formData.append("file", file);
 
-            await bulkUpdateSavingsDepositsCSV(formData, token);
-            toast.success("Deposit dates updated successfully!");
+            const data = await bulkUpdateSavingsDepositsCSV(formData, token);
+            setResult(data);
+            if (!toastBulkResult(data, "deposit dates")) toast.success("Upload complete.");
             clearFile();
             if (onBatchSuccess) onBatchSuccess();
         } catch (error) {
             console.error("Upload error:", error.response?.data);
-            toast.error(error?.response?.data?.error || "Failed to update deposits.");
+            const data = error?.response?.data;
+            if (hasBulkCounts(data)) {
+                setResult(data);
+                toastBulkResult(data, "deposit dates");
+            } else {
+                toast.error(error?.response?.data?.error || "Failed to update deposits.");
+            }
         } finally {
             setLoading(false);
         }
@@ -177,6 +187,8 @@ function BulkSavingDepositEditUpload({ onBatchSuccess }) {
                     </Button>
                 </div>
             </form>
+            <BulkUploadDateHint />
+            <BulkUploadResult result={result} />
         </div>
     );
 }

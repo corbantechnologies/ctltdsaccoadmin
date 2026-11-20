@@ -48,7 +48,8 @@ export const bulkCreateSavingsDeposits = async (values, token) => {
 };
 
 export const bulkUploadSavingsDeposits = async (values, token) => {
-  await apiMultipartActions?.post("/api/v1/savingsdeposits/bulk/upload/", values, token);
+  const response = await apiMultipartActions?.post("/api/v1/savingsdeposits/bulk/upload/", values, token);
+  return response?.data;
 };
 
 export const downloadSavingsDepositsTemplate = async (token, savingType = "", transactionDate = "") => {
@@ -100,7 +101,8 @@ export const downloadBulkUpdateTemplate = async (token, depositType = "") => {
 };
 
 export const bulkUpdateSavingsDepositsCSV = async (values, token) => {
-  await apiMultipartActions?.post("/api/v1/savingsdeposits/bulk/update/upload/", values, token);
+  const response = await apiMultipartActions?.post("/api/v1/savingsdeposits/bulk/update/upload/", values, token);
+  return response?.data;
 };
 
 export const bulkUpdateSavingsDepositsJSON = async (updates, token) => {
