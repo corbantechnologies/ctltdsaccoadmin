@@ -18,7 +18,8 @@ export const bulkCreateLoanDisbursements = async (values, token) => {
 };
 
 export const bulkUploadLoanDisbursements = async (values, token) => {
-    await apiMultipartActions?.post("/api/v1/loandisbursements/bulk/upload/", values, token);
+    const response = await apiMultipartActions?.post("/api/v1/loandisbursements/bulk/upload/", values, token);
+    return response?.data;
 };
 
 export const downloadLoanDisbursementsTemplate = async (token) => {

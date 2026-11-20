@@ -14,10 +14,12 @@ import { createBulkCombinedUpdates } from "@/services/transactions";
 import { FileUp, X, Loader2 } from "lucide-react";
 import React, { useState, useRef } from "react";
 import toast from "react-hot-toast";
+import BulkUploadResult, { BulkUploadDateHint, hasBulkCounts, toastBulkResult } from "@/components/general/BulkUploadResult";
 
 function BulkAccountsUpload({ closeModal, openModal, onSuccess }) {
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState(null);
+    const [result, setResult] = useState(null);
     const fileInputRef = useRef(null);
     const token = useAxiosAuth();
 
@@ -49,17 +51,25 @@ function BulkAccountsUpload({ closeModal, openModal, onSuccess }) {
 
         try {
             setLoading(true);
+            setResult(null);
             const formData = new FormData();
             formData.append("file", file);
 
-            await createBulkCombinedUpdates(formData, token);
-            toast.success("Accounts list uploaded successfully!");
+            const data = await createBulkCombinedUpdates(formData, token);
+            setResult(data);
+            if (!toastBulkResult(data, "rows")) toast.success("Upload complete.");
             closeModal();
             clearFile();
             if (onSuccess) onSuccess();
         } catch (error) {
             console.error("Bulk upload error:", error);
-            toast.error(error?.response?.data?.message || "Failed to upload accounts list.");
+            const data = error?.response?.data;
+            if (hasBulkCounts(data)) {
+                setResult(data);
+                toastBulkResult(data, "rows");
+            } else {
+                toast.error(error?.response?.data?.message || "Failed to upload accounts list.");
+            }
         } finally {
             setLoading(false);
         }
@@ -178,6 +188,7 @@ function BulkAccountsUpload({ closeModal, openModal, onSuccess }) {
                         </Button>
                     </DialogFooter>
                 </form>
+                <BulkUploadResult result={result} />
             </DialogContent>
         </Dialog>
     );

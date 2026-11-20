@@ -8,6 +8,7 @@ import { useFetchSavingsTypes } from "@/hooks/savingtypes/actions";
 import { FileUp, X, Download, FileCheck } from "lucide-react";
 import React, { useState, useRef } from "react";
 import toast from "react-hot-toast";
+import BulkUploadResult, { BulkUploadDateHint, hasBulkCounts, toastBulkResult } from "@/components/general/BulkUploadResult";
 
 function BulkSavingDepositUpload({ onBatchSuccess }) {
     const getLastDayOfCurrentMonth = () => {
@@ -18,6 +19,7 @@ function BulkSavingDepositUpload({ onBatchSuccess }) {
 
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState(null);
+    const [result, setResult] = useState(null);
     const [selectedSavingType, setSelectedSavingType] = useState("");
     const [targetDate, setTargetDate] = useState(getLastDayOfCurrentMonth());
     const fileInputRef = useRef(null);
@@ -61,16 +63,24 @@ function BulkSavingDepositUpload({ onBatchSuccess }) {
 
         try {
             setLoading(true);
+            setResult(null);
             const formData = new FormData();
             formData.append("file", file);
 
-            await bulkUploadSavingsDeposits(formData, token);
-            toast.success("Deposits uploaded successfully!");
+            const data = await bulkUploadSavingsDeposits(formData, token);
+            setResult(data);
+            if (!toastBulkResult(data, "deposits")) toast.success("Upload complete.");
             clearFile();
             if (onBatchSuccess) onBatchSuccess();
         } catch (error) {
             console.error("Upload error:", error.response?.data);
-            toast.error(error?.response?.data?.message || "Failed to upload deposits.");
+            const data = error?.response?.data;
+            if (hasBulkCounts(data)) {
+                setResult(data);
+                toastBulkResult(data, "deposits");
+            } else {
+                toast.error(error?.response?.data?.message || "Failed to upload deposits.");
+            }
         } finally {
             setLoading(false);
         }
@@ -199,6 +209,8 @@ function BulkSavingDepositUpload({ onBatchSuccess }) {
                     </Button>
                 </div>
             </form>
+            <BulkUploadDateHint />
+            <BulkUploadResult result={result} />
         </div>
     );
 }

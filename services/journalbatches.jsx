@@ -47,7 +47,8 @@ export const bulkCreateJournalBatches = async (values, token) => {
 };
 
 export const bulkUploadJournalBatches = async (values, token) => {
-    await apiMultipartActions?.post("/api/v1/journalbatches/bulk/upload/", values, token);
+    const response = await apiMultipartActions?.post("/api/v1/journalbatches/bulk/upload/", values, token);
+    return response?.data;
 };
 
 export const downloadJournalBatchesTemplate = async (token) => {

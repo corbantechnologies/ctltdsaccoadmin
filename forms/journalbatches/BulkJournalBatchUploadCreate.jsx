@@ -7,10 +7,12 @@ import { bulkUploadJournalBatches, downloadJournalBatchesTemplate } from "@/serv
 import { FileUp, X, Download, FileCheck } from "lucide-react";
 import React, { useState, useRef } from "react";
 import toast from "react-hot-toast";
+import BulkUploadResult, { BulkUploadDateHint, hasBulkCounts, toastBulkResult } from "@/components/general/BulkUploadResult";
 
 function BulkJournalBatchUpload({ onBatchSuccess }) {
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState(null);
+    const [result, setResult] = useState(null);
     const fileInputRef = useRef(null);
     const token = useAxiosAuth();
 
@@ -51,16 +53,25 @@ function BulkJournalBatchUpload({ onBatchSuccess }) {
 
         try {
             setLoading(true);
+            setResult(null);
             const formData = new FormData();
             formData.append("file", file);
 
-            await bulkUploadJournalBatches(formData, token);
-            toast.success("Journal batches uploaded successfully!");
+            const data = await bulkUploadJournalBatches(formData, token);
+            setResult(data);
+            if (!toastBulkResult(data, "journal batches")) toast.success("Upload complete.");
             clearFile();
-            if (onBatchSuccess) onBatchSuccess();
+            // Stay on this screen when some batches failed, so the list of problems stays visible.
+            if (onBatchSuccess && !data?.error_count) onBatchSuccess();
         } catch (error) {
             console.error("Upload error:", error.response?.data);
-            toast.error(error?.response?.data?.message || "Failed to upload journal batches.");
+            const data = error?.response?.data;
+            if (hasBulkCounts(data)) {
+                setResult(data);
+                toastBulkResult(data, "journal batches");
+            } else {
+                toast.error(error?.response?.data?.message || "Failed to upload journal batches.");
+            }
         } finally {
             setLoading(false);
         }
@@ -161,6 +172,8 @@ function BulkJournalBatchUpload({ onBatchSuccess }) {
                     </Button>
                 </div>
             </form>
+            <BulkUploadDateHint />
+            <BulkUploadResult result={result} />
         </div>
     );
 }
