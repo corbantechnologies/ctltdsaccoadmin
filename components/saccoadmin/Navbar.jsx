@@ -103,6 +103,7 @@ const MENU_LINKS = [
       { label: "GL Accounts", href: "/sacco-admin/setup/gl-accounts" },
       { label: "Payment Accounts", href: "/sacco-admin/setup/payment-accounts" },
       { label: "Accounts & Transactions", href: "/sacco-admin/transactions" },
+      { label: "Upload History", href: "/sacco-admin/uploads" },
     ],
   },
   {

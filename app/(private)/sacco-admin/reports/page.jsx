@@ -112,7 +112,7 @@ const SaccoReportsSkeleton = () => (
       </div>
 
       {/* Summary Overview Cards */}
-      <SaccoSummaryOverview summary={summary} />
+      <SaccoSummaryOverview summary={summary} year={selectedYear} />
 
       {/* Detailed Statements */}
       <Card>
