@@ -1,6 +1,6 @@
 "use client";
 
-import { apiActions } from "@/tools/axios";
+import { apiActions, getAllPages } from "@/tools/axios";
 
 // For all members
 export const createFeeAccount = async (values, token) => {
@@ -9,8 +9,9 @@ export const createFeeAccount = async (values, token) => {
 };
 
 export const getFeeAccounts = async (token) => {
-    const response = await apiActions?.get("/api/v1/feeaccounts/", token);
-    return response?.data?.results;
+    // Every page, so no fee account is silently left out once a SACCO passes
+    // the API's page size.
+    return getAllPages("/api/v1/feeaccounts/", token);
 };
 
 export const getFeeAccount = async (reference, token) => {
