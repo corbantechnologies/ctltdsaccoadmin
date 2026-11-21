@@ -118,7 +118,7 @@ export default function SavingAccountsPage() {
     const groupedList = React.useMemo(() => Object.values(groupedSavings), [groupedSavings]);
 
     const totalCount = groupedList.length; // total unique members matching filters
-    const pageSize = 10;
+    const pageSize = 50;
     const totalPages = Math.ceil(totalCount / pageSize);
     
     const paginatedGroupedList = React.useMemo(() => {
@@ -176,7 +176,7 @@ export default function SavingAccountsPage() {
                             <CardDescription className="text-xs font-medium">A comprehensive list of all savings accounts in the SACCO.</CardDescription>
                         </div>
                         <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest bg-slate-50 px-3 py-1 rounded w-fit">
-                            Total: {totalCount} Accounts
+                            {totalCount} Members · {filteredSavings.length} Accounts
                         </div>
                     </div>
                 </CardHeader>
@@ -191,7 +191,7 @@ export default function SavingAccountsPage() {
                                     id="search"
                                     placeholder="Search by member name or account number..."
                                     value={searchInput}
-                                    onChange={(e) => setSearchInput(e.target.value)}
+                                    onChange={(e) => handleSearchChange(e.target.value)}
                                     className="pl-10 border-slate-200 focus:border-[var(--accent)] rounded text-sm bg-slate-50/50"
                                 />
                             </div>
@@ -309,7 +309,7 @@ export default function SavingAccountsPage() {
                             {totalPages > 1 && (
                                 <div className="flex items-center justify-between px-6 py-4 bg-slate-50/50 border-t rounded-b">
                                     <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">
-                                        Showing Page {page} of {totalPages}
+                                        Members {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, totalCount)} of {totalCount} · Page {page} of {totalPages}
                                     </p>
                                     <div className="flex flex-wrap gap-2">
                                         <Button
