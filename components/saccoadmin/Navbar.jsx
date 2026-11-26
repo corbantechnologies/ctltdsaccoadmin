@@ -110,6 +110,7 @@ const MENU_LINKS = [
     label: "Setup & Configuration",
     href: "/sacco-admin/setup",
     children: [
+      { label: "SACCO Profile & Settings", href: "/sacco-admin/sacco-profile" },
       { label: "Onboarding", href: "/sacco-admin/onboarding" },
       { label: "Platform Setup", href: "/sacco-admin/setup" },
     ],
