@@ -5,19 +5,25 @@ import NextAuthProvider from "@/providers/NextAuthProvider";
 import { Toaster } from "react-hot-toast";
 import { Theme } from "@radix-ui/themes";
 import { Analytics } from "@vercel/analytics/next";
-import { SACCO_CONFIG } from "@/lib/sacco-config";
+import { loadSaccoSettings, getSaccoConfig } from "@/lib/sacco-settings-server";
+import SaccoSettingsProvider from "@/providers/SaccoSettingsProvider";
 
-export const metadata = {
-  title: SACCO_CONFIG.name,
-  description: SACCO_CONFIG.tagline,
-  icons: {
-    icon: SACCO_CONFIG.logoSmallUrl || SACCO_CONFIG.logoUrl,
-    shortcut: SACCO_CONFIG.logoSmallUrl || SACCO_CONFIG.logoUrl,
-    apple: SACCO_CONFIG.logoSmallUrl || SACCO_CONFIG.logoUrl,
-  },
-};
+export async function generateMetadata() {
+  const SACCO_CONFIG = await getSaccoConfig();
+  return {
+    title: SACCO_CONFIG.name,
+    description: SACCO_CONFIG.tagline,
+    icons: {
+      icon: SACCO_CONFIG.logoSmallUrl || SACCO_CONFIG.logoUrl,
+      shortcut: SACCO_CONFIG.logoSmallUrl || SACCO_CONFIG.logoUrl,
+      apple: SACCO_CONFIG.logoSmallUrl || SACCO_CONFIG.logoUrl,
+    },
+  };
+}
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const settings = await loadSaccoSettings();
+  const SACCO_CONFIG = await getSaccoConfig();
   return (
     <html lang="en" suppressHydrationWarning style={{
       '--primary': SACCO_CONFIG.primaryColor,
@@ -44,6 +50,7 @@ export default function RootLayout({ children }) {
         <meta name="apple-mobile-web-app-title" content={SACCO_CONFIG.shortName} />
       </head>
       <body>
+        <SaccoSettingsProvider settings={settings}>
           <Toaster position="top-center" />
           <Analytics />
           <NextAuthProvider>
@@ -51,6 +58,7 @@ export default function RootLayout({ children }) {
               <Theme>{children}</Theme>
             </TanstackQueryProvider>
           </NextAuthProvider>
+        </SaccoSettingsProvider>
       </body>
     </html>
   );

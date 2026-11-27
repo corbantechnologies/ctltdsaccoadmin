@@ -1,6 +1,7 @@
-import { SACCO_CONFIG } from "@/lib/sacco-config";
+import { getSaccoConfig } from "@/lib/sacco-settings-server";
 
-export default function manifest() {
+export default async function manifest() {
+  const SACCO_CONFIG = await getSaccoConfig();
   return {
     name: SACCO_CONFIG.name,
     short_name: SACCO_CONFIG.shortName,

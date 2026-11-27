@@ -47,7 +47,8 @@ export function SidebarProvider({ children }) {
 }
 
 // ─── Menu Links ───────────────────────────────────────────────────────────────
-const MENU_LINKS = [
+// Built when the menu renders, so it follows the SACCO Settings switches.
+const getMenuLinks = () => [
   { label: "Dashboard", href: "/sacco-admin/dashboard" },
   {
     label: "Members",
@@ -208,7 +209,7 @@ export default function SaccoAdminNavbar() {
       </div>
 
       <nav className="flex-1 overflow-y-auto p-4 space-y-1">
-        {MENU_LINKS.map((link) => (
+        {getMenuLinks().map((link) => (
           <NavItem key={link.href} link={link} setIsMenuOpen={setIsMenuOpen} />
         ))}
       </nav>
