@@ -52,6 +52,7 @@ import ReversePaymentModal from "@/forms/loans/ReversePaymentModal";
 import { Receipt } from "lucide-react";
 import UpdateMemberRole from "@/forms/members/UpdateMemberRole";
 import UpdateMemberDetails from "@/forms/members/UpdateMemberDetails";
+import UpdateMemberLogin from "@/forms/members/UpdateMemberLogin";
 import { useFetchLoanProducts } from "@/hooks/loanproducts/actions";
 import { useFetchMemberSummary } from "@/hooks/summary/actions";
 import MemberFinancialSummary from "@/components/members/dashboard/MemberFinancialSummary";
@@ -125,6 +126,7 @@ function MemberDetail() {
   const [feePaymentModal, setFeePaymentModal] = useState(false);
   const [roleModal, setRoleModal] = useState(false);
   const [detailsModal, setDetailsModal] = useState(false);
+  const [loginModal, setLoginModal] = useState(false);
   const [isReverseModalOpen, setIsReverseModalOpen] = useState(false);
   const [selectedFeePaymentForReversal, setSelectedFeePaymentForReversal] = useState(null);
 
@@ -413,6 +415,15 @@ function MemberDetail() {
                       >
                         <User className="h-4 w-4" />
                         Edit Profile
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        onClick={() => setLoginModal(true)}
+                        className="justify-start font-normal h-9 w-full flex items-center gap-2"
+                      >
+                        <Mail className="h-4 w-4" />
+                        Member No. & Email
                       </Button>
 
                       <Button
@@ -1028,6 +1039,12 @@ function MemberDetail() {
         <UpdateMemberDetails
           isOpen={detailsModal}
           onClose={() => setDetailsModal(false)}
+          refetchMember={handleRefreshAll}
+          member={member}
+        />
+        <UpdateMemberLogin
+          isOpen={loginModal}
+          onClose={() => setLoginModal(false)}
           refetchMember={handleRefreshAll}
           member={member}
         />
