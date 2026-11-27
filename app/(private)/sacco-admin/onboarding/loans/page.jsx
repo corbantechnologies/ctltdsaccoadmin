@@ -397,7 +397,7 @@ export default function OnboardExistingLoans() {
       </Card>
 
       <Tabs defaultValue="paid" className="w-full">
-        <TabsList className="flex-wrap">
+        <TabsList className="mb-4">
           <TabsTrigger value="history">1. Full history</TabsTrigger>
           <TabsTrigger value="paid">2. Paid to date</TabsTrigger>
           <TabsTrigger value="forward">3. Balance forward</TabsTrigger>

@@ -510,7 +510,7 @@ function ChangeHistory({ token }) {
             {(data?.results || []).map((row) => (
               <TableRow key={row.id}>
                 <TableCell className="whitespace-nowrap text-xs">{format(new Date(row.created_at), "d MMM yyyy, HH:mm")}</TableCell>
-                <TableCell className="text-sm font-medium">
+                <TableCell className="font-medium">
                   {row.key === "import_from_env" ? "Copied from env vars" : row.label}
                 </TableCell>
                 <TableCell className="max-w-[220px] truncate text-xs text-slate-500" title={row.old_value || ""}>
@@ -525,7 +525,7 @@ function ChangeHistory({ token }) {
             ))}
             {!data?.results?.length && (
               <TableRow>
-                <TableCell colSpan={6} className="py-8 text-center text-sm text-slate-500">
+                <TableCell colSpan={6} className="py-8 text-center text-slate-500">
                   No changes yet.
                 </TableCell>
               </TableRow>
@@ -624,9 +624,9 @@ export default function SaccoSettingsManager({ mode = "admin" }) {
       )}
 
       <Tabs defaultValue={tabs[0].id} className="w-full">
-        <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1 bg-slate-100 p-1">
+        <TabsList className="mb-4">
           {tabs.map((tab) => (
-            <TabsTrigger key={tab.id} value={tab.id} className="px-3 py-1.5 text-sm">
+            <TabsTrigger key={tab.id} value={tab.id}>
               {tab.label}
             </TabsTrigger>
           ))}

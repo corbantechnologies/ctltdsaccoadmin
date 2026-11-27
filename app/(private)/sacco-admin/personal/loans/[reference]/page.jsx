@@ -388,7 +388,7 @@ function LoanDetail() {
                                             </TableRow>
                                         )) : (
                                             <TableRow>
-                                                <TableCell colSpan={10} className="text-center h-24 text-muted-foreground text-sm">No schedule found.</TableCell>
+                                                <TableCell colSpan={10} className="text-center h-24 text-muted-foreground">No schedule found.</TableCell>
                                             </TableRow>
                                         )}
                                     </TableBody>

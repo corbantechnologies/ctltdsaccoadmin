@@ -91,10 +91,9 @@ export default function PaymentAccountsSetupPage() {
 
             {/* Main Tabs */}
             <Tabs defaultValue="list" className="w-full">
-                <TabsList className="bg-white border p-1 shadow-sm mb-6 w-full h-auto rounded grid grid-cols-3 gap-1 overflow-hidden">
+                <TabsList className="mb-4">
                     <TabsTrigger
                         value="list"
-                        className="flex items-center justify-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                     >
                         <ListFilter className="w-4 h-4 flex-shrink-0" />
                         <span className="hidden sm:inline">Listing</span>
@@ -102,7 +101,6 @@ export default function PaymentAccountsSetupPage() {
                     </TabsTrigger>
                     <TabsTrigger
                         value="bulk-create"
-                        className="flex items-center justify-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                     >
                         <Plus className="w-4 h-4 flex-shrink-0" />
                         <span className="hidden sm:inline">Bulk Form</span>
@@ -110,7 +108,6 @@ export default function PaymentAccountsSetupPage() {
                     </TabsTrigger>
                     <TabsTrigger
                         value="bulk-upload"
-                        className="flex items-center justify-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                     >
                         <FileUp className="w-4 h-4 flex-shrink-0" />
                         <span className="hidden md:inline">CSV Import</span>
@@ -130,10 +127,10 @@ export default function PaymentAccountsSetupPage() {
                                 <Table>
                                     <TableHeader>
                                         <TableRow className="bg-slate-50/50">
-                                            <TableHead className="text-xs font-semibold uppercase tracking-widest text-slate-500 pl-6 px-4 py-4">Account Name</TableHead>
-                                            <TableHead className="text-xs font-semibold uppercase tracking-widest text-slate-500 px-4 py-4">Linked GL Account</TableHead>
-                                            <TableHead className="text-xs font-semibold uppercase tracking-widest text-slate-500 px-4 py-4">Current Status</TableHead>
-                                            <TableHead className="text-xs font-semibold uppercase tracking-widest text-slate-500 text-right pr-6 px-4 py-4">Actions</TableHead>
+                                            <TableHead className="text-xs font-semibold uppercase tracking-widest text-slate-500">Account Name</TableHead>
+                                            <TableHead className="text-xs font-semibold uppercase tracking-widest text-slate-500">Linked GL Account</TableHead>
+                                            <TableHead className="text-xs font-semibold uppercase tracking-widest text-slate-500">Current Status</TableHead>
+                                            <TableHead className="text-xs font-semibold uppercase tracking-widest text-slate-500 text-right">Actions</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -146,8 +143,8 @@ export default function PaymentAccountsSetupPage() {
                                         ) : paymentaccounts?.length > 0 ? (
                                             paymentaccounts.map((acc) => (
                                                 <TableRow key={acc.reference} className="hover:bg-slate-50 transition-colors group border-b border-slate-50">
-                                                    <TableCell className="text-sm font-semibold pl-6 py-5 text-slate-900">{acc.name}</TableCell>
-                                                    <TableCell className="text-sm">
+                                                    <TableCell className="font-semibold text-slate-900">{acc.name}</TableCell>
+                                                    <TableCell className="">
                                                         <div className="flex flex-col">
                                                             <span className="font-medium text-slate-700">{acc.gl_account}</span>
                                                             <span className="text-[10px] text-slate-400 font-mono tracking-tighter uppercase">Ledger Category</span>
@@ -159,7 +156,7 @@ export default function PaymentAccountsSetupPage() {
                                                             {acc.is_active ? "ACTIVE" : "INACTIVE"}
                                                         </span>
                                                     </TableCell>
-                                                    <TableCell className="text-right pr-6 py-5">
+                                                    <TableCell className="text-right">
                                                         <Button
                                                             variant="ghost"
                                                             size="icon"
@@ -176,7 +173,7 @@ export default function PaymentAccountsSetupPage() {
                                             ))
                                         ) : (
                                             <TableRow>
-                                                <TableCell colSpan={4} className="text-center h-48 text-slate-400 text-sm italic py-12">
+                                                <TableCell colSpan={4} className="text-center h-48 text-slate-400 italic py-12">
                                                     No payment accounts configured.
                                                 </TableCell>
                                             </TableRow>

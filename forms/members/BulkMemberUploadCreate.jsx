@@ -142,7 +142,7 @@ function BulkMemberUploadCreate({ closeModal, openModal }) {
                                     {createdMembers.map((member, idx) => (
                                         <TableRow key={idx}>
                                             <TableCell className="font-mono text-xs">{member.member_no}</TableCell>
-                                            <TableCell className="font-medium text-sm">{member.name}</TableCell>
+                                            <TableCell className="font-medium">{member.name}</TableCell>
                                             <TableCell className="font-mono text-xs font-semibold text-emerald-700">{member.temporary_password}</TableCell>
                                         </TableRow>
                                     ))}

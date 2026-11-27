@@ -870,13 +870,13 @@ function MemberDetail() {
                           <TableBody>
                             {member.guarantor_profile.guarantees.map((guarantee, i) => (
                               <TableRow key={i} className="hover:bg-secondary/20">
-                                <TableCell className="text-sm">
+                                <TableCell className="">
                                   {guarantee.loan_application}
                                 </TableCell>
-                                <TableCell className="text-sm">
+                                <TableCell className="">
                                   {formatBalance(guarantee.guaranteed_amount)} KES
                                 </TableCell>
-                                <TableCell className="text-sm">
+                                <TableCell className="">
                                   <Badge
                                     variant="outline"
                                     className={

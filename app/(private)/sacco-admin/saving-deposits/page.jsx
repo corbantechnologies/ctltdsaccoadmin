@@ -97,11 +97,10 @@ export default function SavingDepositsPage() {
 
             {/* Main Content Tabs */}
             <Tabs defaultValue="deposits">
-                <TabsList className="bg-white border p-1 shadow-sm mb-6 w-full h-auto grid grid-cols-4 gap-1 rounded overflow-hidden min-w-0">
+                <TabsList className="mb-4">
 
                     <TabsTrigger
                         value="deposits"
-                        className="flex items-center justify-center gap-2 px-3 py-3 text-xs sm:text-sm font-medium transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                     >
                         <span className="hidden sm:inline">All Deposits</span>
                         <span className="sm:hidden">Deposits</span>
@@ -109,7 +108,6 @@ export default function SavingDepositsPage() {
 
                     <TabsTrigger
                         value="bulk-create"
-                        className="flex items-center justify-center gap-2 px-3 py-3 text-xs sm:text-sm font-medium transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                     >
                         <span className="hidden sm:inline">Bulk Deposit</span>
                         <span className="sm:hidden">Bulk Deposit</span>
@@ -117,7 +115,6 @@ export default function SavingDepositsPage() {
 
                     <TabsTrigger
                         value="bulk-upload"
-                        className="flex items-center justify-center gap-2 px-3 py-3 text-xs sm:text-sm font-medium transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                     >
                         <span className="hidden md:inline">CSV Upload</span>
                         <span className="md:hidden">CSV Upload</span>
@@ -125,7 +122,6 @@ export default function SavingDepositsPage() {
 
                     <TabsTrigger
                         value="bulk-edit-upload"
-                        className="flex items-center justify-center gap-2 px-3 py-3 text-xs sm:text-sm font-medium transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                     >
                         <span className="hidden md:inline">Edit Dates CSV</span>
                         <span className="md:hidden">Edit Dates CSV</span>

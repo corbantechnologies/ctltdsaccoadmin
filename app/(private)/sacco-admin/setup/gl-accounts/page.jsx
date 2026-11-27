@@ -91,10 +91,9 @@ export default function GLAccountsSetupPage() {
 
             {/* Main Content Tabs */}
             <Tabs defaultValue="list" className="w-full">
-                <TabsList className="bg-white border p-1 shadow-sm mb-6 w-full h-auto rounded grid grid-cols-3 gap-1 overflow-hidden">
+                <TabsList className="mb-4">
                     <TabsTrigger
                         value="list"
-                        className="flex items-center justify-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                     >
                         <ListFilter className="w-4 h-4 flex-shrink-0" />
                         <span className="hidden sm:inline">List View</span>
@@ -102,7 +101,6 @@ export default function GLAccountsSetupPage() {
                     </TabsTrigger>
                     <TabsTrigger
                         value="bulk-create"
-                        className="flex items-center justify-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                     >
                         <Plus className="w-4 h-4 flex-shrink-0" />
                         <span className="hidden sm:inline">Bulk Form</span>
@@ -110,7 +108,6 @@ export default function GLAccountsSetupPage() {
                     </TabsTrigger>
                     <TabsTrigger
                         value="bulk-upload"
-                        className="flex items-center justify-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                     >
                         <FileUp className="w-4 h-4 flex-shrink-0" />
                         <span className="hidden md:inline">Bulk Upload</span>
@@ -130,12 +127,12 @@ export default function GLAccountsSetupPage() {
                                 <Table>
                                     <TableHeader>
                                         <TableRow className="bg-slate-50/50">
-                                            <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 pl-6 px-4 py-3">Account Name</TableHead>
-                                            <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 px-4 py-3">Code</TableHead>
-                                            <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 px-4 py-3">Category</TableHead>
-                                            <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 px-4 py-3">Status</TableHead>
-                                            <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 px-4 py-3">Type</TableHead>
-                                            <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 text-right pr-6 px-4 py-3">Actions</TableHead>
+                                            <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500">Account Name</TableHead>
+                                            <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500">Code</TableHead>
+                                            <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500">Category</TableHead>
+                                            <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500">Status</TableHead>
+                                            <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500">Type</TableHead>
+                                            <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 text-right">Actions</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -148,9 +145,9 @@ export default function GLAccountsSetupPage() {
                                         ) : glaccounts?.length > 0 ? (
                                             glaccounts.map((acc) => (
                                                 <TableRow key={acc.reference} className="hover:bg-slate-50 transition-colors group">
-                                                    <TableCell className="text-sm font-medium pl-6 py-4">{acc.name}</TableCell>
-                                                    <TableCell className="text-sm font-mono text-slate-600">{acc.code}</TableCell>
-                                                    <TableCell className="text-sm">
+                                                    <TableCell className="font-medium">{acc.name}</TableCell>
+                                                    <TableCell className="font-mono text-slate-600">{acc.code}</TableCell>
+                                                    <TableCell className="">
                                                         <span className={`px-2 py-1 rounded text-[10px] font-semibold uppercase tracking-wider ${acc.category === "ASSET" ? "bg-blue-50 text-blue-700" :
                                                             acc.category === "LIABILITY" ? "bg-amber-50 text-amber-700" :
                                                                 acc.category === "EQUITY" ? "bg-purple-50 text-purple-700" :
@@ -171,7 +168,7 @@ export default function GLAccountsSetupPage() {
                                                     <TableCell className="text-[11px] text-slate-500 italic">
                                                         {acc.is_current_account ? "Current Account" : "Standard"}
                                                     </TableCell>
-                                                    <TableCell className="text-right pr-6 py-4">
+                                                    <TableCell className="text-right">
                                                         <Button
                                                             variant="ghost"
                                                             size="icon"
@@ -188,7 +185,7 @@ export default function GLAccountsSetupPage() {
                                             ))
                                         ) : (
                                             <TableRow>
-                                                <TableCell colSpan={6} className="text-center h-48 text-slate-400 text-sm">
+                                                <TableCell colSpan={6} className="text-center h-48 text-slate-400">
                                                     No GL accounts found. Use the buttons above to create some.
                                                 </TableCell>
                                             </TableRow>

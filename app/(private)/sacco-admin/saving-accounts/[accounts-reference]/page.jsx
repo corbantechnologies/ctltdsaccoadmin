@@ -245,12 +245,12 @@ export default function SavingAccountReferencePage() {
                         <Table className="min-w-[800px]">
                             <TableHeader>
                                 <TableRow className="bg-slate-50/50">
-                                    <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 pl-6 py-3">Reference</TableHead>
-                                    <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 py-3">Date</TableHead>
-                                    <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 py-3">Type</TableHead>
-                                    <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 py-3">Payment Method</TableHead>
-                                    <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 text-right pr-6 py-3">Amount</TableHead>
-                                    <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 text-right pr-6 py-3">Actions</TableHead>
+                                    <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500">Reference</TableHead>
+                                    <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500">Date</TableHead>
+                                    <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500">Type</TableHead>
+                                    <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500">Payment Method</TableHead>
+                                    <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 text-right">Amount</TableHead>
+                                    <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 text-right">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -261,13 +261,13 @@ export default function SavingAccountReferencePage() {
                                             const displayDate = dep.transaction_date || dep.created_at;
                                             return (
                                                 <TableRow key={dep.reference || index} className="hover:bg-slate-50 transition-colors border-b border-slate-50">
-                                                    <TableCell className="pl-6 py-4">
+                                                    <TableCell className="">
                                                         <div className="flex flex-col">
                                                             <span className="text-xs font-semibold text-[var(--accent)] font-mono">{dep.identity || dep.reference}</span>
                                                             <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-tighter">System ID</span>
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell className="py-4">
+                                                    <TableCell className="">
                                                         <div className="flex flex-col">
                                                             <span className="text-xs font-semibold text-slate-700">
                                                                 {new Date(displayDate).toLocaleDateString("en-GB", { day: 'numeric', month: 'short', year: 'numeric' })}
@@ -277,23 +277,23 @@ export default function SavingAccountReferencePage() {
                                                             </span>
                                                         </div>
                                                     </TableCell>
-                                            <TableCell className="py-4">
+                                            <TableCell className="">
                                                 <div className="flex items-center gap-1.5">
                                                     <ArrowDownLeft className="w-3.5 h-3.5 text-emerald-500" />
                                                     <span className="text-xs font-semibold text-slate-600 uppercase tracking-tight">{dep.deposit_type}</span>
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="py-4 text-xs font-medium text-slate-600">
+                                            <TableCell className="text-xs font-medium text-slate-600">
                                                 <span className="bg-slate-100 px-2 py-0.5 rounded text-[10px] font-semibold uppercase">
                                                     {dep.payment_method}
                                                 </span>
                                             </TableCell>
-                                            <TableCell className="text-right pr-6 py-4">
+                                            <TableCell className="text-right">
                                                 <span className="text-sm font-semibold text-emerald-600 font-mono tracking-tighter">
                                                     + {formatCurrency(dep.amount || 0)}
                                                 </span>
                                             </TableCell>
-                                            <TableCell className="text-right pr-6 py-4">
+                                            <TableCell className="text-right">
                                                 {dep.transaction_status === "Reversed" ? (
                                                     <span className="bg-red-50 text-red-700 px-2 py-0.5 rounded text-[10px] font-semibold uppercase border border-red-200">
                                                         Reversed
@@ -330,7 +330,7 @@ export default function SavingAccountReferencePage() {
                                 })
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan={6} className="text-center h-48 text-slate-400 text-sm font-medium italic">
+                                        <TableCell colSpan={6} className="text-center h-48 text-slate-400 font-medium italic">
                                             No deposits or transactions recorded for this account.
                                         </TableCell>
                                     </TableRow>

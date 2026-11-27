@@ -265,22 +265,22 @@ export default function GLAccountReferencePage() {
                         <Table className="min-w-[700px]">
                             <TableHeader>
                                 <TableRow className="bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-50/50">
-                                    <TableHead className="text-[10px] text-slate-500 uppercase tracking-wider py-4 pl-6">
+                                    <TableHead className="text-[10px] text-slate-500 uppercase tracking-wider">
                                         <div className="flex items-center gap-1.5"><Calendar className="w-3 h-3" />POSTING DATE</div>
                                     </TableHead>
-                                    <TableHead className="text-[10px] text-slate-500 uppercase tracking-wider py-4">
+                                    <TableHead className="text-[10px] text-slate-500 uppercase tracking-wider">
                                         <div className="flex items-center gap-1.5"><Hash className="w-3 h-3" />CODES</div>
                                     </TableHead>
-                                    <TableHead className="text-[10px] text-slate-500 uppercase tracking-wider py-4">DESCRIPTION</TableHead>
-                                    <TableHead className="text-[10px] text-slate-500 uppercase tracking-wider py-4 text-right">DEBIT</TableHead>
-                                    <TableHead className="text-[10px] text-slate-500 uppercase tracking-wider py-4 text-right">CREDIT</TableHead>
-                                    <TableHead className="text-[10px] text-slate-500 uppercase tracking-wider py-4 text-right pr-6">BALANCE</TableHead>
+                                    <TableHead className="text-[10px] text-slate-500 uppercase tracking-wider">DESCRIPTION</TableHead>
+                                    <TableHead className="text-[10px] text-slate-500 uppercase tracking-wider text-right">DEBIT</TableHead>
+                                    <TableHead className="text-[10px] text-slate-500 uppercase tracking-wider text-right">CREDIT</TableHead>
+                                    <TableHead className="text-[10px] text-slate-500 uppercase tracking-wider text-right">BALANCE</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {filteredEntries.map((entry) => (
                                     <TableRow key={entry.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors border-b-slate-100">
-                                        <TableCell className="py-4 pl-6">
+                                        <TableCell className="">
                                             {(() => {
                                                 const rawPostingDate = entry.posting_date || entry.batch_details?.posting_date;
                                                 const displayDate = rawPostingDate 
@@ -298,11 +298,11 @@ export default function GLAccountReferencePage() {
                                                 );
                                             })()}
                                         </TableCell>
-                                        <TableCell className="py-4 font-mono">
+                                        <TableCell className="font-mono">
                                             <div className="text-[10px] text-slate-900 dark:text-slate-200">{entry.code}</div>
                                             <div className="text-[10px] text-slate-500 mt-0.5">{entry.batch}</div>
                                         </TableCell>
-                                        <TableCell className="py-4">
+                                        <TableCell className="">
                                             <div className="text-sm text-slate-700 dark:text-slate-300 leading-tight">
                                                 {entry.batch_details?.description || "No description provided"}
                                             </div>
@@ -311,7 +311,7 @@ export default function GLAccountReferencePage() {
                                                 {entry.created_by || "System"}
                                             </div>
                                         </TableCell>
-                                        <TableCell className="py-4 text-right">
+                                        <TableCell className="text-right">
                                             {Number(entry.debit) > 0 ? (
                                                 <span className="text-sm text-emerald-600 font-mono">
                                                     {Number(entry.debit).toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -320,7 +320,7 @@ export default function GLAccountReferencePage() {
                                                 <span className="text-slate-300 font-mono text-xs">0.00</span>
                                             )}
                                         </TableCell>
-                                        <TableCell className="py-4 text-right">
+                                        <TableCell className="text-right">
                                             {Number(entry.credit) > 0 ? (
                                                 <span className="text-sm text-rose-600 font-mono">
                                                     {Number(entry.credit).toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -329,7 +329,7 @@ export default function GLAccountReferencePage() {
                                                 <span className="text-slate-300 font-mono text-xs">0.00</span>
                                             )}
                                         </TableCell>
-                                        <TableCell className="py-4 text-right pr-6 font-mono">
+                                        <TableCell className="text-right font-mono">
                                             <span className={`text-sm ${entry.runningBalance >= 0 ? "text-slate-900 dark:text-slate-100" : "text-rose-600"}`}>
                                                 KES {Number(entry.runningBalance).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                             </span>
@@ -338,7 +338,7 @@ export default function GLAccountReferencePage() {
                                 ))}
                                 {filteredEntries.length === 0 && (
                                     <TableRow>
-                                        <TableCell colSpan={6} className="py-12 text-center text-slate-400 italic text-sm">
+                                        <TableCell colSpan={6} className="py-12 text-center text-slate-400 italic">
                                             {searchTerm ? "No transactions found matching your search." : "No transactions recorded for this account."}
                                         </TableCell>
                                     </TableRow>

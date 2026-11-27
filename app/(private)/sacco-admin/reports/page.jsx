@@ -124,7 +124,7 @@ const SaccoReportsSkeleton = () => (
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="balance_sheet" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 mb-6">
+            <TabsList className="mb-4">
               <TabsTrigger value="balance_sheet">Balance Sheet</TabsTrigger>
               <TabsTrigger value="pnl">Profit &amp; Loss</TabsTrigger>
               <TabsTrigger value="trial_balance">Trial Balance</TabsTrigger>
