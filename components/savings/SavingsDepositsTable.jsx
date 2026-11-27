@@ -400,19 +400,19 @@ function SavingsDepositsTable({ deposits }) {
             <TableBody>
               {paginatedDeposits?.map((deposit) => (
                 <TableRow key={deposit.reference} className="border-b hover:bg-gray-50 transition-colors">
-                  <TableCell className="text-sm text-gray-700">
+                  <TableCell className="text-gray-700">
                     {formatDate(deposit.transaction_date || deposit.created_at)}
                   </TableCell>
-                  <TableCell className="text-sm text-gray-700">
+                  <TableCell className="text-gray-700">
                     KES {parseFloat(deposit.amount).toFixed(2)}
                   </TableCell>
-                  <TableCell className="text-sm text-gray-700">
+                  <TableCell className="text-gray-700">
                     {deposit.deposited_by}
                   </TableCell>
-                  <TableCell className="text-sm text-gray-700">
+                  <TableCell className="text-gray-700">
                     {deposit.payment_method}
                   </TableCell>
-                  <TableCell className="text-sm">
+                  <TableCell className="">
                     <span
                       className={`px-2 py-1 rounded text-xs ${deposit.transaction_status === "Completed"
                         ? "bg-green-100 text-green-700"

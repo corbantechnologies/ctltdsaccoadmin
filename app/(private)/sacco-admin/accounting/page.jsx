@@ -158,16 +158,16 @@ export default function AccountingPage() {
             </div>
 
             <Tabs defaultValue="gl-accounts" value={activeTab} onValueChange={setActiveTab} className="w-full max-w-full">
-                <TabsList className="bg-white border shadow-sm p-1 mb-6 flex h-auto w-full overflow-x-auto no-scrollbar justify-start md:justify-center">
-                    <TabsTrigger value="gl-accounts" className="flex shrink-0 items-center gap-2 px-3 md:px-6 py-2 text-xs md:text-sm whitespace-nowrap">
+                <TabsList className="mb-4">
+                    <TabsTrigger value="gl-accounts">
                         <List className="w-4 h-4" />
                         GL Accounts
                     </TabsTrigger>
-                    <TabsTrigger value="journal-batches" className="flex shrink-0 items-center gap-2 px-3 md:px-6 py-2 text-xs md:text-sm whitespace-nowrap">
+                    <TabsTrigger value="journal-batches">
                         <Receipt className="w-4 h-4" />
                         Journal Batches
                     </TabsTrigger>
-                    <TabsTrigger value="journal-entries" className="flex shrink-0 items-center gap-2 px-3 md:px-6 py-2 text-xs md:text-sm whitespace-nowrap">
+                    <TabsTrigger value="journal-entries">
                         <Fingerprint className="w-4 h-4" />
                         Journal Entries
                     </TabsTrigger>
@@ -217,14 +217,14 @@ export default function AccountingPage() {
                                     <TableBody>
                                         {filteredGLAccounts.map((acc) => (
                                             <TableRow key={acc.id || acc.reference} className="hover:bg-slate-50/50 transition-colors">
-                                                <TableCell className="text-sm font-medium text-slate-700">{acc.name}</TableCell>
-                                                <TableCell className="text-sm text-slate-500 font-mono">{acc.code}</TableCell>
+                                                <TableCell className="font-medium text-slate-700">{acc.name}</TableCell>
+                                                <TableCell className="text-slate-500 font-mono">{acc.code}</TableCell>
                                                 <TableCell>
                                                     <Badge variant="outline" className="capitalize text-[10px] font-semibold">
                                                         {acc.category?.toLowerCase()}
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell className="text-sm font-semibold text-slate-900 font-mono">
+                                                <TableCell className="font-semibold text-slate-900 font-mono">
                                                     KES {Number(acc.balance).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                                 </TableCell>
                                                 <TableCell>
@@ -350,9 +350,9 @@ export default function AccountingPage() {
                                             <TableBody>
                                                 {journalBatches.map((batch) => (
                                                     <TableRow key={batch.id || batch.reference} className="hover:bg-slate-50/50 transition-colors">
-                                                        <TableCell className="text-sm font-semibold text-slate-700">{batch.code}</TableCell>
-                                                        <TableCell className="text-sm text-slate-500 max-w-xs truncate">{batch.description}</TableCell>
-                                                        <TableCell className="text-sm text-slate-500">
+                                                        <TableCell className="font-semibold text-slate-700">{batch.code}</TableCell>
+                                                        <TableCell className="text-slate-500 max-w-xs truncate">{batch.description}</TableCell>
+                                                        <TableCell className="text-slate-500">
                                                             {batch.posting_date ? format(new Date(batch.posting_date), "MMM d, yyyy") : "-"}
                                                         </TableCell>
                                                         <TableCell>
@@ -360,7 +360,7 @@ export default function AccountingPage() {
                                                                 {batch.posted ? "Posted" : "Draft"}
                                                             </Badge>
                                                         </TableCell>
-                                                        <TableCell className="text-sm text-right font-medium">{batch.entries?.length || 0}</TableCell>
+                                                        <TableCell className="text-right font-medium">{batch.entries?.length || 0}</TableCell>
                                                         <TableCell className="text-right">
                                                             <Button
                                                                 variant="ghost"
@@ -537,16 +537,16 @@ export default function AccountingPage() {
                                         <TableBody>
                                             {entries.map((entry) => (
                                                 <TableRow key={entry.id || entry.reference} className="hover:bg-slate-50/50 transition-colors">
-                                                    <TableCell className="text-sm font-medium text-slate-600">{entry.code}</TableCell>
-                                                    <TableCell className="text-sm font-semibold text-slate-800">{entry.account}</TableCell>
-                                                    <TableCell className="text-sm text-right font-mono text-slate-900 font-semibold">
+                                                    <TableCell className="font-medium text-slate-600">{entry.code}</TableCell>
+                                                    <TableCell className="font-semibold text-slate-800">{entry.account}</TableCell>
+                                                    <TableCell className="text-right font-mono text-slate-900 font-semibold">
                                                         {Number(entry.debit) > 0 ? Number(entry.debit).toLocaleString(undefined, { minimumFractionDigits: 2 }) : "-"}
                                                     </TableCell>
-                                                    <TableCell className="text-sm text-right font-mono text-slate-900 font-semibold">
+                                                    <TableCell className="text-right font-mono text-slate-900 font-semibold">
                                                         {Number(entry.credit) > 0 ? Number(entry.credit).toLocaleString(undefined, { minimumFractionDigits: 2 }) : "-"}
                                                     </TableCell>
-                                                    <TableCell className="text-sm text-slate-500 font-mono text-xs">{entry.batch}</TableCell>
-                                                    <TableCell className="text-sm text-slate-500">
+                                                    <TableCell className="text-slate-500 font-mono text-xs">{entry.batch}</TableCell>
+                                                    <TableCell className="text-slate-500">
                                                         {(() => {
                                                             const rawDate = entry.posting_date || entry.batch_details?.posting_date || journalBatches?.find(b => b.code === entry.batch)?.posting_date;
                                                             if (rawDate) {

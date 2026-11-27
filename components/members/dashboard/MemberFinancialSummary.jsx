@@ -110,24 +110,21 @@ export default function MemberFinancialSummary({ summary, memberNo, summaryYear,
 
       <CardContent>
         <Tabs defaultValue="savings" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6 h-auto p-1 bg-muted">
+          <TabsList className="mb-4">
             <TabsTrigger
               value="savings"
-              className="flex items-center justify-center gap-2 py-3 text-sm"
             >
               <PiggyBank className="h-4 w-4" />
               <span className="xs:inline">Savings</span>
             </TabsTrigger>
             <TabsTrigger
               value="loans"
-              className="flex items-center justify-center gap-2 py-3 text-sm"
             >
               <CreditCard className="h-4 w-4" />
               <span className="xs:inline">Loans</span>
             </TabsTrigger>
             <TabsTrigger
               value="fees"
-              className="flex items-center justify-center gap-2 py-3 text-sm"
             >
               <CircleDollarSign className="h-4 w-4" />
               <span className="xs:inline">Fees</span>

@@ -510,7 +510,7 @@ export default function SaccoAdminDashboard() {
                       ))
                     ) : (
                       <TableRow>
-                        <TableCell colSpan={7} className="text-center py-12 text-slate-400 text-sm">
+                        <TableCell colSpan={7} className="text-center py-12 text-slate-400">
                           <CheckCircle2 className="h-8 w-8 text-green-500 mx-auto mb-2" />
                           <p className="font-medium text-slate-700">All caught up!</p>
                           <p className="text-xs text-muted-foreground mt-0.5">There are no pending loan applications requiring approval.</p>

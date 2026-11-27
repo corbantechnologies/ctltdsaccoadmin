@@ -700,7 +700,7 @@ export default function LoanAccountDetail({ params }) {
                           ))
                         ) : (
                           <TableRow>
-                            <TableCell colSpan={8} className="text-center py-12 text-muted-foreground text-sm">
+                            <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
                               No projection schedule recorded for this loan.
                             </TableCell>
                           </TableRow>
@@ -795,7 +795,7 @@ export default function LoanAccountDetail({ params }) {
                           ))
                         ) : (
                           <TableRow>
-                            <TableCell colSpan={7} className="text-center py-12 text-muted-foreground text-sm">
+                            <TableCell colSpan={7} className="text-center py-12 text-muted-foreground">
                               No repayments recorded for this loan yet.
                             </TableCell>
                           </TableRow>
@@ -888,7 +888,7 @@ export default function LoanAccountDetail({ params }) {
                           ))
                         ) : (
                           <TableRow>
-                            <TableCell colSpan={8} className="text-center py-12 text-muted-foreground text-sm">
+                            <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
                               No penalties have been charged to this loan.
                             </TableCell>
                           </TableRow>
@@ -971,7 +971,7 @@ export default function LoanAccountDetail({ params }) {
                             })
                         ) : (
                           <TableRow>
-                            <TableCell colSpan={6} className="text-center py-12 text-muted-foreground text-sm">
+                            <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">
                               No disbursements recorded yet.
                             </TableCell>
                           </TableRow>

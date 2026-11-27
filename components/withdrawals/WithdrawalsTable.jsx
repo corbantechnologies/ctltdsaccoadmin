@@ -302,21 +302,21 @@ function WithdrawalsTable({ withdrawals, refetchWithdrawals }) {
             <TableBody>
               {paginatedWithdrawals.map((withdrawal) => (
                 <TableRow key={withdrawal.reference} className="border-b">
-                  <TableCell className="text-sm text-gray-700">
+                  <TableCell className="text-gray-700">
                     {formatDate(withdrawal.transaction_date || withdrawal.created_at)}
                   </TableCell>
-                  <TableCell className="text-sm text-gray-700">
+                  <TableCell className="text-gray-700">
                     KES {parseFloat(withdrawal.amount).toFixed(2)}
                   </TableCell>
-                  <TableCell className="text-sm text-gray-700">
+                  <TableCell className="text-gray-700">
                     {withdrawal.savings_account_detail?.account_number} (
                     {withdrawal.savings_account_detail?.account_type})
                   </TableCell>
-                  <TableCell className="text-sm text-gray-700">
+                  <TableCell className="text-gray-700">
                     {withdrawal.savings_account_detail?.member}
                   </TableCell>
 
-                  <TableCell className="text-sm">
+                  <TableCell className="">
                     <span
                       className={`px-2 py-0.5 font-bold uppercase tracking-wider text-[10px] rounded border ${withdrawal.transaction_status === "Completed"
                           ? "bg-emerald-50 text-emerald-700 border-emerald-100/50"
@@ -333,7 +333,7 @@ function WithdrawalsTable({ withdrawals, refetchWithdrawals }) {
                       {withdrawal.transaction_status}
                     </span>
                   </TableCell>
-                  <TableCell className="text-sm text-center">
+                  <TableCell className="text-center">
                     <Button
                       size="sm"
                       className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white rounded text-[12px] font-bold h-8"

@@ -77,10 +77,10 @@ export default function JournalBatchDetails({ isOpen, onClose, batch, refetch })
                     <Table>
                         <TableHeader className="sticky top-0 bg-slate-50 z-10 shadow-sm">
                             <TableRow className="border-b-0">
-                                <TableHead className="text-xs font-bold text-slate-900 px-6 py-4">ENTRY CODE</TableHead>
-                                <TableHead className="text-xs font-bold text-slate-900 px-6 py-4">ACCOUNT</TableHead>
-                                <TableHead className="text-xs font-bold text-slate-900 px-6 py-4 text-right">DEBIT</TableHead>
-                                <TableHead className="text-xs font-bold text-slate-900 px-6 py-4 text-right">CREDIT</TableHead>
+                                <TableHead className="text-xs font-bold text-slate-900">ENTRY CODE</TableHead>
+                                <TableHead className="text-xs font-bold text-slate-900">ACCOUNT</TableHead>
+                                <TableHead className="text-xs font-bold text-slate-900 text-right">DEBIT</TableHead>
+                                <TableHead className="text-xs font-bold text-slate-900 text-right">CREDIT</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -89,25 +89,25 @@ export default function JournalBatchDetails({ isOpen, onClose, batch, refetch })
                                     key={entry.id || entry.reference}
                                     className={`${idx % 2 === 0 ? "bg-white" : "bg-slate-50/30"} hover:bg-slate-50 transition-colors border-b-slate-100`}
                                 >
-                                    <TableCell className="text-xs font-bold text-slate-600 px-6 py-4 font-mono">{entry.code}</TableCell>
-                                    <TableCell className="px-6 py-4">
+                                    <TableCell className="text-xs font-bold text-slate-600 font-mono">{entry.code}</TableCell>
+                                    <TableCell className="">
                                         <div className="font-bold text-slate-900 text-sm whitespace-nowrap">{entry.account}</div>
                                         <div className="text-[10px] text-slate-500 font-mono flex items-center gap-1.5 mt-0.5">
                                             <span className="w-1 h-1 rounded bg-slate-300"></span>
                                             {entry.account_details?.code || "No account code"}
                                         </div>
                                     </TableCell>
-                                    <TableCell className="text-sm text-right font-mono text-slate-900 font-bold px-6 py-4">
+                                    <TableCell className="text-right font-mono text-slate-900 font-bold">
                                         {Number(entry.debit) > 0 ? Number(entry.debit).toLocaleString(undefined, { minimumFractionDigits: 2 }) : "-"}
                                     </TableCell>
-                                    <TableCell className="text-sm text-right font-mono text-slate-900 font-bold px-6 py-4">
+                                    <TableCell className="text-right font-mono text-slate-900 font-bold">
                                         {Number(entry.credit) > 0 ? Number(entry.credit).toLocaleString(undefined, { minimumFractionDigits: 2 }) : "-"}
                                     </TableCell>
                                 </TableRow>
                             ))}
                             {(!batch.entries || batch.entries.length === 0) && (
                                 <TableRow>
-                                    <TableCell colSpan={4} className="h-32 text-center text-slate-500 italic text-sm">
+                                    <TableCell colSpan={4} className="h-32 text-center text-slate-500 italic">
                                         No entries found in this batch.
                                     </TableCell>
                                 </TableRow>

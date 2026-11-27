@@ -163,10 +163,9 @@ export default function FeeTypesSetupPage() {
 
             {/* Content Tabs */}
             <Tabs defaultValue="list" className="w-full">
-                <TabsList className="bg-white border p-1 shadow-sm mb-6 w-full h-auto rounded grid grid-cols-3 gap-1 overflow-hidden">
+                <TabsList className="mb-4">
                     <TabsTrigger
                         value="list"
-                        className="flex items-center justify-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                     >
                         <ListFilter className="w-4 h-4 flex-shrink-0" />
                         <span className="hidden sm:inline">Current Fees</span>
@@ -174,7 +173,6 @@ export default function FeeTypesSetupPage() {
                     </TabsTrigger>
                     <TabsTrigger
                         value="bulk-create"
-                        className="flex items-center justify-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                     >
                         <Plus className="w-4 h-4 flex-shrink-0" />
                         <span className="hidden sm:inline">Batch Entry</span>
@@ -182,7 +180,6 @@ export default function FeeTypesSetupPage() {
                     </TabsTrigger>
                     <TabsTrigger
                         value="bulk-upload"
-                        className="flex items-center justify-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                     >
                         <FileUp className="w-4 h-4 flex-shrink-0" />
                         <span className="hidden md:inline">Import CSV</span>
@@ -202,13 +199,13 @@ export default function FeeTypesSetupPage() {
                                 <Table>
                                     <TableHeader>
                                         <TableRow className="bg-slate-50/50">
-                                            <TableHead className="pl-6 text-xs uppercase tracking-wider text-slate-500">Fee</TableHead>
+                                            <TableHead className="text-xs uppercase tracking-wider text-slate-500">Fee</TableHead>
                                             <TableHead className="text-xs uppercase tracking-wider text-slate-500 text-right">Amount</TableHead>
                                             <TableHead className="text-xs uppercase tracking-wider text-slate-500">Rules</TableHead>
                                             <TableHead className="text-xs uppercase tracking-wider text-slate-500">Members</TableHead>
                                             <TableHead className="text-xs uppercase tracking-wider text-slate-500 text-right">Collected</TableHead>
                                             <TableHead className="text-xs uppercase tracking-wider text-slate-500 text-right">Still Owed</TableHead>
-                                            <TableHead className="pr-6 text-xs uppercase tracking-wider text-slate-500 text-right">Actions</TableHead>
+                                            <TableHead className="text-xs uppercase tracking-wider text-slate-500 text-right">Actions</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -223,7 +220,7 @@ export default function FeeTypesSetupPage() {
                                                 const st = statsByType[fee.name] || { accounts: 0, paid: 0, partial: 0, owing: 0, collected: 0, outstanding: 0 };
                                                 return (
                                                     <TableRow key={fee.reference} className="align-top">
-                                                        <TableCell className="pl-6 py-4">
+                                                        <TableCell className="">
                                                             <div className="flex flex-col gap-1">
                                                                 <span className="text-sm font-semibold text-slate-900">{fee.name}</span>
                                                                 <span className="text-[11px] text-slate-500">GL: {fee.gl_account || "-"}</span>
@@ -235,16 +232,16 @@ export default function FeeTypesSetupPage() {
                                                                 </div>
                                                             </div>
                                                         </TableCell>
-                                                        <TableCell className="py-4 text-right font-mono text-sm text-slate-800 whitespace-nowrap">
+                                                        <TableCell className="text-right font-mono text-slate-800 whitespace-nowrap">
                                                             {formatCurrency(fee.amount || 0)}
                                                         </TableCell>
-                                                        <TableCell className="py-4">
+                                                        <TableCell className="">
                                                             <div className="flex flex-col gap-1 text-[11px] text-slate-600">
                                                                 <span>{fee.is_everyone ? "Charged to every member" : "Charged to selected members"}</span>
                                                                 <span className="text-slate-400">{fee.can_exceed_limit ? "Members may pay more than the amount" : "Payments capped at the amount"}</span>
                                                             </div>
                                                         </TableCell>
-                                                        <TableCell className="py-4">
+                                                        <TableCell className="">
                                                             {isLoadingAccounts ? (
                                                                 <div className="h-4 w-20 bg-slate-100 rounded animate-pulse" />
                                                             ) : (
@@ -256,13 +253,13 @@ export default function FeeTypesSetupPage() {
                                                                 </div>
                                                             )}
                                                         </TableCell>
-                                                        <TableCell className="py-4 text-right font-mono text-sm text-emerald-600 whitespace-nowrap">
+                                                        <TableCell className="text-right font-mono text-emerald-600 whitespace-nowrap">
                                                             {isLoadingAccounts ? "…" : formatCurrency(st.collected)}
                                                         </TableCell>
-                                                        <TableCell className="py-4 text-right font-mono text-sm text-rose-600 whitespace-nowrap">
+                                                        <TableCell className="text-right font-mono text-rose-600 whitespace-nowrap">
                                                             {isLoadingAccounts ? "…" : formatCurrency(st.outstanding)}
                                                         </TableCell>
-                                                        <TableCell className="pr-6 py-4 text-right">
+                                                        <TableCell className="text-right">
                                                             <div className="flex justify-end gap-1.5">
                                                                 <Link href={`/sacco-admin/fee-payments?type=${encodeURIComponent(fee.name)}`}>
                                                                     <Button
@@ -293,7 +290,7 @@ export default function FeeTypesSetupPage() {
                                             })
                                         ) : (
                                             <TableRow>
-                                                <TableCell colSpan={7} className="text-center h-48 text-slate-400 text-sm font-medium italic py-12">
+                                                <TableCell colSpan={7} className="text-center h-48 text-slate-400 font-medium italic py-12">
                                                     No fee types defined yet.
                                                 </TableCell>
                                             </TableRow>

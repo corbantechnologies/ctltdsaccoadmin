@@ -236,39 +236,34 @@ const SetupSkeleton = () => (
                 </div>
 
                 <Tabs defaultValue="gl" className="w-full">
-                    <TabsList className="bg-white border p-1 shadow-sm mb-6 w-full h-auto rounded grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1 overflow-hidden">
+                    <TabsList className="mb-4">
 
                         <TabsTrigger
                             value="gl"
-                            className="flex items-center justify-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium whitespace-nowrap transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                         >
                             GL Summary
                         </TabsTrigger>
 
                         <TabsTrigger
                             value="payment"
-                            className="flex items-center justify-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium whitespace-nowrap transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                         >
                             Payment Methods
                         </TabsTrigger>
 
                         <TabsTrigger
                             value="fees"
-                            className="flex items-center justify-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium whitespace-nowrap transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                         >
                             Fee Types
                         </TabsTrigger>
 
                         <TabsTrigger
                             value="savings"
-                            className="flex items-center justify-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium whitespace-nowrap transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                         >
                             Saving Types
                         </TabsTrigger>
 
                         <TabsTrigger
                             value="loans"
-                            className="flex items-center justify-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium whitespace-nowrap transition-all rounded data-[state=active]:bg-slate-50 data-[state=active]:text-[var(--accent)] data-[state=active]:shadow-sm"
                         >
                             Loan Products
                         </TabsTrigger>
